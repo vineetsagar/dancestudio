@@ -1,9 +1,8 @@
-from django import forms
 from django.shortcuts import render
 from rango.models import Members
 
 def index(request):
-	category_list = Members.objects.order_by('-id')[:5]
+	category_list = Members.objects.order_by('-id')[:10]
 	context_dict = {'membersList': category_list}
 	return render(request, 'rango/index.html', context_dict)
 
