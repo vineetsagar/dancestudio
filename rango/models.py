@@ -1,5 +1,6 @@
 from django.db import models
 
+
 # Create your models here.
 class Category(models.Model):
     name = models.CharField(max_length=128, unique=True)
@@ -18,7 +19,6 @@ class Page(models.Model):
     
     
 class Members(models.Model):
-        id = models.BigIntegerField(primary_key=True)
         first_name = models.CharField(max_length=128)
         last_name = models.CharField(max_length=128)
         email = models.EmailField()

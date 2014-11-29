@@ -15,8 +15,6 @@ def addmembers(request):
 
 def savemembers(request):
 	data = Members()
-	lastmember = Members.objects.last()
-	data.id = lastmember.id + 1
 	data.first_name = request.POST.get("first_name")
 	data.last_name = request.POST.get("last_name")
 	data.email = request.POST.get("email")
