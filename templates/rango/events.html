@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+{% extends "base.html" %}
+
+{% block content %}
+<div id="container" >
+		<div style="margin-top:5px">
+			<section class="ui-widget-content" id="main_widget">
+			 	<div data-role="main" class="ui-content">
+					  	<table data-role="table" data-mode="columntoggle" class="ui-responsive" id="myTable" data-column-btn-text="Click me to hide or show columns!" >
+					  <thead>
+					   <tr>
+					      <th data-priority="1" >Id</th>
+					      <th data-priority="2" > Name</th>
+					      <th data-priority="3" >Start Date </th>
+					      <th data-priority="4" >End Date</th>
+					      </tr>
+					      </thead>
+					  <tbody>
+					         {% if eventsList %}
+					                {% for events in eventsList %}
+					                   <tr>
+					      <th scope="row">{{ members.id }}</th>
+					      <td>{{ members.event_name }}</td>
+					      <td>{{ members.start_date }}</td>
+					      <td>{{ members.end_date }}</td>
+					      </tr>
+					                {% endfor %}
+					        {% else %}
+					            <strong>There are no events present.</strong>
+					        {% endif %}
+					    </tbody>
+					</table>
+			
+					  <div id="Buttonset2">
+					    <button id="Button3"><a href="/rango/addevent">Add Event</a></button>
+					  </div>
+			  <div>
+		</section>
+	</div>
+<script type="text/javascript">
+$(function() {
+	$( "#Buttonset2" ).buttonset(); 
+});
+$(function() {
+	$( "#Checkboxes1" ).buttonset(); 
+});
+$(function() {
+	$( "#Checkboxes" ).buttonset(); 
+});
+</script>
+{% endblock %}
