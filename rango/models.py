@@ -59,7 +59,7 @@ class EventOccurence(models.Model):
     def __unicode__(self):
             return self.pk
     
-class EventsInstrcutors(models.Model):
+class EventsInstructors(models.Model):
     event_id = models.ForeignKey(Events)
     instrcutors_id = models.ForeignKey(Instructors)
     def __unicode__(self):
