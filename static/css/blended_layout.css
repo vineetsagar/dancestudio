@@ -1,0 +1,72 @@
+*{
+	 padding : 0;
+	 margin : 0;
+	 border : 0;
+}
+body{
+	 position:relative;
+	 min-height: 100%;
+	  width: 100%;
+    height: 100%;
+}
+.blended_grid{
+	 height: 100%;
+	 display : block;
+	 width : 80%;
+	 margin : 50px auto 0 auto;
+}
+.pageLeftMenu{
+	 float : left;
+	 clear : none;
+	 height : 600px;
+	 width : 160px;
+}
+.pageContent{
+	 float : left;
+	 clear : none;
+	 height : 80%;
+	 border: thick;
+	 width : 680px;
+}
+.pageRightMenu{
+	 float : left;
+	 clear : none;
+	 height : 600px;
+	 width : 160px;
+}
+.pageFooter{
+	 float : left;
+	 clear : none;
+	 height : 100px;
+	 width : 1000px;
+}
+.css_header{
+	 float : left;
+	 clear : none;
+	 height : 150px;
+	 width : 87%;
+}
+.css_left_menu{
+	 float : left;
+	 clear : none;
+	 height : 10%;
+	 width : 160px;
+}
+.css_content{
+	 float : left;
+	 clear : none;
+	 height : 70%;
+	 width : 680px;
+}
+.css_right_menu{
+	 float : left;
+	 clear : none;
+	 height : 600px;
+	 width : 160px;
+}
+.css_footer{
+	 float : left;
+	 clear : none;
+	 height : 10%;
+	 width : 1000px;
+}

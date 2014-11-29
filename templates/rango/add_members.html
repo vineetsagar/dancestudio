@@ -1,0 +1,26 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="ui-widget">add members from here</div>
+
+<div>
+<form action="{% url 'savemembers'  %}" method="POST">
+{% csrf_token %}
+<div>
+<label>First Name</label> <input type="text" name="first_name" >
+</div>
+<div>
+<label>Last Name</label> <input type="text" name="last_name">
+</div>
+<div>
+<label>Email</label> <input type="text" name="email">
+</div>
+<div>
+<label>Address</label> <input type="text" name="address">
+</div>
+<input type="submit">
+</form>
+</div>
+{% endblock %}
+

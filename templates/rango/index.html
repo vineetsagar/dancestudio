@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+{% extends "base.html" %}
+{% block content %}
+<body>
+
+<div id="container" >
+
+<div id="topLevelTabs">
+<div id="Buttonset1"   >
+    <button id="Button1">Members</button>
+    <button id="Button2">Events</button>
+  </div>
+</div>
+
+
+  <div style="margin-top:5px">
+  <div id="Checkboxes1">
+    <input type="checkbox" id="Checkbox1">
+    <label for="Checkbox1">All</label>
+    <input type="checkbox" id="Checkbox2">
+    <label for="Checkbox2">Active</label>
+    <input type="checkbox" id="Checkbox3">
+    <label for="Checkbox3">Inactive</label>
+  </div>
+<section class="ui-widget-content" id="main_widget">
+  
+  
+  <table width="1382" border="1">
+  <tbody>
+    <tr>
+      <th width="39" scope="col">Id</th>
+      <th width="336" scope="col">First Name</th>
+      <th width="216" scope="col">Last Name</th>
+      <th width="272" scope="col">Email</th>
+      <th width="485" scope="col">Address</th>
+      </tr>
+      
+         {% if membersList %}
+                {% for members in membersList %}
+                   <tr>
+      <th scope="row">{{ members.id }}</th>
+      <td>{{ members.first_name }}</td>
+      <td>{{ members.last_name }}</td>
+      <td>{{ members.email }}</td>
+      <td>{{ members.area }}</td>
+      </tr>
+                {% endfor %}
+        {% else %}
+            <strong>There are no categories present.</strong>
+        {% endif %}
+        
+    </tbody>
+</table>
+</section>
+  </div>
+</div>
+<script type="text/javascript">
+$(function() {
+	$( "#Buttonset1" ).buttonset(); 
+});
+$(function() {
+	$( "#Checkboxes1" ).buttonset(); 
+});
+$(function() {
+	$( "#Checkboxes1" ).buttonset(); 
+});
+</script>
+</body>
+{% endblock %}
