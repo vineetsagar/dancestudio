@@ -1,12 +1,10 @@
 <!DOCTYPE html>
-{% extends "base.html" %}
+{% extends "bs_base.html" %}
 
-{% block content %}
-<div id="container" >
+{% block container %}
 		<div style="margin-top:5px">
 			<section class="ui-widget-content" id="main_widget">
-			 	<div data-role="main" class="ui-content">
-					  	<table data-role="table" data-mode="columntoggle" class="ui-responsive" id="myTable" data-column-btn-text="Click me to hide or show columns!" >
+					  	<table class="table table-striped" id="eventTable" >
 					  <thead>
 					   <tr>
 					      <th data-priority="1" >Id</th>
@@ -19,10 +17,10 @@
 					         {% if eventsList %}
 					                {% for events in eventsList %}
 					                   <tr>
-					      <th scope="row">{{ members.id }}</th>
-					      <td>{{ members.event_name }}</td>
-					      <td>{{ members.start_date }}</td>
-					      <td>{{ members.end_date }}</td>
+					      <th scope="row">{{ events.id }}</th>
+					      <td>{{ events.event_name }}</td>
+					      <td>{{ events.start_date }}</td>
+					      <td>{{ events.end_date }}</td>
 					      </tr>
 					                {% endfor %}
 					        {% else %}
@@ -34,9 +32,7 @@
 					  <div id="Buttonset2">
 					    <button id="Button3"><a href="/rango/addevents">Add Event</a></button>
 					  </div>
-			  <div>
 		</section>
-	</div>
 <script type="text/javascript">
 $(function() {
 	$( "#Buttonset2" ).buttonset(); 

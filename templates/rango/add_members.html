@@ -1,25 +1,37 @@
 
-{% extends "base.html" %}
+{% extends "bs_base.html" %}
 
-{% block content %}
-<div class="ui-widget">add members from here</div>
+{% block title %}
+Art 2 Fitness
+
+{% endblock%}
+
+{% block container %}
 
 <div>
-<form action="{% url 'savemembers'  %}" method="POST">
+<form action="{% url 'savemembers'  %}" method="POST" role="form">
 {% csrf_token %}
-<div>
-<label>First Name</label> <input type="text" name="first_name" >
-</div>
-<div>
-<label>Last Name</label> <input type="text" name="last_name">
-</div>
-<div>
-<label>Email</label> <input type="text" name="email">
-</div>
-<div>
-<label>Address</label> <input type="text" name="address">
-</div>
-<input type="submit">
+
+ <div class="form-group">
+    <label for="firstName">First Name</label>
+    <input type="text" class="form-control" id="firstName" placeholder="Enter first name" name="first_name">
+  </div>
+
+<div class="form-group">
+    <label for="lastname">Last Name</label>
+    <input type="text" class="form-control" id="lastname" placeholder="Enter last name" name="last_name">
+  </div>
+  
+  <div class="form-group">
+    <label for="email">Email</label>
+    <input type="email" class="form-control" id="email" placeholder="Enter email address " name="email">
+  </div>
+  
+   <div class="form-group">
+    <label for="address">Address</label>
+    <input type="text" class="form-control" id="address" placeholder="Enter your address " name="address">
+  </div>
+ <button type="submit" class="btn btn-default">Submit</button>
 </form>
 </div>
 {% endblock %}

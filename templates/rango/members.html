@@ -1,10 +1,35 @@
-<!DOCTYPE html>
-{% extends "base.html" %}
+{% extends "bs_base.html" %}
 
-{% block content %}
-<div id="container" >
-		<div style="margin-top:5px">
-			  <div id="Checkboxes1">
+
+{% block head%}
+<!-- for adding anything to html head -->
+
+<script type="text/javascript">
+$(function() {
+	$( "#Buttonset2" ).buttonset(); 
+});
+$(function() {
+	$( "#Buttonset1" ).buttonset(); 
+});
+$(function() {
+	$( "#Checkboxes1" ).buttonset(); 
+});
+$(function() {
+	$( "#Checkboxes" ).buttonset(); 
+});
+</script>
+
+{% endblock%}
+
+{% block title %}
+Art 2 Fitness
+
+{% endblock%}
+
+{% block container %}
+<!-- Define your content here-->
+
+<div id="Checkboxes1">
 			    <input type="checkbox" id="Checkbox1">
 			    <label for="Checkbox1">All</label>
 			    <input type="checkbox" id="Checkbox2">
@@ -12,9 +37,9 @@
 			    <input type="checkbox" id="Checkbox3">
 			    <label for="Checkbox3">Inactive</label>
 			  </div>
-		<section class="ui-widget-content" id="main_widget">
-			 	<div data-role="main" class="ui-content">
-					  	<table data-role="table" data-mode="columntoggle" class="ui-responsive" id="myTable" data-column-btn-text="Click me to hide or show columns!" >
+
+<section  id="main_widget">
+					  	<table class="table table-striped" id="myTable" >
 					  <thead>
 					   <tr>
 					      <th data-priority="1" >Id</th>
@@ -45,22 +70,7 @@
 					  <div id="Buttonset2">
 					    <button id="Button3"><a href="/rango/addmembers">Add Member</a></button>
 					  </div>
-			  <div>
 		</section>
-	</div>
-</div>
-<script type="text/javascript">
-$(function() {
-	$( "#Buttonset2" ).buttonset(); 
-});
-$(function() {
-	$( "#Buttonset1" ).buttonset(); 
-});
-$(function() {
-	$( "#Checkboxes1" ).buttonset(); 
-});
-$(function() {
-	$( "#Checkboxes" ).buttonset(); 
-});
-</script>
-{% endblock %}
+
+{% endblock%}
+

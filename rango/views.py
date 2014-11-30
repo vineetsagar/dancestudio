@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from rango.models import Members, Events, EventType
+from rango.models import Members, Events, EventType, Category, EventCategory
 from datetime import datetime
 
 def viewmembers(request):
@@ -36,7 +36,8 @@ def savemembers(request):
 
 def addevents(request):
 	event_type = EventType.objects.order_by('-id')
-	context_dict = {'eventList':event_type}
+	category_type = EventCategory.objects.order_by('-id')
+	context_dict = {'eventList':event_type, 'categoryList':category_type}
 	return render(request, 'rango/add_events.html', context_dict)
 
 def saveevents(request):
@@ -44,7 +45,10 @@ def saveevents(request):
 	data.event_name = request.POST.get("event_name")
 	event_type_name = request.POST.get("event_type_selected")
 	eventType = EventType.objects.get(event_type_name=event_type_name )
+	event_category_name = request.POST.get("event_category")
+	eventCategory = EventCategory.objects.get(event_category_name=event_category_name )
 	data.event_type_id =eventType
+	data.event_category_id = eventCategory
 	data.start_date = datetime.now()
 	data.end_date= datetime.now()
 	Events.save(data)

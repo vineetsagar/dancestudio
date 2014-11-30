@@ -32,7 +32,7 @@ class EventType(models.Model):
 class EventCategory(models.Model):
         event_category_name = models.CharField(max_length = 128)
         def __unicode__(self):
-            return self.pk
+            return self.event_category_name
     
 class Events(models.Model):
         event_name = models.CharField(max_length=128)

@@ -1,57 +1,47 @@
-{% extends "base.html" %}
+{% extends "bs_base.html" %}
 
 <!-- this for including anything in head tag -->
 {% block head%}
+
+
 {% endblock%}
 
 <!-- all the content that will go into body tag -->
-{% block content %}
-<div>
-<form action="{% url 'saveevents'  %}" method="POST">
+{% block container %}
+<form action="{% url 'saveevents'  %}" method="POST" role="form">
 {% csrf_token %}
-<div>
-<label>Event Name</label> <input type="text" name="event_name" >
-</div>
 
-<div style="width:300px">
+<div class="form-group">
+    <label for="eventname">Event Name</label>
+    <input type="text" class="form-control" id="eventname" placeholder="Enter event name" name="event_name">
+  </div>
 
-<div style="float:none;clear:right">
-	<div style="float:left">Event Type</div>
-   <select id = "event_type_selected" name="event_type_selected">
-   {% if eventList %}
+<fieldset>
+            <label>Event Type</label>
+            <select class="input-large" name="event_type_selected" >
+ 					{% if eventList %}
 					                {% for eventType in eventList %}
 	<option value = "{{ eventType.event_type_name}}">{{ eventType.event_type_name}}</option>		                
 					                 {% endfor %}
 					        {% else %}
 					        <strong>There are no event type present.</strong>
 					        {% endif %}
-					        
-					        
-               
-             </select>
-
-</div>
-<div style="float:none;clear:right">
-	<div style="float:left">Category Type</div>
-   <select id = "event_category" name="event_category">
-   {% if eventList %}
-					                {% for eventType in eventList %}
-	<option value = "{{ eventType.event_type_name}}">{{ eventType.event_type_name}}</option>		                
+            </select>
+ </fieldset>
+ 
+ <fieldset>
+            <label>Event Category</label>
+            <select class="input-large" name="event_category" >
+ 					{% if categoryList %}
+					                {% for category in categoryList %}
+	<option value = "{{ category.event_category_name}}">{{ category.event_category_name}}</option>		                
 					                 {% endfor %}
 					        {% else %}
-					        <strong>There are no event type present.</strong>
 					        {% endif %}
-					        
-					        
-               
-             </select>
-
-</div>
-</div>
+            </select>
+ </fieldset>
 <input type="submit">
 </form>
-</div>
-
 
 {% endblock %}
 
