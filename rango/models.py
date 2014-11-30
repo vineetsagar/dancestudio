@@ -22,12 +22,12 @@ class Members(models.Model):
         email = models.EmailField()
         area = models.TextField()
         def __unicode__(self):
-            return self.pk
+            return self.email
 
 class EventType(models.Model):
-        name = models.CharField(max_length = 128)
+        event_type_name = models.CharField(max_length = 128)
         def __unicode__(self):
-            return self.pk
+            return self.event_type_name
         
 class EventCategory(models.Model):
         event_category_name = models.CharField(max_length = 128)
@@ -41,7 +41,7 @@ class Events(models.Model):
         event_category_id = models.ForeignKey(EventCategory)
         event_type_id = models.ForeignKey(EventType)
         def __unicode__(self):
-            return self.pk
+            return self.event_name
         
 class Instructors(models.Model):
     first_name = models.CharField(max_length = 128)

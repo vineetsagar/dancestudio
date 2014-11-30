@@ -1,80 +1,21 @@
-<!DOCTYPE html>
-{% extends "base.html" %}
-{% block content %}
-<body>
+{% extends "bootstrap_base.html" %}
 
-<div id="container" >
+{% block title %}
 
-<div id="topLevelTabs">
-<div id="Buttonset1"   >
-    <button id="Button1">Members</button>
-    <button id="Button2">Events</button>
-    <button id="Button2">Instructors</button>
-  </div>
-</div>
+Art 2 Fitness
 
+{% endblock%}
 
-  <div style="margin-top:5px">
-  <div id="Checkboxes1">
-    <input type="checkbox" id="Checkbox1">
-    <label for="Checkbox1">All</label>
-    <input type="checkbox" id="Checkbox2">
-    <label for="Checkbox2">Active</label>
-    <input type="checkbox" id="Checkbox3">
-    <label for="Checkbox3">Inactive</label>
-  </div>
-<section class="ui-widget-content" id="main_widget">
-  
-    <div data-role="main" class="ui-content">
-  <table data-role="table" data-mode="columntoggle" class="ui-responsive" id="myTable" data-column-btn-text="Click me to hide or show columns!" >
-  <thead>
-   <tr>
-      <th data-priority="1" >Id</th>
-      <th data-priority="2" >First Name</th>
-      <th data-priority="3" >Last Name</th>
-      <th data-priority="4" >Email</th>
-      <th data-priority="5" >Address</th>
-      </tr>
-      </thead>
-      
-  <tbody>
-         {% if membersList %}
-                {% for members in membersList %}
-                   <tr>
-      <th scope="row">{{ members.id }}</th>
-      <td>{{ members.first_name }}</td>
-      <td>{{ members.last_name }}</td>
-      <td>{{ members.email }}</td>
-      <td>{{ members.area }}</td>
-      </tr>
-                {% endfor %}
-        {% else %}
-            <strong>There are no categories present.</strong>
-        {% endif %}
-        
-    </tbody>
-</table>
-
-  <div id="Buttonset2">
-    <button id="Button3"><a href="/rango/addmembers">Add Member</a></button>
-  </div>
-  <div>
-</section>
-  </div>
-</div>
-<script type="text/javascript">
-$(function() {
-	$( "#Buttonset2" ).buttonset(); 
-});
-$(function() {
-	$( "#Buttonset1" ).buttonset(); 
-});
-$(function() {
-	$( "#Checkboxes1" ).buttonset(); 
-});
-$(function() {
-	$( "#Checkboxes" ).buttonset(); 
-});
-</script>
-</body>
+{% block navigation %}
+ 					<li>
+                      <a href="/rango/members">About</a>
+                    </li>
+                     <li>
+                        <a href="login">Login</a>
+                    </li>
+                    
 {% endblock %}
+
+{% block container %}
+
+{% endblock%}

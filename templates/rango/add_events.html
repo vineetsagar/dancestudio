@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+<!-- this for including anything in head tag -->
+{% block head%}
+{% endblock%}
+
+<!-- all the content that will go into body tag -->
+{% block content %}
+<div>
+<form action="{% url 'saveevents'  %}" method="POST">
+{% csrf_token %}
+<div>
+<label>Event Name</label> <input type="text" name="event_name" >
+</div>
+
+<div style="width:300px">
+
+<div style="float:none;clear:right">
+	<div style="float:left">Event Type</div>
+   <select id = "event_type_selected" name="event_type_selected">
+   {% if eventList %}
+					                {% for eventType in eventList %}
+	<option value = "{{ eventType.event_type_name}}">{{ eventType.event_type_name}}</option>		                
+					                 {% endfor %}
+					        {% else %}
+					        <strong>There are no event type present.</strong>
+					        {% endif %}
+					        
+					        
+               
+             </select>
+
+</div>
+<div style="float:none;clear:right">
+	<div style="float:left">Category Type</div>
+   <select id = "event_category" name="event_category">
+   {% if eventList %}
+					                {% for eventType in eventList %}
+	<option value = "{{ eventType.event_type_name}}">{{ eventType.event_type_name}}</option>		                
+					                 {% endfor %}
+					        {% else %}
+					        <strong>There are no event type present.</strong>
+					        {% endif %}
+					        
+					        
+               
+             </select>
+
+</div>
+</div>
+<input type="submit">
+</form>
+</div>
+
+
+{% endblock %}
+

@@ -4,8 +4,10 @@ from rango import views
 
 
 urlpatterns=patterns('',
-		 url(r'^$', views.home, name='home'),
+		 url(r'^$', views.index, name='index'),
 		 url(r'^events/$', views.viewevents, name='events'),
+		 url(r'^addevents/$', views.addevents, name='add_events'),
+		 url(r'^saveevents/$', views.saveevents, name='saveevents'),
 		 url(r'^members/$', views.viewmembers, name='members'),
 		 url(r'^addmembers/$', views.addmembers, name='add_members'),
 		 url(r'^login/$', 'django.contrib.auth.views.login'),
