@@ -13,6 +13,4 @@ urlpatterns=patterns('',
 		 url(r'^login/$', 'django.contrib.auth.views.login'),
    		 url(r'^logout/$', 'django.contrib.auth.views.logout' , {'next_page': '/rango/'}),
    		 url(r'^savemembers/$', views.savemembers, name='savemembers'),
-   		 url(r'^ABC/$', views.savemembers, name='ABC'),
-   		 url(r'^ABCDE/$', views.savemembers, name='ABCDE'),
 		)
