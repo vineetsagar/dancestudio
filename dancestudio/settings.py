@@ -100,3 +100,5 @@ STATIC_URL = '/static/' # You may find this is already defined as such.
 STATICFILES_DIRS = (
     STATIC_PATH,
 )
+
+LOGIN_URL='/rango/members/login'

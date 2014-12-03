@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from rango.models import Members, Events, EventType, Category, EventCategory
+from rango.models import Members, Events, EventType, Category, EventCategory, Instructors
 from datetime import datetime
 
 def viewmembers(request):
@@ -55,3 +55,22 @@ def saveevents(request):
 	events = Events.objects.order_by('-id')[:10]
 	context_dict = {'eventsList': events}
 	return render(request, 'rango/events.html', context_dict)	 
+
+def show_instructors(request):
+	instructors = Instructors.objects.order_by('-id')[:10]
+	context_dict = {'instructor_list': instructors}
+	return render(request, 'rango/instructors.html', context_dict)
+
+def add_instructor(request):
+	return render(request, 'rango/add_instructor.html')
+
+def save_instructor(request):
+	data = Instructors()
+	data.first_name = request.POST.get("first_name")
+	data.last_name = request.POST.get("last_name")
+	data.email = request.POST.get("email")
+	data.contact_number = request.POST.get("contact_number")
+	Instructors.save(data)
+	instructor_list = Instructors.objects.order_by('-id')[:5]
+	context_dict = {'instructor_list': instructor_list}
+	return render(request, 'rango/instructors.html', context_dict)

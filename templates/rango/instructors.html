@@ -1,0 +1,67 @@
+{% extends "bs_base.html" %}
+
+
+{% block head%}
+<!-- for adding anything to html head -->
+
+<script type="text/javascript">
+$(function() {
+	$( "#Buttonset2" ).buttonset(); 
+});
+$(function() {
+	$( "#Buttonset1" ).buttonset(); 
+});
+$(function() {
+	$( "#Checkboxes1" ).buttonset(); 
+});
+$(function() {
+	$( "#Checkboxes" ).buttonset(); 
+});
+</script>
+
+{% endblock%}
+
+{% block title %}
+Art 2 Fitness
+
+{% endblock%}
+
+{% block container %}
+<!-- Define your content here-->
+
+<section  id="main_widget">
+					  	<table class="table table-striped" id="myTable" >
+					  <thead>
+<tr>
+					      <th data-priority="1" >Id</th>
+					      <th data-priority="2" >First Name</th>
+					      <th data-priority="3" >Last Name</th>
+					      <th data-priority="4" >Email</th>
+					      <th data-priority="5" >Contact Number</th>
+					      </tr>
+					      </thead>
+					      
+					  <tbody>
+					         {% if instructor_list %}
+					                {% for instructor in instructor_list %}
+					                   <tr>
+					      <th scope="row">{{ instructor.id }}</th>
+					      <td>{{ instructor.first_name }}</td>
+					      <td>{{ instructor.last_name }}</td>
+					      <td>{{ instructor.email }}</td>
+					      <td>{{ instructor.contact_number }}</td>
+					      </tr>
+					                {% endfor %}
+					        {% else %}
+					            <strong>There is no entry for instructor.</strong>
+					        {% endif %}
+					    </tbody>
+					</table>
+			
+					  <div id="Buttonset2">
+					    <button id="Button3"><a href="/rango/add_instructor">Add Instructor</a></button>
+					  </div>
+		</section>
+
+{% endblock%}
+
