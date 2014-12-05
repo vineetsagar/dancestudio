@@ -10,12 +10,15 @@
     <meta name="author" content="">
 
     <title>{% block title %} {% endblock %}</title>
-
     <!-- Bootstrap Core CSS -->
     <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
-
+    <link href="{% static 'jquery/jquery-ui.css' %}" rel="stylesheet">
     <!-- Custom CSS -->
     <link href="{% static 'bootstrap/css/logo-nav.css' %}" rel="stylesheet">
+
+    <script src="{% static 'jquery/jquery-1.9.1.js' %}"></script>
+    <script src="{% static 'jquery/jquery-ui.js' %}"></script>
+    <script src="{% static 'bootstrap/js/bootstrap.js' %}"></script>
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -48,8 +51,9 @@
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                {% block navigation %}
+             
                 <ul class="nav navbar-nav">
-                   {% block navigation %}
                    <li>
                       <a href="/rango/members">Members</a>
                     </li>
@@ -59,30 +63,30 @@
                       <li>
                         <a href="/rango/instructors">Instructors</a>
                     </li>
-                    </ul>
+              	</ul>
 
-<ul class="nav navbar-nav navbar-right">
-{% block user_page %}
-		      {% if user.is_anonymous %}
-		     <li><a href="{% url 'django.contrib.auth.views.login' %}" title="Login" >Login</a></li>
-		      {% else %}
-		  			<li class="dropdown">
-		  			<a href="#" class="dropdown-toggle" data-toggle="dropdown" title="user profile options" aria-expanded="false"><i class="fa fa-star text-yellow"></i> {{user.username}} <b class="caret"></b></a>
-		  			<ul class="dropdown-menu">
-		  			  <li>
-                            <a href="#">My Account</a>
-                        </li>
-                        <li>
-                            <a href="{% url 'django.contrib.auth.views.logout' %}" title="Logout">Logout</a>
-                        </li>
-                    </ul>
-		  			</li>
-		      {% endif %}
-		   
-    {% endblock %}
-                    
-                   {% endblock%}
-                </ul>
+				<ul class="nav navbar-nav navbar-right" >
+							 {% if user.is_anonymous %}
+							     <li class="dropdown" ><a href="{% url 'django.contrib.auth.views.login' %}" title="Login" >Login</a></li>
+							      {% else %}
+							  			<li class="dropdown">
+								  			<a href="#" class="dropdown-toggle" data-toggle="dropdown" title="user profile options" aria-expanded="false">
+									  			<i class="fa fa-star text-yellow"></i> {{user.username}} 
+									  			<b class="caret"></b>
+								  			</a>
+								  			<ul class="dropdown-menu">
+								  			  <li>
+						                            <a href="#">My Account</a>
+						                        </li>
+						                        <li>
+						                            <a href="{% url 'django.contrib.auth.views.logout' %}" title="Logout">Logout</a>
+						                        </li>
+						                    </ul>
+							  			</li>
+							      {% endif %}
+					   	 
+				   	  </ul>
+		               {% endblock %}
             </div>
             <!-- /.navbar-collapse -->
         </div>
@@ -95,17 +99,13 @@
        {% block container %}
        
        {% endblock %}
-    </div>
     <!-- /.container -->
 
     <!-- jQuery -->
-    <script src="{% static 'bootstrap/js/jquery.js' %}"></script>
-
+ 
     <!-- Bootstrap Core JavaScript -->
-    <script src="{% static 'bootstrap/js/bootstrap.js' %}"></script>
-    <script src="{% static 'bootstrap/js/bootstrap.3.3.0.min.js"></script>
-
 {% block script %}
+
 {% endblock %}
 </body>
 </html>

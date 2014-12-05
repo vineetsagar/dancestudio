@@ -1,4 +1,7 @@
+from datetime import datetime
+
 from django.db import models
+
 
 # Create your models here.
 class Category(models.Model):
@@ -7,15 +10,6 @@ class Category(models.Model):
     def __unicode__(self):
         return self.name
 
-class Page(models.Model):
-    category = models.ForeignKey(Category)
-    title = models.CharField(max_length=128)
-    url = models.URLField()
-    views = models.IntegerField(default=0)
-
-    def __unicode__(self):
-        return self.title
-    
 class Members(models.Model):
         first_name = models.CharField(max_length=128)
         last_name = models.CharField(max_length=128)
@@ -36,12 +30,29 @@ class EventCategory(models.Model):
     
 class Events(models.Model):
         event_name = models.CharField(max_length=128)
-        start_date = models.DateField()
-        end_date = models.DateField()
+        all_day= models.BooleanField(default=False)
         event_category_id = models.ForeignKey(EventCategory)
         event_type_id = models.ForeignKey(EventType)
+        
+        start_date = models.DateField(default=datetime.now())
+        end_date = models.DateField(default=datetime.now())
+        
+        start_time = models.TimeField(default='00:00')
+        end_time = models.TimeField(default='00:00')
+        
         def __unicode__(self):
             return self.event_name
+        
+        
+class EventOccurence(models.Model):
+    event_id = models.ForeignKey(Events)
+    frequency = models.IntegerField(default=0)
+    wmd = models.IntegerField(default=0)
+    eo_start_date = models.DateField(default=datetime.now())    
+    eo_end_date = models.DateField(default=datetime.now())
+    
+    def __unicode__(self):
+            return self.pk
         
 class Instructors(models.Model):
     first_name = models.CharField(max_length = 128)
@@ -50,18 +61,10 @@ class Instructors(models.Model):
     contact_number = models.CharField(max_length = 128)
     def __unicode__(self):
             return self.pk
-
-class EventOccurence(models.Model):
-    start_time = models.TimeField()
-    end_time = models.TimeField()
-    event_id = models.ForeignKey(Events)
-    meta_info = models.CharField(max_length=200)
-    def __unicode__(self):
-            return self.pk
     
 class EventsInstructors(models.Model):
     event_id = models.ForeignKey(Events)
-    instrcutors_id = models.ForeignKey(Instructors)
+    instructors_id = models.ForeignKey(Instructors)
     def __unicode__(self):
             return self.pk
     

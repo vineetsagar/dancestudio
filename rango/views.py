@@ -1,10 +1,13 @@
+
+from django.core.urlresolvers import reverse
+from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
-from rango.models import Members, Events, EventType, Category, EventCategory, Instructors
-from datetime import datetime
+
+from rango.models import Members, Events, EventType, EventCategory, Instructors
+from rango.storeevents import storeevents
+
 
 def viewmembers(request):
-	
-	
 	members = Members.objects.order_by('-id')[:10]
 	context_dict = {'membersList': members}
 	return render(request, 'rango/members.html', context_dict)
@@ -45,20 +48,9 @@ def addevents(request):
 	return render(request, 'rango/add_events.html', context_dict)
 
 def saveevents(request):
-	data = Events()
-	data.event_name = request.POST.get("event_name")
-	event_type_name = request.POST.get("event_type_selected")
-	eventType = EventType.objects.get(event_type_name=event_type_name )
-	event_category_name = request.POST.get("event_category")
-	eventCategory = EventCategory.objects.get(event_category_name=event_category_name )
-	data.event_type_id =eventType
-	data.event_category_id = eventCategory
-	data.start_date = datetime.now()
-	data.end_date= datetime.now()
-	Events.save(data)
-	events = Events.objects.order_by('-id')[:10]
-	context_dict = {'eventsList': events}
-	return render(request, 'rango/events.html', context_dict)	 
+	storeevents(request)
+	# now redirect this request to events view
+	return HttpResponseRedirect(reverse("events"))
 
 def show_instructors(request):
 	instructors = Instructors.objects.order_by('-id')[:10]
