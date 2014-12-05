@@ -16,4 +16,7 @@ urlpatterns=patterns('',
    		 url(r'^instructors/$', views.show_instructors, name='instructors'),
    		 url(r'^add_instructor/$', views.add_instructor, name='add_instructor'),
    		 url(r'^save_instructor/$', views.save_instructor, name='save_instructor'),
+   		 url(r'^dashboard/$', views.show_dashboard, name='dashboard'),
+   		 url(r'^events_json/$', views.get_events_json, name='get_event_json'),
+   		 
 		)
