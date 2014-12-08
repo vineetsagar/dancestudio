@@ -18,12 +18,11 @@ def viewevents(request):
 	return render(request, 'rango/events.html', context_dict)
 
 
-
 def home(request):
 	return render(request, 'rango/home.html')
 
 def index(request):
-	return render(request, 'rango/index.html')
+	return show_dashboard(request)
 
 
 def addmembers(request):

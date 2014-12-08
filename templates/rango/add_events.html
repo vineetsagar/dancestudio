@@ -12,8 +12,7 @@
 {% block container %}
 <form action="{% url 'saveevents'  %}" method="POST" role="form">
 {% csrf_token %}
-<div class="container">
- <div  tabindex="0"  class="form-group">
+ <div  class="form-group">
  <div >
     <label for="eventname">Event Name</label>
     <input type="text" class="form-control" id="eventname" placeholder="Enter event name" name="event_name">
@@ -40,11 +39,14 @@
 			Start Date &nbsp;
     	  </label>
   		  <input  type="text" class="date start" name="start_date" />
-    	  <span>&nbsp;&nbsp;&nbsp;</span>
-    	  <label for="start_time" class="form-group" >
+    	 <span>&nbsp;&nbsp;&nbsp;</span>
+    	 
+    	 <label for="start_time" class="form-group" >
 			Start Time &nbsp;
     	</label>
-    	<input type="text" class="time start" name="start_time" />
+    	<input type="text" class="time start" name="start_time" id="start_time" />
+    	
+    	
     	<br>
     	 <label for="end_date" class="form-group">
 			End Date &nbsp;&nbsp;
@@ -54,7 +56,7 @@
     	  <label for="end_time" class="form-group">
 			End Time &nbsp;
     	</label>
-    	<input type="text" class="time end" name="end_time" />
+    	<input type="text" class="time end" name="end_time"  id = "end_time"/>
     </p>
 </div>
 
@@ -64,19 +66,19 @@
  <label for="allDay" >
       All Day&nbsp;
     </label>
-     <input type="checkbox" name="all_day">
+     <input type="checkbox" name="all_day" id="all_day" onclick="javascript:hideTime()">
      <label for="repeat" >
      &nbsp;&nbsp;Repeat&nbsp;
     </label>
-     <input type="checkbox" name="repeat">
+     <input type="checkbox" name="repeat" id="repeat_checkbox" onclick="javascript:showRepeatOptions()">
 </div>
-       <div style="margin-left:16px" class="form-group">
+       <div style="margin-left:16px;display:none" class="form-group" id = "repeatOptions">
        <table class="row" >
        <tbody>
 	       <tr >
 	       <th>Repeats:</th>
 	       <td>
-	       <select id="selectpicker" name="eventType" title="Repeats Weekly"  onchange="selectRepeats()" class="form-group" >
+	       <select id="selectpicker" name="eventType" title="Repeats Weekly"  onchange="selectRepeats()" >
 
 				{% if eventList %}
 					{% for event in eventList %}
@@ -107,7 +109,7 @@
        <tr  >
        <th  >Repeat every:</th>
 	       <td  >
-		       <select id=":2l.interval" title="Repeat every 1 weeks" class="form-group" >
+		       <select id="frequency" name='frequency' title="Repeat every 1 weeks" class="form-group" >
 		       <option value="1">1</option>
 		       <option value="2">2</option>
 		       <option value="3">3</option>
@@ -139,29 +141,25 @@
 		       <option value="29">29</option>
 		       <option value="30">30</option>
 		       </select>
-	       <label class="form-group" >days</label>
+	       <label id ="repeat_every_label" class="form-group" >days</label>
 	       </td>
        </tr>
-       
        <tr >
        			<th></th>
        			<td id="toreplace" ><td>
        </tr>
-       
-       
        <tr>
 	       <th >Ends:</th>
 	       <td  >
 	       <div >
-			       <input  id=":2l.endson_never" name="neverEnds" type="radio" checked="" aria-label="Ends never" title="Ends never">
+			       <input  id=":2l.endson_never" name="endTimeGroup" value="never" type="radio" checked="" aria-label="Ends never" title="Ends never">
 			       <label for=":2l.endson_never" title="Ends never"  >Never</label>
-			       <input id=":2l.endson_count" name="occurrencesEnds" type="radio" aria-label="Ends after a number of occurrences" title="Ends after a number of occurrences" >
+			       <input id=":2l.endson_count" name="endTimeGroup" value="after" type="radio" aria-label="Ends after a number of occurrences" title="Ends after a number of occurrences" >
 			       <label for=":2l.endson_count" title="Ends after a number of occurrences"  >After 
 			       	<input id="after_input" name="occurrencesEndsValue" size="3" value="" title="Occurrences"  > occurrences
 			       </label>
-	       
 	       <span >
-		       <input id=":2l.endson_until" name="endsOn" type="radio" aria-label="Ends on a specified date" title="Ends on a specified date" >
+		       <input id=":2l.endson_until" name="endTimeGroup" value="on" type="radio" aria-label="Ends on a specified date" title="Ends on a specified date" >
 		       <label for=":2l.endson_until" title="Ends on a specified date"  >On 
 				<input type="text" id="datepicker1" name="endsOnValue" >
 		       </label>
@@ -173,7 +171,6 @@
        </table>
        </div>
 <input type="submit" class="form-group">
-</div>
 </form>
 
 {% endblock %}
@@ -183,43 +180,7 @@
 {% block script %}
 
 <!-- scripts for repeat event window -->
+<script src="{% static 'events/events.js' %}"></script> 	 	
 
-<script>
-	function selectRepeats() {
-	  	var x = document.getElementById("selectpicker").value;
-	    if(x =='Weekly')  {   
-	    var weekly="<tr class='form-group' ><th>Repeat on:</th><td  id='toreplace'><div id='weekly'  style='display:block'><span >&nbsp;<input id=':2l.dow1' name='MO' type='checkbox' aria-label='Repeat on Monday' title='Monday'><label for=':2l.dow1' title='Monday'>&nbsp;M</label></span><span >&nbsp;<input id=':2l.dow2' name='TU' type='checkbox' checked='' aria-label='Repeat on Tuesday' title='Tuesday'><label for=':2l.dow2' title=''Tuesday'>&nbsp;T</label></span><span >&nbsp;<input id=':2l.dow3' name='WE' type='checkbox' aria-label='Repeat on Wednesday' title='Wednesday'><label for=':2l.dow3' title='Wednesday'>&nbsp;W</label></span><span >&nbsp;<input id=':2l.dow4' name='TH' type='checkbox' aria-label='Repeat on Thursday' title='Thursday'><label for=':2l.dow4' title='Thursday'>&nbsp;T</label></span><span >&nbsp;<input id=':2l.dow5' name='FR' type='checkbox' aria-label='Repeat on Friday' title='Friday'><label for=':2l.dow5' title='Friday'>&nbsp;F</label></span><span>&nbsp;<input id=':2l.dow6' name='SA' type='checkbox' aria-label='Repeat on Saturday' title='Saturday'><label for=':2l.dow6' title='Saturday'>&nbsp;S</label></span><span >&nbsp;<input id=':2l.dow0' name='SU' type='checkbox' aria-label='Repeat on Sunday' title='Sunday'><label for=':2l.dow0' title='Sunday'>&nbsp;S</label></span></div></td></tr>"
-	    $("td#toreplace").parent().replaceWith(weekly);
-	    }else if(x =='Monthly')  {   
-	    	var monthly = "<tr ><th>Repeat on:</th><td  id='toreplace'><input id=':3o.domrepeat' name='repeatby' type='radio' checked='' aria-label='Repeat by day of the month' title='Repeat by day of the month'>&nbsp;<label for=':3o.domrepeat' title='Repeat by day of the month'>&nbsp;day of the month</label></span><span >&nbsp;&nbsp;<input id=':3o.dowrepeat' name='repeatby' type='radio' aria-label='Repeat by day of the week' title='Repeat by day of the week'><label for=':3o.dowrepeat' title='Repeat by day of the week'>&nbsp;&nbsp;day of the week</label></span></td></tr>"
-			$("td#toreplace").parent().replaceWith(monthly);
-	    }
-	    else{
-	    var newStr = "<tr  style='display:none'><th>Repeat on:</th><td  id='toreplace'></td></tr>"
-	 		   $("td#toreplace").parent().replaceWith(newStr);
-	    }
-	}
-    </script>
-    
-    
-<script>
-  $(function() {
-    $( "#datepicker1" ).datepicker();
-  });
-  </script>
-  
-<script>
 
-  // initialize input widgets first
-   
-$('#startDateTime .time').timepicker({
-        'showDuration': true,
-        'timeFormat': 'H:mm'
-    });
-
-    $('#startDateTime .date').datepicker({
-        'format': 'm/d/yyyy',
-        'autoclose': true
-    });
-</script>
 {% endblock%}

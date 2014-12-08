@@ -1,10 +1,9 @@
-from datetime import datetime
+import datetime
 
 from rango.models import Events, EventType, EventCategory, EventOccurence
-
+from dateutil.relativedelta import relativedelta
 
 def storeevents(request):
-    print(request)
     data= Events()
     
     data.event_name = request.POST.get("event_name")
@@ -21,31 +20,41 @@ def storeevents(request):
     start_time = request.POST.get("start_time")
     end_time = request.POST.get("end_time")
     
-    startDate =    datetime.strptime(start_date, "%m/%d/%Y")
-    endDate =    datetime.strptime(end_date, "%m/%d/%Y")
+    startDate =    datetime.datetime.strptime(start_date, "%m/%d/%Y")
+    endDate =    datetime.datetime.strptime(end_date, "%m/%d/%Y")
     
     data.start_date = startDate
     data.end_date = endDate
     
     allDay = request.POST.get("all_day")
     
-    if allDay =='true':
-        data.start_time = datetime.time(0, 0, 0)
-        data.end_time = datetime.time(24, 0, 0)
-    else:
-        data.start_time = datetime.strptime(start_time, '%H:%M')
-        data.end_time = datetime.strptime(end_time, '%H:%M')
+    if allDay !='on':
+        data.start_time = datetime.datetime.strptime(start_time, '%H:%M')
+        data.end_time = datetime.datetime.strptime(end_time, '%H:%M')
+        # no need for else loop here as we going to store default value i.e. midnight to midnight
         
     repeat = request.POST.get("repeat")
+
+    eventOccurence = EventOccurence()
     
-    never_ends = request.POST.get("neverEnds")
-    
-    occurrencesEnds = request.POST.get("occurrencesEnds")
-    occurrencesEndsValue = request.POST.get("occurrencesEndsValue")
-    
-    endsOn = request.POST.get("endsOn")
-    endsOnValue = request.POST.get("endsOnValue")
-    
+    if repeat=='on':
+        endTimeRadioGroup = request.POST.get("endTimeGroup")
+        eventOccurence.frequency = request.Post.get("frequency")
+        eventOccurence.eo_start_date = startDate
+        if endTimeRadioGroup == 'on':
+            endsOnValue = request.POST.get("endsOnValue")
+            # will get a end date here
+            eventOccurence.eo_end_date = datetime.datetime.strptime(endsOnValue, "%m/%d/%Y")
+        else:
+            if endTimeRadioGroup == 'after':
+                occurrencesEndsValue = request.POST.get("occurrencesEndsValue")
+                # need to get the frequency here
+                # will get a number of times this event should occurred
+            else:
+                # never selected by user, hence set the end date to be exactly after a year
+                eventOccurence.eo_end_date = eventOccurence.eo_start_date + relativedelta(years=1)
+        
+                
     if (repeat != 'true'  and allDay !='true' ):
             event_type_name = 'Once'
             eventType = EventType.objects.get(event_type_name=event_type_name )
