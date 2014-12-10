@@ -31,8 +31,8 @@ class EventCategory(models.Model):
 class Events(models.Model):
         event_name = models.CharField(max_length=128)
         all_day= models.BooleanField(default=False)
-        event_category_id = models.ForeignKey(EventCategory)
-        event_type_id = models.ForeignKey(EventType)
+        event_category = models.ForeignKey(EventCategory)
+        event_type = models.ForeignKey(EventType)
         
         start_date = models.DateField(default=datetime.now())
         end_date = models.DateField(default=datetime.now())
@@ -52,7 +52,7 @@ class EventOccurence(models.Model):
     eo_end_date = models.DateField(default=datetime.now())
     
     def __unicode__(self):
-            return self.pk
+            return self.event_id
         
 class Instructors(models.Model):
     first_name = models.CharField(max_length = 128)

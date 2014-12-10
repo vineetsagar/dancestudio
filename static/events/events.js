@@ -30,7 +30,7 @@
 	    $("td#toreplace").parent().replaceWith(weekly);
 	    }else if(x =='Monthly')  {
 	    	$("label#repeat_every_label").replaceWith('months');
-	    	var monthly = "<tr ><th>Repeat on:</th><td  id='toreplace'><input id=':3o.domrepeat' name='repeatby' type='radio' checked='' aria-label='Repeat by day of the month' title='Repeat by day of the month'>&nbsp;<label for=':3o.domrepeat' title='Repeat by day of the month'>&nbsp;day of the month</label></span><span >&nbsp;&nbsp;<input id=':3o.dowrepeat' name='repeatby' type='radio' aria-label='Repeat by day of the week' title='Repeat by day of the week'><label for=':3o.dowrepeat' title='Repeat by day of the week'>&nbsp;&nbsp;day of the week</label></span></td></tr>"
+	    	var monthly = "<tr ><th>Repeat on:</th><td  id='toreplace'><input id=':3o.domrepeat' name='repeatby' value='dm' type='radio' checked='' aria-label='Repeat by day of the month' title='Repeat by day of the month'>&nbsp;<label for=':3o.domrepeat' title='Repeat by day of the month'>&nbsp;day of the month</label></span><span >&nbsp;&nbsp;<input id=':3o.dowrepeat' name='repeatby' value='dw' type='radio' aria-label='Repeat by day of the week' title='Repeat by day of the week'><label for=':3o.dowrepeat' title='Repeat by day of the week'>&nbsp;&nbsp;day of the week</label></span></td></tr>"
 			$("td#toreplace").parent().replaceWith(monthly);
 	    }
 	    else{
