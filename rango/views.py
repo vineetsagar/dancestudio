@@ -5,6 +5,9 @@ from django.shortcuts import render
 
 from rango.models import Members, Events, EventType, EventCategory, Instructors
 from rango.storeevents import storeevents
+import datetime,calendar,time
+import json
+from django.http.response import HttpResponse
 
 
 def viewmembers(request):
@@ -81,44 +84,30 @@ def get_events_json(request):
 	'it will use this data and convert into its equivalent json (keep check for no events)'
 	'return the json feed for events'
 
-	str_json='''[
-					{
-						"title": "All Day Event",
-						"start": "new Date(y, m, 1)"
-					},
-					{
-						"title": "Long Event",
-						"start": "new Date(y, m, d-5)",
-						"end": "new Date(y, m, d-2)"
-					},
-					{
-						"id": "999",
-						"title": "Repeating Event",
-						"start": "new Date(y, m, d-3, 16, 0)",
-						"allDay": "false"
-					}
-					]
-				'''
-	str_json_new='''[
-  {
-    "title": "Ceramics",
-    "id": "821",
-    "start": "2014-12-06 09:00:00",
-    "end": "2014-11-06 10:30:00"
-  },
-  {
-    "title": "Zippy",
-    "id": "822",
-    "start": "2014-11-13 10:00:00",
-    "end": "2014-11-13 11:30:00"
-  }
-]'''
-	lstEvents=list()
-	json_data=json.dumps(str_json,ensure_ascii=False)
-	json_data_new=json.dumps(str_json_new)
-	print json_data
-	'print str_json'
-	print json_data_new
-	'return HttpResponse(json_data, content_type="application/json")'
-	return HttpResponse(json_data_new, content_type="application/json")
-	'return HttpResponse(str_json, content_type="text/plain")'
+	dt_obj = datetime.datetime(2014, 12, 9, 17, 53, 59)
+	date_str1 = dt_obj.strftime("%Y-%m-%d %H:%M:%S")
+	print date_str1
+	
+	dt_obj = datetime.datetime(2014, 12, 5, 6, 0, 0)
+	date_str2 = dt_obj.strftime("%Y-%m-%d %H:%M:%S")
+	print date_str2
+	
+	dt_obj = datetime.datetime(2014, 12, 8, 6, 0, 0)
+	date_str3 = dt_obj.strftime("%Y-%m-%d %H:%M:%S")
+	print date_str3
+	
+	lst=[]
+	dct_obj={}
+	dct_obj["title"]="All day event"
+	dct_obj["start"]=date_str1
+	lst.append(dct_obj)
+
+	dct_obj2={}
+	dct_obj2["title"]="Long Event"
+	dct_obj2["start"]=date_str2
+	dct_obj2["end"]=date_str3
+	lst.append(dct_obj2)
+	
+	events_json=json.dumps(lst)
+	print "final json is ----------->",events_json
+	return HttpResponse(events_json, content_type="application/json")
