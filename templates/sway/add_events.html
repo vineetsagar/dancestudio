@@ -1,0 +1,186 @@
+{% extends "bs_base.html" %}
+{% load staticfiles %}
+<!-- this for including anything in head tag -->
+{% block head%}
+<link href="{% static 'jquery/jquery.timepicker.css' %}" rel="stylesheet">
+<link href="{% static 'jquery/jquery.datetimepicker.css' %}" rel="stylesheet">
+<script src="{% static 'jquery/jquery.timepicker.js' %}"></script> 	 	
+<script src="{% static 'jquery/jquery.datetimepicker.js' %}"></script>
+{% endblock%}
+
+<!-- all the content that will go into body tag -->
+{% block container %}
+<form action="{% url 'saveevents'  %}" method="POST" role="form">
+{% csrf_token %}
+ <div  class="form-group">
+ <div >
+    <label for="eventname">Event Name</label>
+    <input type="text" class="form-control" id="eventname" placeholder="Enter event name" name="event_name">
+  </div>
+
+ <div style="margin-top:20px">
+  <label for="event_category">
+      Event Category
+    </label>
+    <select class="form-group" name="event_category" >
+ 				{% if categoryList %}
+					                {% for category in categoryList %}
+	<option value = "{{ category.event_category_name}}">{{ category.event_category_name}}</option>		                
+					                 {% endfor %}
+					        {% else %}
+					        {% endif %}
+            </select>
+</div>
+
+ <div >
+ <p id = "startDateTime" class="form-group" >
+  		 
+  		 <label for="start_date" class="form-group">
+			Start Date &nbsp;
+    	  </label>
+  		  <input  type="text" class="date start" name="start_date" />
+    	 <span>&nbsp;&nbsp;&nbsp;</span>
+    	 
+    	 <label for="start_time" class="form-group" >
+			Start Time &nbsp;
+    	</label>
+    	<input type="text" class="time start" name="start_time" id="start_time" />
+    	
+    	
+    	<br>
+    	 <label for="end_date" class="form-group">
+			End Date &nbsp;&nbsp;
+    	  </label>
+  		  <input  type="text" class="date end" name="end_date" />
+    	  <span>&nbsp;&nbsp;&nbsp;</span>
+    	  <label for="end_time" class="form-group">
+			End Time &nbsp;
+    	</label>
+    	<input type="text" class="time end" name="end_time"  id = "end_time"/>
+    </p>
+</div>
+
+
+ <div class="form-group" >
+ 
+ <label for="allDay" >
+      All Day&nbsp;
+    </label>
+     <input type="checkbox" name="all_day" id="all_day" onclick="javascript:hideTime()">
+     <label for="repeat" >
+     &nbsp;&nbsp;Repeat&nbsp;
+    </label>
+     <input type="checkbox" name="repeat" id="repeat_checkbox" onclick="javascript:showRepeatOptions()">
+</div>
+       <div style="margin-left:16px;display:none" class="form-group" id = "repeatOptions">
+       <table class="row" >
+       <tbody>
+	       <tr >
+	       <th>Repeats:</th>
+	       <td>
+	       <select id="selectpicker" name="eventType" title="Repeats Weekly"  onchange="selectRepeats()" >
+
+				{% if eventList %}
+					{% for event in eventList %}
+							{% if event.event_type_name == 'Daily' %}
+								<option value = "{{ event.event_type_name}}" selected >{{ event.event_type_name}}</option>
+								{% else %}		  
+								   {% if event.event_type_name != 'Once' %}
+								   <option value = "{{ event.event_type_name}}"  >{{ event.event_type_name}}</option>
+								   {% endif%}   
+								{% endif%}           
+					                 {% endfor %}
+					    	    {% else %}
+					        {% endif %}
+	        <!--
+	       <option value="0" title="Daily">Daily</option>
+	       <option value="1" title="Weekly">Weekly</option>
+	       <option value="2" title="Monthly">Monthly</option>
+	       <option value="0" title="Daily">Daily</option>
+	       <option value="1" title="Weekly">Weekly</option>
+	       <option value="2" title="Monthly">Monthly</option>
+	       <option value="1" title="Every weekday (Monday to Friday)">Every weekday (Monday to Friday)</option>
+	       <option value="2" title="Every Monday, Wednesday and Friday">Every Monday, Wednesday and Friday</option>
+	       <option value="3" title="Every Tuesday and Thursday">Every Tuesday and Thursday</option>
+	       <option value="6" title="Yearly">Yearly</option>-->
+	       </select>
+	       </td>
+	       </tr>
+       <tr  >
+       <th  >Repeat every:</th>
+	       <td  >
+		       <select id="frequency" name='frequency' title="Repeat every 1 weeks" class="form-group" >
+		       <option value="1">1</option>
+		       <option value="2">2</option>
+		       <option value="3">3</option>
+		       <option value="4">4</option>
+		       <option value="5">5</option>
+		       <option value="6">6</option>
+		       <option value="7">7</option>
+		       <option value="8">8</option>
+		       <option value="9">9</option>
+		       <option value="10">10</option>
+		       <option value="11">11</option>
+		       <option value="12">12</option>
+		       <option value="13">13</option>
+		       <option value="14">14</option>
+		       <option value="15">15</option>
+		       <option value="16">16</option>
+		       <option value="17">17</option>
+		       <option value="18">18</option>
+		       <option value="19">19</option>
+		       <option value="20">20</option>
+		       <option value="21">21</option>
+		       <option value="22">22</option>
+		       <option value="23">23</option>
+		       <option value="24">24</option>
+		       <option value="25">25</option>
+		       <option value="26">26</option>
+		       <option value="27">27</option>
+		       <option value="28">28</option>
+		       <option value="29">29</option>
+		       <option value="30">30</option>
+		       </select>
+	       <label id ="repeat_every_label" class="form-group" >days</label>
+	       </td>
+       </tr>
+       <tr >
+       			<th></th>
+       			<td id="toreplace" ><td>
+       </tr>
+       <tr>
+	       <th >Ends:</th>
+	       <td  >
+	       <div >
+			       <input  id=":2l.endson_never" name="endTimeGroup" value="never" type="radio" checked="" aria-label="Ends never" title="Ends never">
+			       <label for=":2l.endson_never" title="Ends never"  >Never</label>
+			       <input id=":2l.endson_count" name="endTimeGroup" value="after" type="radio" aria-label="Ends after a number of occurrences" title="Ends after a number of occurrences" >
+			       <label for=":2l.endson_count" title="Ends after a number of occurrences"  >After 
+			       	<input id="after_input" name="occurrencesEndsValue" size="3" value="" title="Occurrences"  > occurrences
+			       </label>
+	       <span >
+		       <input id=":2l.endson_until" name="endTimeGroup" value="on" type="radio" aria-label="Ends on a specified date" title="Ends on a specified date" >
+		       <label for=":2l.endson_until" title="Ends on a specified date"  >On 
+				<input type="text" id="datepicker1" name="endsOnValue" >
+		       </label>
+	       </span>
+	       </div>
+	       </td>
+       </tr>
+       </tbody>
+       </table>
+       </div>
+<input type="submit" class="form-group">
+</form>
+
+{% endblock %}
+	
+
+
+{% block script %}
+
+<!-- scripts for repeat event window -->
+<script src="{% static 'events/events.js' %}"></script> 	 	
+
+
+{% endblock%}

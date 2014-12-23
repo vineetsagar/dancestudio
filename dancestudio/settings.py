@@ -26,7 +26,7 @@ TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 
-LOGIN_REDIRECT_URL = '/rango/members'
+LOGIN_REDIRECT_URL = '/sway/members'
 
 TEMPLATE_PATH = os.path.join(BASE_DIR, 'templates')
 TEMPLATE_DIRS = [
@@ -43,7 +43,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media') # Absolute path to the media direct
 
 INSTALLED_APPS = (
     'django.contrib.admin',
-    'rango',
+    'sway',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -101,4 +101,4 @@ STATICFILES_DIRS = (
     STATIC_PATH,
 )
 
-LOGIN_URL='/rango/members/login'
+LOGIN_URL='/sway/members/login'

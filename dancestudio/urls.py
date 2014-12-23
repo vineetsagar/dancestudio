@@ -4,8 +4,8 @@ from django.conf import settings
 
 urlpatterns = patterns('',
     			url(r'^admin/', include(admin.site.urls)),
-			url(r'^rango/', include('rango.urls')),
-            url(r'^rango/members/', include('rango.urls')),
+			url(r'^sway/', include('sway.urls')),
+            url(r'^sway/members/', include('sway.urls')),
 		      )
 if settings.DEBUG:
     urlpatterns += patterns(
