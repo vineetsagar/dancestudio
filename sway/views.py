@@ -1,7 +1,9 @@
 
 from datetime import date
 import datetime
+from dateutil.relativedelta import relativedelta
 import json
+import math
 
 from django.core.urlresolvers import reverse
 from django.http.response import HttpResponse
@@ -81,45 +83,157 @@ def show_dashboard(request):
 	'render the page now'
 	return render(request, 'sway/dashboard.html', None)
 
+def onceEvents(event):
+	dct_obj2={}
+	id
+	dct_obj2["id"]=event.id
+	dct_obj2["title"]=event.event_name.encode("ascii", "ignore")
+	dct_obj2["start"]=datetime.datetime.combine(event.start_date,event.start_time).strftime("%Y-%m-%d %H:%M")
+	dct_obj2["end"]=datetime.datetime.combine(event.end_date,event.end_time).strftime("%Y-%m-%d %H:%M")
+	dct_obj2["allDay"]=event.all_day
+	return dct_obj2
+
+
+def otherEvents(event, todaysDate):
+	dct_obj2={}
+	dct_obj2["id"]=event.id
+	dct_obj2["title"]=event.event_name.encode("ascii", "ignore")
+	dct_obj2["start"]=datetime.datetime.combine(todaysDate,event.start_time).strftime("%Y-%m-%d %H:%M")
+	dct_obj2["end"]=datetime.datetime.combine(todaysDate,event.end_time).strftime("%Y-%m-%d %H:%M")
+	dct_obj2["allDay"]=event.all_day
+	return dct_obj2
+
+
+def leftSide(p_start_date, p_end_date, e_start_date, e_end_date):
+	return p_start_date < e_start_date and p_end_date > e_start_date and p_end_date < e_end_date
+
+
+def fullyCollapsed(p_start_date, p_end_date, e_start_date, e_end_date):
+	return p_start_date <= e_start_date and p_end_date >= e_end_date
+
+
+def rightSide(p_start_date, p_end_date, e_start_date, e_end_date):
+	return p_start_date > e_start_date and p_end_date > e_end_date
+
+
+def isEventOnForWeekDay(wmdValue, dayValue):
+	# 2 == Mon
+	# 3 == Tue
+	# 4 == Wed
+	# 5 == Thursday
+	# 6 == Friday
+	# 7 == Sat
+	# 8 == Sun
+	value = False
+	if dayValue == 0:
+		value = (wmdValue & int(math.pow( 2, 2 )) ) == (int(math.pow( 2, 2 )))
+	if dayValue == 1:
+		value = (wmdValue & int(math.pow( 2, 3 ) )) == (int(math.pow( 2, 3 )))
+	if dayValue == 2:
+		value = (wmdValue & int(math.pow( 2, 4 )) ) == (int(math.pow( 2, 4 )))
+	if dayValue == 3:
+		value = (wmdValue & int(math.pow( 2, 5) ) ) == (int(math.pow( 2, 5 )))
+	if dayValue == 4:
+		value = (wmdValue & int(math.pow( 2, 6 )) ) == (int(math.pow( 2, 6 )))
+	if dayValue == 5:
+		value = (wmdValue & int(math.pow( 2, 7 )) ) == (int(math.pow( 2, 7 )))
+	if dayValue == 6:
+		value = (wmdValue & int(math.pow( 2, 8 )) ) == (int(math.pow( 2, 8 )))
+	print "hello" , value
+	return value
+
 def get_events_json(request):
 	'it will get the logged in customer events from DB'
 	'it will use this data and convert into its equivalent json (keep check for no events)'
 	'return the json feed for events'
 	paramStartDate =    datetime.datetime.strptime(request.GET.get("start"), "%Y-%m-%d")
-   	paramEndDate =    datetime.datetime.strptime(request.GET.get("end"), "%Y-%m-%d")
+	paramEndDate =    datetime.datetime.strptime(request.GET.get("end"), "%Y-%m-%d")
+	p_start_date =  paramStartDate.replace(hour=0, minute=0, second=0, microsecond=0)
+	p_end_date =  paramEndDate.replace(hour=0, minute=0, second=0, microsecond=0)
+	
 	lst=[]
 	allEvents = Events.objects.order_by('-id')
-	
+	# need to change event_type_id direct mapping with id, rather we should equate it on basis of its name
 	for event in allEvents:
+			# there can be 3 cases 
+			#  CASE 1 event partially collapsed (LEFT SIDE) with passed date range
+			#  CASE 2 event partially collapsed (RIGHT SIDE) with passed date range
+			#  CASE 3 event fully collapsed  with passed date range
+				
 			if event.event_type_id == 1:
-				dct_obj2={}
-				dct_obj2["title"]=event.event_name.encode("ascii", "ignore")
-				dct_obj2["start"]=datetime.datetime.combine(event.start_date,event.start_time).strftime("%Y-%m-%d %H:%M")
-				dct_obj2["end"]=datetime.datetime.combine(event.end_date,event.end_time).strftime("%Y-%m-%d %H:%M")
-				lst.append(dct_obj2)
+				lst.append(onceEvents(event))
 			elif event.event_type_id==2:
 				#  we need to handle three cases here of end_date
 				# wmd , first bit value should be on i.e wmd ==1
+				
 				eventOccurenceValue  = event.eventoccurence
 				startDate = datetime.datetime.strptime(str(eventOccurenceValue.eo_start_date), "%Y-%m-%d")
 				endDate = datetime.datetime.strptime(str(eventOccurenceValue.eo_end_date), "%Y-%m-%d")
-				print(eventOccurenceValue.eo_start_date)
-				print(eventOccurenceValue.eo_end_date)
-				
-				# CASE 1 : if paramstartdate less than event startdate and paramenddate greater than startdate but less than or equal to event enddate
-				# which implies it partialy match
-				#handling case 1
-				
-				if (paramStartDate.replace(hour=0, minute=0, second=0, microsecond=0) <= startDate.replace(hour=0, minute=0, second=0, microsecond=0) and paramEndDate.replace(hour=0, minute=0, second=0, microsecond=0) > startDate.replace(hour=0, minute=0, second=0, microsecond=0) and paramEndDate.replace(hour=0, minute=0, second=0, microsecond=0) <= endDate.replace(hour=0, minute=0, second=0, microsecond=0)):
-					print("Partial collapse left side")
-				# CASE 2: if paramstartdate greater or equal to event startdate  
-				elif (paramStartDate.replace(hour=0, minute=0, second=0, microsecond=0) >= startDate.replace(hour=0, minute=0, second=0, microsecond=0) and paramEndDate.replace(hour=0, minute=0, second=0, microsecond=0) <= endDate.replace(hour=0, minute=0, second=0, microsecond=0) ):
-					print("Fully collapse or contain within event start-end period")
-				elif(paramStartDate.replace(hour=0, minute=0, second=0, microsecond=0) >= startDate.replace(hour=0, minute=0, second=0, microsecond=0) and  paramEndDate.replace(hour=0, minute=0, second=0, microsecond=0) >= endDate.replace(hour=0, minute=0, second=0, microsecond=0)):
-					print("Partially collapse right side")
+				e_start_date = startDate.replace(hour=0, minute=0, second=0, microsecond=0)
+				e_end_date = endDate.replace(hour=0, minute=0, second=0, microsecond=0)
+				if (leftSide(p_start_date, p_end_date, e_start_date, e_end_date)):
+					# CASE 1
+					todaysDate = e_start_date
+					while (todaysDate <= p_end_date):
+						## add a event here 
+						lst.append(otherEvents(event, todaysDate))
+						todaysDate = todaysDate+ relativedelta(days=1)
+				elif (fullyCollapsed(p_start_date, p_end_date, e_start_date, e_end_date) ):
+					#CASE 3
+					todaysDate = e_start_date
+					while (todaysDate <= e_end_date and todaysDate <= p_end_date):
+						## add a event here 
+						lst.append(otherEvents(event, todaysDate))
+						todaysDate = todaysDate+ relativedelta(days=1)
+				elif(rightSide(p_start_date, p_end_date, e_start_date, e_end_date)):
+					#CASE 2
+					todaysDate = p_start_date
+					while (todaysDate <= p_end_date):
+						## add a event here 
+						lst.append(otherEvents(event, todaysDate))
+						todaysDate = todaysDate+ relativedelta(days=1)
 					
 			elif event.event_type_id ==3:
-				print("Weekly Event")
+				eventOccurenceValue  = event.eventoccurence
+				event_occ_wmd = eventOccurenceValue.wmd
+				print "Weekly Event ", event_occ_wmd
+				startDate = datetime.datetime.strptime(str(eventOccurenceValue.eo_start_date), "%Y-%m-%d")
+				endDate = datetime.datetime.strptime(str(eventOccurenceValue.eo_end_date), "%Y-%m-%d")
+				e_start_date = startDate.replace(hour=0, minute=0, second=0, microsecond=0)
+				e_end_date = endDate.replace(hour=0, minute=0, second=0, microsecond=0)
+				
+				# we need to find out on which days this event has been on
+				print "week day " ;
+				# 0 is monday and 6 is sunday
+				todaysDate = e_start_date
+				if (leftSide(p_start_date, p_end_date, e_start_date, e_end_date)):
+					# CASE 1
+					print 'left side'
+					todaysDate = e_start_date
+					while (todaysDate <= p_end_date):
+						## add a event here 
+						if(isEventOnForWeekDay(event_occ_wmd, todaysDate.weekday())):
+							print "adding event now"
+							lst.append(otherEvents(event, todaysDate))
+						todaysDate = todaysDate+ relativedelta(days=1)
+				elif (fullyCollapsed(p_start_date, p_end_date, e_start_date, e_end_date) ):
+					#CASE 3
+					todaysDate = e_start_date
+					print 'fully side'
+					while (todaysDate <= e_end_date and todaysDate <= p_end_date):
+						## add a event here 
+						if(isEventOnForWeekDay(event_occ_wmd, todaysDate.weekday())):
+							lst.append(otherEvents(event, todaysDate))
+						todaysDate = todaysDate+ relativedelta(days=1)
+				elif(rightSide(p_start_date, p_end_date, e_start_date, e_end_date)):
+					#CASE 2
+					print 'right side'
+					todaysDate = p_start_date
+					while (todaysDate <= p_end_date):
+						## add a event here 
+						if(isEventOnForWeekDay(event_occ_wmd, todaysDate.weekday())):
+							lst.append(otherEvents(event, todaysDate))
+						todaysDate = todaysDate+ relativedelta(days=1)
 			elif event.event_type_id ==4:
 				print("Monthly Event")
 	

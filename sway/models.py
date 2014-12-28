@@ -1,7 +1,8 @@
 from datetime import datetime
-
-from django.db import models
 from scipy.special.lambertw import __str__
+
+from django.contrib.auth.models import User
+from django.db import models
 
 
 # Create your models here.
@@ -68,6 +69,20 @@ class EventsInstructors(models.Model):
     instructors_id = models.ForeignKey(Instructors)
     def __unicode__(self):
             return self.pk
+        
+class Studio(models.Model):
+    studio_name = models.CharField(max_length = 128)
+    studio_contact = models.CharField(max_length = 255)
+    studio_logo = models.CharField(max_length = 255)
+    studio_phone = models.CharField(max_length = 128)
+    def __unicode__(self):
+            return self.pk
+
+class StudioUser(models.Model):
+    user = models.OneToOneField(User)
+    studio_id = models.ForeignKey(Studio)    
+    def __unicode__(self):
+            return self.pk  
     
     
         
