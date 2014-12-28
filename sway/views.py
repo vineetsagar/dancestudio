@@ -10,7 +10,7 @@ from django.http.response import HttpResponse
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
 
-from sway.models import Members, Events, EventType, EventCategory, Instructors, EventOccurence
+from sway.models import Members, Events, EventType, EventCategory, Instructors
 from sway.storeevents import storeevents
 
 
@@ -26,10 +26,10 @@ def viewevents(request):
 
 
 def home(request):
-	return render(request, 'sway/home.html')
+	return render(request, 'sway/index.html')
 
 def index(request):
-	return show_dashboard(request)
+	return home(request)
 
 
 def addmembers(request):
@@ -139,7 +139,6 @@ def isEventOnForWeekDay(wmdValue, dayValue):
 		value = (wmdValue & int(math.pow( 2, 7 )) ) == (int(math.pow( 2, 7 )))
 	if dayValue == 6:
 		value = (wmdValue & int(math.pow( 2, 8 )) ) == (int(math.pow( 2, 8 )))
-	print "hello" , value
 	return value
 
 def get_events_json(request):
@@ -196,30 +195,25 @@ def get_events_json(request):
 			elif event.event_type_id ==3:
 				eventOccurenceValue  = event.eventoccurence
 				event_occ_wmd = eventOccurenceValue.wmd
-				print "Weekly Event ", event_occ_wmd
 				startDate = datetime.datetime.strptime(str(eventOccurenceValue.eo_start_date), "%Y-%m-%d")
 				endDate = datetime.datetime.strptime(str(eventOccurenceValue.eo_end_date), "%Y-%m-%d")
 				e_start_date = startDate.replace(hour=0, minute=0, second=0, microsecond=0)
 				e_end_date = endDate.replace(hour=0, minute=0, second=0, microsecond=0)
 				
 				# we need to find out on which days this event has been on
-				print "week day " ;
 				# 0 is monday and 6 is sunday
 				todaysDate = e_start_date
 				if (leftSide(p_start_date, p_end_date, e_start_date, e_end_date)):
 					# CASE 1
-					print 'left side'
 					todaysDate = e_start_date
 					while (todaysDate <= p_end_date):
 						## add a event here 
 						if(isEventOnForWeekDay(event_occ_wmd, todaysDate.weekday())):
-							print "adding event now"
 							lst.append(otherEvents(event, todaysDate))
 						todaysDate = todaysDate+ relativedelta(days=1)
 				elif (fullyCollapsed(p_start_date, p_end_date, e_start_date, e_end_date) ):
 					#CASE 3
 					todaysDate = e_start_date
-					print 'fully side'
 					while (todaysDate <= e_end_date and todaysDate <= p_end_date):
 						## add a event here 
 						if(isEventOnForWeekDay(event_occ_wmd, todaysDate.weekday())):
@@ -227,7 +221,6 @@ def get_events_json(request):
 						todaysDate = todaysDate+ relativedelta(days=1)
 				elif(rightSide(p_start_date, p_end_date, e_start_date, e_end_date)):
 					#CASE 2
-					print 'right side'
 					todaysDate = p_start_date
 					while (todaysDate <= p_end_date):
 						## add a event here 
