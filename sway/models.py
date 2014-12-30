@@ -1,5 +1,5 @@
 from datetime import datetime
-from scipy.special.lambertw import __str__
+#from scipy.special.lambertw import __str__
 
 from django.contrib.auth.models import User
 from django.db import models
