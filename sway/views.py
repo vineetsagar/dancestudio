@@ -1,10 +1,10 @@
 
-from datetime import date
 import datetime
 from dateutil.relativedelta import relativedelta
 import json
 import math
 
+from django.contrib.auth import authenticate, login
 from django.core.urlresolvers import reverse
 from django.http.response import HttpResponse
 from django.http.response import HttpResponseRedirect
@@ -14,6 +14,21 @@ from sway.models import Members, Events, EventType, EventCategory, Instructors
 from sway.storeevents import storeevents
 
 
+def loginAuth(request):
+	print "request for authenticate"
+	data={}
+	if request.method == 'POST':
+		username = request.POST['username']
+		password = request.POST['password']
+		user = authenticate(username=username, password=password)
+		if (not user is None) and (user.is_active):
+			login(request, user)
+			data['success'] = "/sway/dashboard"
+		else:
+			data['error'] = "There was an error logging you in. Please Try again"
+		print 'data ', data
+		return HttpResponse(json.dumps(data), content_type="application/json")
+
 def viewmembers(request):
 	members = Members.objects.order_by('-id')[:10]
 	context_dict = {'membersList': members}
@@ -21,7 +36,9 @@ def viewmembers(request):
 
 def viewevents(request):
 	events = Events.objects.order_by('-id')[:10]
-	context_dict = {'eventsList': events}
+	event_type = EventType.objects.order_by('-id')
+	category_type = EventCategory.objects.order_by('-id')
+	context_dict = {'eventsList': events, 'eventList':event_type, 'categoryList':category_type}
 	return render(request, 'sway/events.html', context_dict)
 
 
