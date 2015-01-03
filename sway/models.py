@@ -84,7 +84,15 @@ class StudioUser(models.Model):
     def __unicode__(self):
             return self.pk  
     
-    
-        
-        
-        
+
+class Lead(models.Model):    
+      name =  models.CharField(max_length = 128)
+      contact_detail = models.CharField(max_length = 255)
+      email = models.CharField(max_length = 128)
+      mobile = models.CharField(max_length = 128)  
+
+class LeadFollowUp(models.Model):    
+      lead_id = models.ForeignKey(Lead)
+      notes = models.CharField(max_length = 255)
+      followed_by = models.ForeignKey(User)
+      followed_date = models.DateField(default=datetime.now())        
