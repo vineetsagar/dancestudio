@@ -20,7 +20,7 @@
 					                {% for events in eventsList %}
 					                   <tr>
 					      <th scope="row">{{ events.id }}</th>
-					      <td>{{ events.event_name }}</td>
+					      <td><a href="editevents?id={{events.id}}">{{ events.event_name }}</a></td>
 					      <td>{{ events.start_date }}</td>
 					      <td>{{ events.end_date }}</td>
 					      <td>{{ events.start_time }}</td>
@@ -34,7 +34,7 @@
 					</table>
 			
 					  <div id="Buttonset2">
-					    <button id="Button3"><a href="/sway/addevents">Add Event</a></button>
+					    <button id="Button3" class="btn btn-primary"><a href="/sway/addevents" >Add Event</a></button>
 					  </div>
 		</section>
 <script type="text/javascript">
