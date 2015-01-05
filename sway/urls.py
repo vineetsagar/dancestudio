@@ -20,5 +20,6 @@ urlpatterns=patterns('',
    		 url(r'^events_json/$', views.get_events_json, name='get_event_json'),
    		 url(r'^loginAuth/$', views.loginAuth, name='loginAuth'),
    		 url(r'^enquiries/$', views.view_enquiries, name='enquiries'),
+   		 url(r'^followups/$', views.view_followups, name='followups'),
 
 		)

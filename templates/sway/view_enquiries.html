@@ -22,7 +22,7 @@
 									      <td>{{ lead.email }}</td>
 									      <td>{{ lead.mobile }}</td>
 									      <td>{{ lead.contact_detail }}</td>
-									      <td><a href="/sway/view_followups">View Follow Ups</a></td>
+									      <td><a href="/sway/followups?lead={{lead.id}}">View Follow Ups</a></td>
 								      </tr>
 					                {% endfor %}
 							{% endif %}

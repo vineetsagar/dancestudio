@@ -90,10 +90,12 @@ class Lead(models.Model):
       contact_detail = models.CharField(max_length = 255)
       email = models.CharField(max_length = 128)
       mobile = models.CharField(max_length = 128)
-        
+      studio = models.ForeignKey(Studio) 
+         
 
 class LeadFollowUp(models.Model):    
-      lead_id = models.ForeignKey(Lead)
+      lead = models.ForeignKey(Lead)
       notes = models.CharField(max_length = 255)
       followed_by = models.ForeignKey(User)
-      followed_date = models.DateField(default=datetime.now())        
+      followed_date = models.DateField(default=datetime.now())
+      

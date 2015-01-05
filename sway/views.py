@@ -259,7 +259,8 @@ def view_enquiries(request):
 	return render(request, 'sway/view_enquiries.html', context_dict)
 
 def view_followups(request):
-	followups = LeadFollowUp.objects.order_by('followed_date')
+	leadId = request.GET.get('lead')
+	followups = LeadFollowUp.objects.filter(lead=leadId)
 	context_dict = {'followups': followups}
 	return render(request, 'sway/view_followups.html', context_dict)	
 
