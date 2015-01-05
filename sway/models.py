@@ -1,10 +1,12 @@
 from datetime import datetime
-#from scipy.special.lambertw import __str__
 
 from django.contrib.auth.models import User
 from django.db import models
+from django.forms.models import ModelForm
+from django.template.defaultfilters import default
 
 
+#from scipy.special.lambertw import __str__
 # Create your models here.
 class Category(models.Model):
     name = models.CharField(max_length=128, unique=True)
@@ -52,6 +54,15 @@ class EventOccurence(models.Model):
     wmd = models.IntegerField(default=0)
     eo_start_date = models.DateField(default=datetime.now())    
     eo_end_date = models.DateField(default=datetime.now())
+    
+    # adding following colomns for ui
+    e_never = models.BooleanField(default=False)
+    
+    e_after = models.BooleanField(default=False)
+    e_after_value = models.IntegerField(default=0)
+    
+    e_on = models.BooleanField(default=False)
+    e_on_value = models.DateField(default=datetime.now())
 
     def __unicode__(self):
             return str(self.pk)

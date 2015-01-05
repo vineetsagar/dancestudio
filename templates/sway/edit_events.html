@@ -10,7 +10,7 @@
 
 <!-- all the content that will go into body tag -->
 {% block container %}
-<form action="{% url 'saveevents'  %}" method="POST" role="form">
+<form action="{% url 'updateevents'   %}" method="POST" role="form">
 {% csrf_token %}
 <div  class="form-group">
  	<div class="form-group">
@@ -25,59 +25,65 @@
     {{ form.event_category }}
   </div>
   
+  <input type='hidden' value="{{ event.id}}" name="event_id"/>
   
-		 <div  class="col"  >
-		 
-		 <table class=' table-condensed '>
-		    <tr>
-		        <td>	<div  class="form-group" >
-		 	 {{ form.start_date.errors }}
-		 	 <label for="{{ form.start_date.id_for_label }}">Start Date:</label>
-		    {{ form.start_date }}
-		  </div></td>
-		        <td><div  class="form-group" >
-		 	 {{ form.start_time.errors }}
-		 	 <label for="{{ form.start_time.id_for_label }}">Start Time:</label>
-		    {{ form.start_time }}
-		  </div></td>
-		    </tr>
-		    <tr>
-		        <td>	<div  class="form-group" >
-		 	 {{ form.end_date.errors }}
-		 	 <label for="{{ form.end_date.id_for_label }}">End Date:</label>
-		    {{ form.end_date }}
-		  </div></td>
-		        <td><div  class="form-group" >
-		 	 {{ form.end_time.errors }}
-		 	 <label for="{{ form.end_time.id_for_label }}">End Time:</label>
-		    {{ form.end_time }}
-		  </div></td>
-		    </tr>
-		</table>
-		  
-		</div>
+  
+ <div  class="col"  >
+ 
+ <table class=' table-condensed '>
+    <tr>
+        <td>	<div  class="form-group" >
+ 	 {{ form.start_date.errors }}
+ 	 <label for="{{ form.start_date.id_for_label }}">Start Date:</label>
+    {{ form.start_date }}
+  </div></td>
+        <td><div  class="form-group" >
+ 	 {{ form.start_time.errors }}
+ 	 <label for="{{ form.start_time.id_for_label }}">Start Time:</label>
+    {{ form.start_time }}
+  </div></td>
+    </tr>
+    <tr>
+        <td>	<div  class="form-group" >
+ 	 {{ form.end_date.errors }}
+ 	 <label for="{{ form.end_date.id_for_label }}">End Date:</label>
+    {{ form.end_date }}
+  </div></td>
+        <td><div  class="form-group" >
+ 	 {{ form.end_time.errors }}
+ 	 <label for="{{ form.end_time.id_for_label }}">End Time:</label>
+    {{ form.end_time }}
+  </div></td>
+    </tr>
+</table>
 
-		<div  class="col"  >
-		 
-				 <table class=' table-condensed '>
-				    <tr>
-				        <td>	<div  >
-				 	 {{ form.all_day.errors }}
-				 	 <label for="{{ form.all_day.id_for_label }}">All Day:</label>
-				    {{ form.all_day }}
-				  </div></td>
-				        <td><div   >
-				 	 {{ form.repeat.errors }}
-				 	 <label for="{{ form.repeat.id_for_label }}">Repeat:</label>
-				    {{ form.repeat }}
-				  </div></td>
-				    </tr>
-				</table>
-		
-		  
-		</div>
-		
-		<table>
+  
+</div>
+
+<div  class="col"  >
+ 
+ <table class=' table-condensed '>
+   
+    <tr>
+        <td>	<div  >
+ 	 {{ form.all_day.errors }}
+ 	 <label for="{{ form.all_day.id_for_label }}">All Day:</label>
+    {{ form.all_day }}
+  </div></td>
+        <td><div   >
+ 	 {{ form.repeat.errors }}
+ 	 <label for="{{ form.repeat.id_for_label }}">Repeat:</label>
+ 	 
+    {{ form.repeat }}
+  </div></td>
+    </tr>
+</table>
+
+  
+</div>
+</div>
+<div>
+ <table>
 			<tr>
 				<td>
 				
@@ -141,20 +147,16 @@
 							</div>
 				</td>
 			</tr>
-		</table>
-	
-		<div>
+			<tr><td>	<div>
 		<input type="submit"  class="btn btn-primary" value = "Save">      
-	</div>
-	
-</div>
- 
+	</div></td><tr>
+		</table>
+		</div>
 </form>
 
 
 {% endblock %}
 	
-
 
 {% block script %}
 

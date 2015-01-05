@@ -8,11 +8,34 @@ from django.contrib.auth import authenticate, login
 from django.core.urlresolvers import reverse
 from django.http.response import HttpResponse
 from django.http.response import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, render_to_response
+from django.template.context import RequestContext
 
+from sway.events.event_forms_helper import getForm, getEventForm, \
+	setFormDefaultCssAndPlaceHolder
+from sway.forms import EventsForm
 from sway.models import Members, Events, EventType, EventCategory, Instructors
-from sway.storeevents import storeevents
+from sway.storeevents import storeevents, updateEvents
 
+
+def addevents(request):
+	if request.method =='GET':
+		form = getForm()
+		event_type = EventType.objects.order_by('-id')
+		return render_to_response("sway/add_events.html", { "form": form,'eventList':event_type,}, context_instance=RequestContext(request))
+
+def editevents(request):
+	pId =  request.GET.get('id')
+	event = Events.objects.get(pk=pId)
+	#01/02/2015  -> in this format wanted
+	#2015-01-06 --> actual
+	event.start_date = datetime.datetime.strptime(str(event.start_date), '%Y-%m-%d').strftime('%m/%d/%y')
+	event.end_date = datetime.datetime.strptime(str(event.end_date), '%Y-%m-%d').strftime('%m/%d/%y')
+	event_type = EventType.objects.order_by('-id')
+	category_type = EventCategory.objects.order_by('-id')
+	form = getEventForm(event)
+	context_dict = {'eventList':event_type, 'categoryList':category_type , 'form':form, 'event': event}
+	return render(request, 'sway/edit_events.html', context_dict)
 
 def loginAuth(request):
 	print "request for authenticate"
@@ -41,7 +64,6 @@ def viewevents(request):
 	context_dict = {'eventsList': events, 'eventList':event_type, 'categoryList':category_type}
 	return render(request, 'sway/events.html', context_dict)
 
-
 def home(request):
 	return render(request, 'sway/index.html')
 
@@ -63,15 +85,22 @@ def savemembers(request):
 	context_dict = {'membersList': category_list}
 	return render(request, 'sway/members.html', context_dict)	
 
-
-def addevents(request):
-	event_type = EventType.objects.order_by('-id')
-	category_type = EventCategory.objects.order_by('-id')
-	context_dict = {'eventList':event_type, 'categoryList':category_type}
-	return render(request, 'sway/add_events.html', context_dict)
-
 def saveevents(request):
-	storeevents(request)
+	if request.method == "POST":
+		form = EventsForm(request.POST)
+		if form.is_valid():
+			storeevents(request)
+		else:
+			print "invalid form"	
+			event_type = EventType.objects.order_by('-id')
+			setFormDefaultCssAndPlaceHolder(form)
+			return render_to_response("sway/add_events.html", { "form": form,'eventList':event_type,}, context_instance=RequestContext(request))		
+	# now redirect this request to events view
+	return HttpResponseRedirect(reverse("events"))
+
+
+def updateEvent(request):
+	updateEvents(request)
 	# now redirect this request to events view
 	return HttpResponseRedirect(reverse("events"))
 
@@ -106,7 +135,7 @@ def onceEvents(event):
 	dct_obj2["id"]=event.id
 	dct_obj2["title"]=event.event_name.encode("ascii", "ignore")
 	dct_obj2["start"]=datetime.datetime.combine(event.start_date,event.start_time).strftime("%Y-%m-%d %H:%M")
-	dct_obj2["end"]=datetime.datetime.combine(event.end_date,event.end_time).strftime("%Y-%m-%d %H:%M")
+	dct_obj2["end"]=datetime.datetime.combine(event.end_date, event.start_time).strftime("%Y-%m-%d %H:%M")	
 	dct_obj2["allDay"]=event.all_day
 	return dct_obj2
 
@@ -169,6 +198,7 @@ def get_events_json(request):
 	
 	lst=[]
 	allEvents = Events.objects.order_by('-id')
+	
 	# need to change event_type_id direct mapping with id, rather we should equate it on basis of its name
 	for event in allEvents:
 			# there can be 3 cases 
@@ -181,7 +211,6 @@ def get_events_json(request):
 			elif event.event_type_id==2:
 				#  we need to handle three cases here of end_date
 				# wmd , first bit value should be on i.e wmd ==1
-				
 				eventOccurenceValue  = event.eventoccurence
 				startDate = datetime.datetime.strptime(str(eventOccurenceValue.eo_start_date), "%Y-%m-%d")
 				endDate = datetime.datetime.strptime(str(eventOccurenceValue.eo_end_date), "%Y-%m-%d")

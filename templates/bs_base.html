@@ -35,7 +35,7 @@
 <body>
 
     <!-- Navigation -->
-    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <nav class="navbar navbar-fixed-top navbar-inverse" role="navigation">
         <div class="container">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
@@ -50,10 +50,10 @@
                 </a>
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <div class="collapse navbar-collapse" id="top_level_navigation">
                 {% block navigation %}
              
-                <ul class="nav navbar-nav">
+                <ul class="nav navbar-nav ">
                 	<li>
                      <a href="/sway/dashboard">Dashboard</a>
                     </li>
@@ -67,7 +67,6 @@
                         <a href="/sway/instructors">Instructors</a>
                     </li>
               	</ul>
-
 				<ul class="nav navbar-nav navbar-right" >
 							 {% if user.is_anonymous %}
 							     <li class="dropdown" ><a href="{% url 'django.contrib.auth.views.login' %}" title="Login" >Login</a></li>
@@ -77,10 +76,11 @@
 									  			<i class="fa fa-star text-yellow"></i> {{user.username}} 
 									  			<b class="caret"></b>
 								  			</a>
-								  			<ul class="dropdown-menu">
+								  			<ul class="dropdown-menu" role="menu">
 								  			  <li>
 						                            <a href="#">My Account</a>
 						                        </li>
+						                         <li class="divider"></li>
 						                        <li>
 						                            <a href="{% url 'django.contrib.auth.views.logout' %}" title="Logout">Logout</a>
 						                        </li>
@@ -89,6 +89,7 @@
 							      {% endif %}
 					   	 
 				   	  </ul>
+				   	  
 		               {% endblock %}
             </div>
             <!-- /.navbar-collapse -->
