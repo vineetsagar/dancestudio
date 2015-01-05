@@ -23,5 +23,6 @@ urlpatterns=patterns('',
        url(r'^enquire/$', views.add_lead, name='addLead'),
 		 url(r'^followups/$', views.view_followups, name='followups'),
        url(r'^save_enquiry/$', views.save_enquiry, name='save_enquiry'),
-
+       url(r'^followup/$', views.followup, name='followup'),
+       url(r'^save_followup/$', views.save_followup, name='save_followup'),
 		)

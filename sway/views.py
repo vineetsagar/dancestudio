@@ -288,14 +288,12 @@ def view_enquiries(request):
 	return render(request, 'sway/view_enquiries.html', context_dict)
 
 def add_lead(request):
-	leads = Lead.objects.order_by('-id')
-	context_dict = {'enquiryList': leads}
-	return render(request, 'sway/add_enquiry.html', context_dict)
+	return render(request, 'sway/add_enquiry.html', None)
 
 def view_followups(request):
 	leadId = request.GET.get('lead')
 	followups = LeadFollowUp.objects.filter(lead=leadId)
-	context_dict = {'followups': followups}
+	context_dict = {'followups': followups,'lead':leadId}
 	return render(request, 'sway/view_followups.html', context_dict)	
 
 def save_enquiry(request):
@@ -305,5 +303,17 @@ def save_enquiry(request):
 	contact = request.POST.get('contact') 
 	lead = Lead(name=name,mobile=phone,email=email,contact_detail=contact,studio=request.user.studiouser.studio_id)
 	lead.save();
-	return HttpResponseRedirect("/sway/enquiries")	
+	return HttpResponseRedirect("/sway/enquiries")
+
+def followup(request):
+	context_dict = {'lead': request.GET.get('lead')}
+	return render(request, 'sway/add_followup.html', context_dict)
+
+def save_followup(request):
+	notes = request.POST.get('notes')
+	lead = Lead.objects.filter(id=request.POST.get('lead'))[0]
+	followup = LeadFollowUp(notes=notes,followed_by=request.user,lead=lead)
+	followup.save();
+	redirectString = '/sway/followups?lead='+request.POST.get('lead')
+	return HttpResponseRedirect(redirectString)	
 
