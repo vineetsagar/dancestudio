@@ -100,7 +100,8 @@ class Lead(models.Model):
       name =  models.CharField(max_length = 128)
       contact_detail = models.CharField(max_length = 255)
       email = models.CharField(max_length = 128)
-      mobile = models.CharField(max_length = 128)  
+      mobile = models.CharField(max_length = 128)
+        
 
 class LeadFollowUp(models.Model):    
       lead_id = models.ForeignKey(Lead)

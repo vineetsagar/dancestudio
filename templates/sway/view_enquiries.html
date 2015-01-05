@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+{% extends "bs_base.html" %}
+
+{% block container %}
+		<div style="margin-top:5px">
+			<section class="ui-widget-content" id="main_widget">
+					<table class="table table-striped" id="leadTable" >
+					  <thead>
+						   <tr>
+						      <th data-priority="1" >Name</th>
+						      <th data-priority="2" >Email</th>
+						      <th data-priority="3" >Mobile</th>
+						      <th data-priority="4" >Contact Details</th>
+						      <th data-priority="4" >Action</th>
+						    </tr>
+					    </thead>
+					  	<tbody>
+					         {% if enquiryList %}
+					                {% for lead in enquiryList %}
+								      <tr>
+									      <td>{{ lead.name }}</td>
+									      <td>{{ lead.email }}</td>
+									      <td>{{ lead.mobile }}</td>
+									      <td>{{ lead.contact_detail }}</td>
+									      <td><a href="/sway/view_followups">View Follow Ups</a></td>
+								      </tr>
+					                {% endfor %}
+							{% endif %}
+					    </tbody>
+					</table>
+			
+					  <div id="Buttonset2">
+					    <button id="Button3"><a href="/sway/addlead">Add Lead</a></button>
+					  </div>
+		</section>
+	</div>	
+{% endblock %}

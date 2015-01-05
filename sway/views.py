@@ -14,7 +14,7 @@ from django.template.context import RequestContext
 from sway.events.event_forms_helper import getForm, getEventForm, \
 	setFormDefaultCssAndPlaceHolder
 from sway.forms import EventsForm
-from sway.models import Members, Events, EventType, EventCategory, Instructors
+from sway.models import Members, Events, EventType, EventCategory, Instructors, Lead, LeadFollowUp
 from sway.storeevents import storeevents, updateEvents
 
 
@@ -281,3 +281,17 @@ def get_events_json(request):
 	events_json=json.dumps(lst)
 	print "final json is ----------->",events_json
 	return HttpResponse(events_json, content_type="application/json")
+
+def view_enquiries(request):
+	leads = Lead.objects.order_by('-id')
+	context_dict = {'enquiryList': leads}
+	return render(request, 'sway/view_enquiries.html', context_dict)
+
+def view_followups(request):
+	followups = LeadFollowUp.objects.order_by('followed_date')
+	context_dict = {'followups': followups}
+	return render(request, 'sway/view_followups.html', context_dict)	
+
+def save_enquiry(request):
+		return render(request, 'sway/add_enquiry.html')	
+
