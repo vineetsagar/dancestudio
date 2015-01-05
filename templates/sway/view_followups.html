@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+{% extends "bs_base.html" %}
+
+{% block container %}
+		<div style="margin-top:5px">
+			<section class="ui-widget-content" id="main_widget">
+					<table class="table table-striped" id="followupTable" >
+					  <thead>
+						   <tr>
+						      <th data-priority="1" >Notes</th>
+						      <th data-priority="2" >Followed By</th>
+						      <th data-priority="3" >Follow Up Date</th>
+						    </tr>
+					    </thead>
+					  	<tbody>
+					         {% if enquiryList %}
+					                {% for followup in followups %}
+								      <tr>
+									      <td>{{ followup.notes }}</td>
+									      <td>{{ followup.followed_by }}</td>
+									      <td>{{ followup.followed_date }}</td>
+									      <td>{{ lead.contact_detail }}</td>
+									  </tr>
+					                {% endfor %}
+							{% endif %}
+					    </tbody>
+					</table>
+			
+					  <div id="Buttonset2">
+					    <button id="Button3"><a href="/sway/addFollowup">Add Lead</a></button>
+					  </div>
+		</section>
+	</div>	
+{% endblock %}

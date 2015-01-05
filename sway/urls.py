@@ -1,5 +1,6 @@
 from django.conf.urls import patterns, url
-
+from django.contrib import admin
+admin.autodiscover()
 from sway import views
 
 
@@ -10,8 +11,7 @@ urlpatterns=patterns('',
 		 url(r'^saveevents/$', views.saveevents, name='saveevents'),
 		 url(r'^members/$', views.viewmembers, name='members'),
 		 url(r'^addmembers/$', views.addmembers, name='add_members'),
-		 url(r'^login/$', 'django.contrib.auth.views.login'),
-   		 url(r'^logout/$', 'django.contrib.auth.views.logout' , {'next_page': '/sway/'}),
+		 	 url(r'^logout/$', 'django.contrib.auth.views.logout' , {'next_page': '/sway/'}),
    		 url(r'^savemembers/$', views.savemembers, name='savemembers'),
    		 url(r'^instructors/$', views.show_instructors, name='instructors'),
    		 url(r'^add_instructor/$', views.add_instructor, name='add_instructor'),
@@ -19,5 +19,6 @@ urlpatterns=patterns('',
    		 url(r'^dashboard/$', views.show_dashboard, name='dashboard'),
    		 url(r'^events_json/$', views.get_events_json, name='get_event_json'),
    		 url(r'^loginAuth/$', views.loginAuth, name='loginAuth'),
-   		 
+   		 url(r'^enquiries/$', views.view_enquiries, name='enquiries'),
+
 		)
