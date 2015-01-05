@@ -37,4 +37,4 @@ admin.site.register(EventCategory,EventCategoryAdmin)
 admin.site.register(EventType,EventTypeAdmin)
 admin.site.register(Events,EventsAdmin)
 admin.site.register(EventOccurence,EventOccurenceAdmin)
-admin.site.register(Lead,LeadAdmin)
+

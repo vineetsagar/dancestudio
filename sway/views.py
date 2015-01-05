@@ -287,6 +287,11 @@ def view_enquiries(request):
 	context_dict = {'enquiryList': leads}
 	return render(request, 'sway/view_enquiries.html', context_dict)
 
+def add_lead(request):
+	leads = Lead.objects.order_by('-id')
+	context_dict = {'enquiryList': leads}
+	return render(request, 'sway/add_enquiry.html', context_dict)
+
 def view_followups(request):
 	leadId = request.GET.get('lead')
 	followups = LeadFollowUp.objects.filter(lead=leadId)
@@ -294,5 +299,11 @@ def view_followups(request):
 	return render(request, 'sway/view_followups.html', context_dict)	
 
 def save_enquiry(request):
-		return render(request, 'sway/add_enquiry.html')	
+	name = request.POST.get('name')
+	email = request.POST.get('email')
+	phone = request.POST.get('phone')
+	contact = request.POST.get('contact') 
+	lead = Lead(name=name,mobile=phone,email=email,contact_detail=contact,studio=request.user.studiouser.studio_id)
+	lead.save();
+	return HttpResponseRedirect("/sway/enquiries")	
 

@@ -1,0 +1,33 @@
+{% extends "bs_base.html" %}
+{% load staticfiles %}
+<!-- this for including anything in head tag -->
+{% block head%}
+<link href="{% static 'jquery/jquery.timepicker.css' %}" rel="stylesheet">
+<link href="{% static 'jquery/jquery.datetimepicker.css' %}" rel="stylesheet">
+<script src="{% static 'jquery/jquery.timepicker.js' %}"></script> 	 	
+<script src="{% static 'jquery/jquery.datetimepicker.js' %}"></script>
+{% endblock%}
+
+<!-- all the content that will go into body tag -->
+{% block container %}
+<form action="{% url 'save_enquiry'  %}" method="POST" role="form">
+{% csrf_token %}
+  <div class="form-group">
+    <label for="name">Name:</label>
+    <input name="name" type="text" class="form-control" id="name">
+  </div>
+  <div class="form-group">
+    <label for="email">Email:</label>
+    <input name="email" type="email" class="form-control" id="email">
+  </div>
+  <div class="form-group">
+    <label for="phone">Mobile/Phone:</label>
+    <input name="phone" type="text" class="form-control" id="phone">
+  </div>
+  <div class="form-group">
+    <label for="contact">Contact:</label>
+    <textarea name="contact" class="form-control" rows="5" id="contact"></textarea>
+  </div>
+  <button type="submit" class="btn btn-default">Save</button>
+</form>
+{% endblock %}
