@@ -48,4 +48,13 @@ $(function() {
 	  		document.getElementById("weekly_repeat").style.display = 'none';
 	  	}
     });
+    
+    $(document).ready(function(){
+    	var x = document.getElementById("id_event_type").value;
+	    if(x == 3){
+	  		document.getElementById("weekly_repeat").style.display = 'block';
+	  	}else{
+	  		document.getElementById("weekly_repeat").style.display = 'none';
+	  	}
+    });
    
