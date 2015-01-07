@@ -1,165 +1,165 @@
-{% extends "bs_base.html" %}
-{% load staticfiles %}
+{% extends "bs_base.html" %} {% load staticfiles %}
 <!-- this for including anything in head tag -->
 {% block head%}
-<link href="{% static 'jquery/jquery.timepicker.css' %}" rel="stylesheet">
-<link href="{% static 'jquery/jquery.datetimepicker.css' %}" rel="stylesheet">
-<script src="{% static 'jquery/jquery.timepicker.js' %}"></script> 	 	
+<link href="{% static 'jquery/jquery.timepicker.css' %}"
+	rel="stylesheet">
+<link href="{% static 'jquery/jquery.datetimepicker.css' %}"
+	rel="stylesheet">
+<script src="{% static 'jquery/jquery.timepicker.js' %}"></script>
 <script src="{% static 'jquery/jquery.datetimepicker.js' %}"></script>
 {% endblock%}
 
 <!-- all the content that will go into body tag -->
 {% block container %}
 <form action="{% url 'saveevents'  %}" method="POST" role="form">
-{% csrf_token %}
-<div  class="form-group">
- 	<div class="form-group">
- 	 {{ form.event_name.errors }}
- 	 <label for="{{ form.event_name.id_for_label }}">Event Name:</label>
-    {{ form.event_name }}
-  </div>
-  
-  <div >
- 	 {{ form.event_category.errors }}
- 	 <label for="{{ form.event_category.id_for_label }}">Event Category:</label>
-    {{ form.event_category }}
-  </div>
-  
-  
-		 <div  class="col"  >
-		 
-		 <table class=' table-condensed '>
-		    <tr>
-		        <td>	<div  class="form-group" >
-		 	 {{ form.start_date.errors }}
-		 	 <label for="{{ form.start_date.id_for_label }}">Start Date:</label>
-		    {{ form.start_date }}
-		  </div></td>
-		        <td><div  class="form-group" >
-		 	 {{ form.start_time.errors }}
-		 	 <label for="{{ form.start_time.id_for_label }}">Start Time:</label>
-		    {{ form.start_time }}
-		  </div></td>
-		    </tr>
-		    <tr>
-		        <td>	<div  class="form-group" >
-		 	 {{ form.end_date.errors }}
-		 	 <label for="{{ form.end_date.id_for_label }}">End Date:</label>
-		    {{ form.end_date }}
-		  </div></td>
-		        <td><div  class="form-group" >
-		 	 {{ form.end_time.errors }}
-		 	 <label for="{{ form.end_time.id_for_label }}">End Time:</label>
-		    {{ form.end_time }}
-		  </div></td>
-		    </tr>
-		</table>
-		  
+	{% csrf_token %}
+	<div class="form-group">
+		<div >
+			{{ form.event_name.errors }} 
+			<label for="{{ form.event_name.id_for_label }}">Event Name:</label>
+				 {{ form.event_name }}
 		</div>
 
-		<div  class="col"  >
-		 
-				 <table class=' table-condensed '>
-				    <tr>
-				        <td>	<div  >
-				 	 {{ form.all_day.errors }}
-				 	 <label for="{{ form.all_day.id_for_label }}">All Day:</label>
-				    {{ form.all_day }}
-				  </div></td>
-				        <td><div   >
-				 	 {{ form.repeat.errors }}
-				 	 <label for="{{ form.repeat.id_for_label }}">Repeat:</label>
-				    {{ form.repeat }}
-				  </div></td>
-				    </tr>
-				</table>
-		
-		  
+		<div>
+			{{ form.event_category.errors }} <label
+				for="{{ form.event_category.id_for_label }}">Event Category:</label>
+			{{ form.event_category }}
 		</div>
-		
+
+
+		<div class="col">
+
+			<table class=' table-condensed '>
+				<tr>
+					<td>
+						<div class="form-group">
+							{{ form.start_date.errors }} <label
+								for="{{ form.start_date.id_for_label }}">Start Date:</label>
+								 {{ form.start_date }}
+						</div>
+					</td>
+					<td><div class="form-group">
+							{{ form.start_time.errors }} <label for=" {{ form.start_time.id_for_label }} ">Start Time:</label> 
+								{{ form.start_time }}
+						</div></td>
+				</tr>
+				<tr>
+					<td>
+						<div class="form-group">
+							{{ form.end_date.errors }} <label
+								for="{{ form.end_date.id_for_label }}">End Date:</label>
+								 {{form.end_date }}
+						</div>
+					</td>
+					<td><div class="form-group">
+							{{ form.end_time.errors }} <label
+								for="{{ form.end_time.id_for_label }}">End Time:</label> 
+								{{form.end_time }}
+						</div></td>
+				</tr>
+			</table>
+
+		</div>
+
+		<div class="col">
+
+			<table class=' table-condensed '>
+				<tr>
+					<td>
+						<div>
+							{{ form.all_day.errors }} <label
+								for="{{ form.all_day.id_for_label }}">All Day:</label> {{form.all_day }}
+						</div>
+					</td>
+					<td><div>
+							{{ form.repeat.errors }} <label
+								for="{{ form.repeat.id_for_label }}">Repeat:</label> {{form.repeat }}
+						</div></td>
+				</tr>
+			</table>
+
+
+		</div>
+
 		<table>
 			<tr>
 				<td>
-				
-					<div style="margin-left:16px;display:{% if not form.repeat.value%} none {% endif %}" class="form-group" id = "repeatOptions">
-				       			<table class="row" >
-					       <tbody>
-						       <tr >
-							       <th ><label for="{{ form.event_type.id_for_label }}">Repeat:</label></th>
-								       <td>
-								        {{ form.event_type.errors }}
-							    		{{ form.event_type  }}
-								       </td>
-								 </tr>
-							     <tr >
-							       			<th></th>
-							       			<td id="toreplace" ><td>
-							       </tr>
-							       <tr>
-								       <th ><label for="{{ form.never.id_for_label }}">Ends:</label></th>
-								       <td  >
-									       <div >
-												 <table class='table'>
-													    {% for choice in form.never %}
-													    <tr>
-														{% if choice.choice_value == '1' %}		
-														<td>		{{ choice}}</td><td></td> 
-														       {% elif choice.choice_value == '2' %}
-														       <td>		{{ choice}}</td><td>{{ form.after }}</td> 
-														        {% elif choice.choice_value == '3' %}
-														          <td>		{{ choice}}</td><td>{{ form.on }}</td> 
-													     
-													    {% endif %}
-													    <tr>
-													    {% endfor %}
-									    		</table>
-									       </div>
-								       </td>
-						       </tr>
-					       </tbody>
-				       </table>
-				</div>
+					<div style="margin-left: 16px; display: {% if not form.repeat.value %} none {%endif%}" class="form-group" id="repeatOptions">
+						<table class="row">
+							<tbody>
+								<tr>
+									<th><label for="{{ form.event_type.id_for_label }}">Repeat:</label></th>
+									<td>{{ form.event_type.errors }} {{ form.event_type }}</td>
+								</tr>
+								<tr>
+									<th></th>
+									<td id="toreplace">
+									<td>
+								</tr>
+								<tr>
+									<th><label for="{{ form.never.id_for_label }}">Ends:</label></th>
+									<td>
+										<div>
+
+											<table class='table'>
+												{% for choice in form.never %}
+												<tr>
+													{% if choice.choice_value == '1' %}
+													<td>{{ choice}}</td>
+													<td></td> {% elif choice.choice_value == '2' %}
+													<td>{{ choice}}</td>
+													<td>{{ form.after.errors }}
+													{{ form.after }}
+													</td>
+													 {% elif choice.choice_value == '3' %}
+													<td>{{ choice}}</td>
+													<td>{{ form.on.errors }}{{ form.on }}</td> 
+													{% endif %}
+												<tr>{% endfor %}
+											</table>
+										</div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
 				</td>
 			</tr>
 			<tr>
 				<td>
-							<div id = "weekly_repeat" style="margin-left:16px;display:{% if  not form.event_type.value == 3 %} none  {% endif%}">
-						       <table>
-						       <tr>
-						      		<th ><label for="{{ form.weeklyRepeat.id_for_label }}"> Weekly:</label></th>
-						      		<td>
-										<table class='table'>
-											    <tr>
-											    {% for choice in form.weeklyRepeat %}
-											    <td>{{choice}}</td>
-											    {% endfor %}
-												<tr>
-										 </table>
-								 	</td>
-								</tr>
-								</table>
-							</div>
+					<div id="weekly_repeat" style="margin-left: 16px; display: none">
+						<table>
+							<tr>
+								<th><label for="{{ form.weeklyRepeat.id_for_label }}">
+										Weekly:</label></th>
+								<td>
+									<table class='table'>
+										<tr>
+											{% for choice in form.weeklyRepeat %}
+											<td>{{choice}}</td> {% endfor %}
+										<tr>
+									</table>
+								</td>
+							</tr>
+						</table>
+					</div>
 				</td>
 			</tr>
 		</table>
-	
+
 		<div>
-		<input type="submit"  class="btn btn-primary" value = "Save">      
+			<input type="submit" class="btn btn-primary" value="Save">
+		</div>
+
 	</div>
-	
-</div>
- 
+
 </form>
 
 
-{% endblock %}
-	
-
-
-{% block script %}
+{% endblock %} {% block script %}
 
 <!-- scripts for repeat event window -->
-<script src="{% static 'events/events.js' %}"></script> 	 	
+<script src="{% static 'events/events.js' %}"></script>
 
 
 {% endblock%}

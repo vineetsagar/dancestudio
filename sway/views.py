@@ -29,8 +29,11 @@ def editevents(request):
 	event = Events.objects.get(pk=pId)
 	#01/02/2015  -> in this format wanted
 	#2015-01-06 --> actual
-	event.start_date = datetime.datetime.strptime(str(event.start_date), '%Y-%m-%d').strftime('%m/%d/%y')
-	event.end_date = datetime.datetime.strptime(str(event.end_date), '%Y-%m-%d').strftime('%m/%d/%y')
+	event.start_date = datetime.datetime.strptime(str(event.start_date), '%Y-%m-%d').strftime('%m/%d/%Y')
+	event.end_date = datetime.datetime.strptime(str(event.end_date), '%Y-%m-%d').strftime('%m/%d/%Y')
+	event.start_time =event.start_time.strftime('%H:%M')
+	event.end_time =event.end_time.strftime('%H:%M')
+	
 	event_type = EventType.objects.order_by('-id')
 	category_type = EventCategory.objects.order_by('-id')
 	form = getEventForm(event)
@@ -59,6 +62,7 @@ def viewmembers(request):
 
 def viewevents(request):
 	events = Events.objects.order_by('-id')[:10]
+	print events
 	event_type = EventType.objects.order_by('-id')
 	category_type = EventCategory.objects.order_by('-id')
 	context_dict = {'eventsList': events, 'eventList':event_type, 'categoryList':category_type}
@@ -91,7 +95,6 @@ def saveevents(request):
 		if form.is_valid():
 			storeevents(request)
 		else:
-			print "invalid form"	
 			event_type = EventType.objects.order_by('-id')
 			setFormDefaultCssAndPlaceHolder(form)
 			return render_to_response("sway/add_events.html", { "form": form,'eventList':event_type,}, context_instance=RequestContext(request))		
@@ -100,7 +103,14 @@ def saveevents(request):
 
 
 def updateEvent(request):
-	updateEvents(request)
+	if request.method == "POST":
+		form = EventsForm(request.POST)
+		if form.is_valid():
+			updateEvents(request)
+		else:
+			event_type = EventType.objects.order_by('-id')
+			setFormDefaultCssAndPlaceHolder(form)
+			return render_to_response("sway/edit_events.html", { "form": form,'eventList':event_type,}, context_instance=RequestContext(request))	
 	# now redirect this request to events view
 	return HttpResponseRedirect(reverse("events"))
 

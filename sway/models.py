@@ -87,25 +87,29 @@ class Studio(models.Model):
     studio_logo = models.CharField(max_length = 255)
     studio_phone = models.CharField(max_length = 128)
     def __unicode__(self):
-            return self.pk
+            return self.studio_name
 
 class StudioUser(models.Model):
     user = models.OneToOneField(User)
     studio_id = models.ForeignKey(Studio)    
     def __unicode__(self):
-            return self.pk  
+            return str(self.pk)
     
 
 class Lead(models.Model):    
-      name =  models.CharField(max_length = 128)
-      contact_detail = models.CharField(max_length = 255)
-      email = models.CharField(max_length = 128)
-      mobile = models.CharField(max_length = 128)
-      studio = models.ForeignKey(Studio) 
+    name =  models.CharField(max_length = 128)
+    contact_detail = models.CharField(max_length = 255)
+    email = models.CharField(max_length = 128)
+    mobile = models.CharField(max_length = 128)
+    studio = models.ForeignKey(Studio) 
+    def __unicode__(self):
+            return self.pk  
          
 
 class LeadFollowUp(models.Model):    
-      lead = models.ForeignKey(Lead)
-      notes = models.CharField(max_length = 255)
-      followed_by = models.ForeignKey(User)
-      followed_date = models.DateField(default=datetime.now())        
+    lead = models.ForeignKey(Lead)
+    notes = models.CharField(max_length = 255)
+    followed_by = models.ForeignKey(User)
+    followed_date = models.DateField(default=datetime.now()) 
+    def __unicode__(self):
+            return self.pk         

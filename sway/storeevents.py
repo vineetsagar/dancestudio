@@ -107,7 +107,6 @@ def updateEvents(request):
     if eventQuerySet.count() <= 0:
         return
     db_event_obj  = eventQuerySet[0]
-    print "object ", db_event_obj
     
     db_event_obj.event_name = request.POST.get("event_name")
 

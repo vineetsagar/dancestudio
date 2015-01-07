@@ -52,7 +52,7 @@ def getEventForm(event):
     eventOccurence = EventOccurence.objects.filter(events = event)
 
     repeatflag = False;
-    if eventOccurence.count() !=0:
+    if eventOccurence.count() > 0:
         repeatflag = True;
 
     # find out it it is weekly event
@@ -65,13 +65,14 @@ def getEventForm(event):
                 list =  weekDaysValue(v.wmd)
     
     never_List = 1
-    if eventOccurence[0].e_never:
-        never_List = 1
-    if eventOccurence[0].e_on:
-        never_List = 3
-    if eventOccurence[0].e_after:
-        never_List = 2
-    print 'never list ', never_List
+    print "repeatflag", repeatflag
+    if repeatflag:
+        if eventOccurence[0].e_never:
+            never_List = 1
+        if eventOccurence[0].e_on:
+            never_List = 3
+        if eventOccurence[0].e_after:
+            never_List = 2
         
     form = EventsForm(instance=event, initial={'repeat':repeatflag, 'all_day':event.all_day, 'event_type':eventType, 'weeklyRepeat': list, 'never':never_List})
     #form.fields['weeklyRepeat'].widget.attrs = {'checked':'1,2'}
@@ -82,10 +83,11 @@ def getEventForm(event):
     form.fields['end_time'].widget.attrs = {'class':'time start'}
     form.fields['event_type'].widget.attrs = {'class':'form-control'}
     form.fields['on'].widget.attrs = {'class':'date start'}
-    if eventOccurence[0].e_on:
-        form.fields['on'].widget.attrs = {'value':eventOccurence[0].e_on_value.strftime("%m/%d/%Y")}
-    if eventOccurence[0].e_after:
-        #form.fields['after'].value = eventOccurence[0].e_after_value
-        form.fields['after'].widget.attrs = {'value':eventOccurence[0].e_after_value}
+    if repeatflag:
+        if eventOccurence[0].e_on:
+            form.fields['on'].widget.attrs = {'value':eventOccurence[0].e_on_value.strftime("%m/%d/%Y")}
+        if eventOccurence[0].e_after:
+            #form.fields['after'].value = eventOccurence[0].e_after_value
+            form.fields['after'].widget.attrs = {'value':eventOccurence[0].e_after_value}
     
     return form

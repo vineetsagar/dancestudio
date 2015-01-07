@@ -1,3 +1,5 @@
+import datetime
+
 from django import forms
 from django.db.models.query_utils import Q
 from django.forms.models import ModelForm
@@ -12,7 +14,7 @@ class EventsForm(ModelForm):
     WEEKDAY_CHOICES = (('0', 'Mo',), ('1', 'Tu',),('2', 'Wed',),('3', 'Th',), ('4', 'Fri',),('5', 'Sat',),('6', 'Sun',))
     never = forms.ChoiceField(widget=forms.RadioSelect, choices=CHOICES, initial="1")
     weeklyRepeat = forms.MultipleChoiceField(choices=WEEKDAY_CHOICES, widget=forms.CheckboxSelectMultiple,  initial="1", required = False)
-    after = forms.CharField(required = False)
+    after = forms.IntegerField(required = False)
     on = forms.CharField(required = False)
     
     def __init__(self, *args, **kwargs):
@@ -23,31 +25,58 @@ class EventsForm(ModelForm):
     class Meta:
         model = Events
         fields = ['event_name', 'event_category','start_date','start_time', 'end_date','end_time', 'all_day', 'repeat', 'event_type']
-    
+    def clean_start_time(self):
+        return self.cleaned_data.get("start_time")
     def clean_event_name(self):
         cd = self.cleaned_data
         event_name = cd.get("event_name")
-        if len(event_name) < 5  : 
-            raise forms.ValidationError("Event name should have at-least 5 character")
+        print "length ", len(event_name)
+        if len(event_name) < 5 or len(event_name) > 100   : 
+            raise forms.ValidationError("Event name character length should be in between 5 to 100 characters.")
         return event_name
     
-    def clean_weekly_repeat(self):
-        cd = self.cleaned_data
-        weeklyRepeat = cd.getlist("weeklyRepeat")
-        print 'weeklyRepeat', weeklyRepeat
-        return weeklyRepeat
-    
-    def clean_event_type(self):
+    def clean(self):
         cd = self.cleaned_data
         event_type_value = cd.get("event_type")
         repeat_value = cd.get("repeat")
         if repeat_value:
             if event_type_value is None:
-                raise forms.ValidationError("Required")
-        return event_type_value;
+                self.add_error('event_type', "Please select Repeat value")
+                
+        all_day = cd.get("all_day")
+        start_time = cd.get("start_time")
+        end_time = cd.get("end_time")
         
-    def clean(self):
-        cd = self.cleaned_data
+        start_date = cd.get("start_date")
+        end_date = cd.get("end_date")
+        sDate = datetime.datetime.combine(start_date, datetime.time.min) 
+        eDate = datetime.datetime.combine(end_date, datetime.time.min)
+        if sDate > eDate:
+            self.add_error('start_date', "Start date should be less than end date")
+            self.add_error('end_date', "End date should be greater than start date")
+            
+        if not all_day :
+            if start_time > end_time:
+                self.add_error('start_time', "Start time should be less than end time")
+                self.add_error('end_time', "End time should be greater than start time")
+        else:
+            del self._errors["start_time"]
+            del self._errors["end_time"]
+            
+        never = cd.get("never")
+        if never =='2':
+            # that user should provide value of after as well
+                after = cd.get("after")
+                print 'print after', after
+                if after <= 0 or after > 10:
+                    print 'inside ',after
+                    self.add_error('after', "This should be between 1 to 10")
+        elif never == '3':
+            on = cd.get("on")
+            onDate =    datetime.datetime.strptime(on, "%m/%d/%Y")
+            if onDate < sDate:
+                self.add_error('on', "Please choose date greater than start date")
+                        
         return cd
         
         
