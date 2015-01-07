@@ -2,8 +2,6 @@ from datetime import datetime
 
 from django.contrib.auth.models import User
 from django.db import models
-from django.forms.models import ModelForm
-from django.template.defaultfilters import default
 
 
 #from scipy.special.lambertw import __str__

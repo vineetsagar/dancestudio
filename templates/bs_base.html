@@ -26,6 +26,14 @@
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+    <style type="text/css">
+    .table-hover tbody tr:hover td
+    {
+        background-color: white;
+        color: orange;
+        }     
+        
+	</style>
 {% block head %}
 
 {% endblock %}
@@ -102,12 +110,16 @@
 
     <!-- Page Content -->
     
-    <div class="container">
+    <div class="container" style="width:100%">
+    <section class="ui-widget-content" id="main_widget">
+    <div  class="well well-lg">
        {% block container %}
        
        {% endblock %}
+       </div>
     <!-- /.container -->
     </div>
+    </section>
     
     <!-- jQuery -->
  

@@ -60,6 +60,9 @@ def viewmembers(request):
 	context_dict = {'membersList': members}
 	return render(request, 'sway/members.html', context_dict)
 
+def member_event_subscribe(request):
+	return render(request, 'sway/members_events.html')
+
 def viewevents(request):
 	events = Events.objects.order_by('-id')[:10]
 	print events
