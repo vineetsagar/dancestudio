@@ -349,10 +349,3 @@ def search_enquiry(request):
     leads = Lead.objects.filter(Q(name__startswith=searchStr)|Q(contact_detail__startswith=searchStr)|Q(email__startswith=searchStr)|Q(mobile__startswith=searchStr))
     context_dict = {'enquiryList': leads}
     return render(request, 'sway/view_enquiries.html', context_dict)
-
-def search_member(request):
-    searchStr = request.POST.get('searchStr')
-    leads = Lead.objects.filter(Q(name__startswith=searchStr)|Q(contact_detail__startswith=searchStr)|Q(email__startswith=searchStr)|Q(mobile__startswith=searchStr))
-    context_dict = {'enquiryList': leads}
-    return render(request, 'sway/view_enquiries.html', context_dict)
-
