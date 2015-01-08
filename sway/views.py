@@ -61,6 +61,12 @@ def viewmembers(request):
 	context_dict = {'membersList': members}
 	return render(request, 'sway/members.html', context_dict)
 
+def search_member(request):
+    searchStr = request.POST.get('searchStr')
+    members = Members.objects.filter(Q(first_name__startswith=searchStr)|Q(last_name__startswith=searchStr)|Q(email__startswith=searchStr)|Q(area__startswith=searchStr))
+    context_dict = {'membersList': members}
+    return render(request, 'sway/members.html', context_dict)
+
 def member_event_subscribe(request):
 	return render(request, 'sway/members_events.html')
 
@@ -122,6 +128,13 @@ def show_instructors(request):
 	instructors = Instructors.objects.order_by('-id')[:10]
 	context_dict = {'instructor_list': instructors}
 	return render(request, 'sway/instructors.html', context_dict)
+
+def search_instructor(request):
+    searchStr = request.POST.get('searchStr')
+    instructors = Instructors.objects.filter(Q(first_name__startswith=searchStr)|Q(last_name__startswith=searchStr)|Q(email__startswith=searchStr)|Q(contact_number__startswith=searchStr))
+    context_dict = {'instructor_list': instructors}
+    return render(request, 'sway/instructors.html', context_dict)
+
 
 def add_instructor(request):
 	return render(request, 'sway/add_instructor.html')
@@ -332,6 +345,12 @@ def save_followup(request):
 	return HttpResponseRedirect(redirectString)	
 
 def search_enquiry(request):
+    searchStr = request.POST.get('searchStr')
+    leads = Lead.objects.filter(Q(name__startswith=searchStr)|Q(contact_detail__startswith=searchStr)|Q(email__startswith=searchStr)|Q(mobile__startswith=searchStr))
+    context_dict = {'enquiryList': leads}
+    return render(request, 'sway/view_enquiries.html', context_dict)
+
+def search_member(request):
     searchStr = request.POST.get('searchStr')
     leads = Lead.objects.filter(Q(name__startswith=searchStr)|Q(contact_detail__startswith=searchStr)|Q(email__startswith=searchStr)|Q(mobile__startswith=searchStr))
     context_dict = {'enquiryList': leads}

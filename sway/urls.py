@@ -32,4 +32,6 @@ urlpatterns=patterns('',
          url(r'^save_followup/$', views.save_followup, name='save_followup'),
          url(r'^members/eventsubscribe/$', views.member_event_subscribe, name='member_event_subscribe'),
          url(r'^search_enquiry/$', views.search_enquiry, name='search_enquiry'),
+         url(r'^search_instructor/$', views.search_instructor, name='search_instructor'),
+         url(r'^search_member/$', views.search_member, name='search_member'),
 		)
