@@ -10,6 +10,7 @@ from django.http.response import HttpResponse
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render, render_to_response
 from django.template.context import RequestContext
+from django.db.models import Q
 
 from sway.events.event_forms_helper import getForm, getEventForm, \
 	setFormDefaultCssAndPlaceHolder
@@ -329,4 +330,10 @@ def save_followup(request):
 	followup.save();
 	redirectString = '/sway/followups?lead='+request.POST.get('lead')
 	return HttpResponseRedirect(redirectString)	
+
+def search_enquiry(request):
+    searchStr = request.POST.get('searchStr')
+    leads = Lead.objects.filter(Q(name__startswith=searchStr)|Q(contact_detail__startswith=searchStr)|Q(email__startswith=searchStr)|Q(mobile__startswith=searchStr))
+    context_dict = {'enquiryList': leads}
+    return render(request, 'sway/view_enquiries.html', context_dict)
 
