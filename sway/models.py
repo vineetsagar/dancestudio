@@ -4,19 +4,30 @@ from django.contrib.auth.models import User
 from django.db import models
 
 
+
+
 #from scipy.special.lambertw import __str__
+class Studio(models.Model):
+    studio_name = models.CharField(max_length = 128)
+    studio_contact = models.CharField(max_length = 255)
+    studio_logo = models.CharField(max_length = 255)
+    studio_phone = models.CharField(max_length = 128)
+    def __unicode__(self):
+            return self.studio_name
+
 # Create your models here.
 class Category(models.Model):
     name = models.CharField(max_length=128, unique=True)
 
     def __unicode__(self):
         return self.name
-
+    
 class Members(models.Model):
         first_name = models.CharField(max_length=128)
         last_name = models.CharField(max_length=128)
         email = models.EmailField()
         area = models.TextField()
+        studio = models.ForeignKey(Studio)
         def __unicode__(self):
             return self.email
 
@@ -41,6 +52,7 @@ class Events(models.Model):
         
         start_time = models.TimeField(default='00:00')
         end_time = models.TimeField(default='00:00')
+        studio = models.ForeignKey(Studio)
         
         def __unicode__(self):
             return self.event_name
@@ -70,6 +82,7 @@ class Instructors(models.Model):
     last_name = models.CharField(max_length = 128)  
     email = models.CharField(max_length = 128)
     contact_number = models.CharField(max_length = 128)
+    studio = models.ForeignKey(Studio)
     def __unicode__(self):
             return self.pk
     
@@ -79,14 +92,6 @@ class EventsInstructors(models.Model):
     def __unicode__(self):
             return self.pk
         
-class Studio(models.Model):
-    studio_name = models.CharField(max_length = 128)
-    studio_contact = models.CharField(max_length = 255)
-    studio_logo = models.CharField(max_length = 255)
-    studio_phone = models.CharField(max_length = 128)
-    def __unicode__(self):
-            return self.studio_name
-
 class StudioUser(models.Model):
     user = models.OneToOneField(User)
     studio_id = models.ForeignKey(Studio)    

@@ -6,6 +6,7 @@ import math
 
 from django.contrib.auth import authenticate, login
 from django.core.urlresolvers import reverse
+from django.db.models import Q
 from django.http.response import HttpResponse
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render, render_to_response
@@ -58,13 +59,13 @@ def loginAuth(request):
         return HttpResponse(json.dumps(data), content_type="application/json")
 
 def viewmembers(request):
-    members = Members.objects.order_by('-id')[:10]
+    members = Members.objects.filter(Q(studio = request.user.studiouser.studio_id)).order_by('-id')[:10]
     context_dict = {'membersList': members}
     return render(request, 'sway/members.html', context_dict)
 
 def search_member(request):
     searchStr = request.POST.get('searchStr')
-    members = Members.objects.filter(Q(first_name__startswith=searchStr)|Q(last_name__startswith=searchStr)|Q(email__startswith=searchStr)|Q(area__startswith=searchStr))
+    members = Members.objects.filter((Q(first_name__startswith=searchStr)|Q(last_name__startswith=searchStr)|Q(email__startswith=searchStr)|Q(area__startswith=searchStr)) &Q(studio = request.user.studiouser.studio_id) )
     context_dict = {'membersList': members}
     return render(request, 'sway/members.html', context_dict)
 
@@ -72,7 +73,7 @@ def member_event_subscribe(request):
     return render(request, 'sway/members_events.html')
 
 def viewevents(request):
-    events = Events.objects.order_by('-id')[:10]
+    events = Events.objects.filter(Q(studio = request.user.studiouser.studio_id)).order_by('-id')[:10]
     print events
     event_type = EventType.objects.order_by('-id')
     category_type = EventCategory.objects.order_by('-id')
@@ -95,10 +96,13 @@ def savemembers(request):
     data.last_name = request.POST.get("last_name")
     data.email = request.POST.get("email")
     data.area = request.POST.get("address")
+    studio_data=request.user.studiouser.studio_id
+    data.studio =studio_data
     Members.save(data)
-    category_list = Members.objects.order_by('-id')[:10]
-    context_dict = {'membersList': category_list}
-    return render(request, 'sway/members.html', context_dict)   
+    #category_list = Members.objects.filter(Q(studio = request.user.studiouser.studio_id)).order_by('-id')[:10]
+    #context_dict = {'membersList': category_list}
+    #return render(request, 'sway/members.html', context_dict)
+    return HttpResponseRedirect(reverse("members")) 
 
 def saveevents(request):
     if request.method == "POST":
@@ -126,13 +130,13 @@ def updateEvent(request):
     return HttpResponseRedirect(reverse("events"))
 
 def show_instructors(request):
-    instructors = Instructors.objects.order_by('-id')[:10]
+    instructors = Instructors.objects.filter(Q(studio = request.user.studiouser.studio_id)).order_by('-id')[:10]
     context_dict = {'instructor_list': instructors}
     return render(request, 'sway/instructors.html', context_dict)
 
 def search_instructor(request):
     searchStr = request.POST.get('searchStr')
-    instructors = Instructors.objects.filter(Q(first_name__startswith=searchStr)|Q(last_name__startswith=searchStr)|Q(email__startswith=searchStr)|Q(contact_number__startswith=searchStr))
+    instructors = Instructors.objects.filter((Q(first_name__startswith=searchStr)|Q(last_name__startswith=searchStr)|Q(email__startswith=searchStr)|Q(contact_number__startswith=searchStr))&Q(studio = request.user.studiouser.studio_id))
     context_dict = {'instructor_list': instructors}
     return render(request, 'sway/instructors.html', context_dict)
 
@@ -146,10 +150,10 @@ def save_instructor(request):
     data.last_name = request.POST.get("last_name")
     data.email = request.POST.get("email")
     data.contact_number = request.POST.get("contact_number")
+    studio_data=request.user.studiouser.studio_id
+    data.studio =studio_data
     Instructors.save(data)
-    instructor_list = Instructors.objects.order_by('-id')[:5]
-    context_dict = {'instructor_list': instructor_list}
-    return render(request, 'sway/instructors.html', context_dict)
+    return HttpResponseRedirect(reverse("instructors"))
 
 def show_dashboard(request):
     'get the event based on the current user'
@@ -223,9 +227,10 @@ def get_events_json(request):
     paramEndDate =    datetime.datetime.strptime(request.GET.get("end"), "%Y-%m-%d")
     p_start_date =  paramStartDate.replace(hour=0, minute=0, second=0, microsecond=0)
     p_end_date =  paramEndDate.replace(hour=0, minute=0, second=0, microsecond=0)
-    
+    print "id value" , 
     lst=[]
-    allEvents = Events.objects.order_by('-id')
+    allEvents = Events.objects.filter(Q(studio = request.user.studiouser.studio_id)).order_by('-id')
+    print allEvents
     
     # need to change event_type_id direct mapping with id, rather we should equate it on basis of its name
     for event in allEvents:
@@ -311,7 +316,7 @@ def get_events_json(request):
     return HttpResponse(events_json, content_type="application/json")
 
 def view_enquiries(request):
-    leads = Lead.objects.all()
+    leads = Lead.objects.filter(Q(studio = request.user.studiouser.studio_id)).order_by('-id')
     paginator = Paginator(leads, 1,0,True) # Show 10 leads per page
     page = request.GET.get('page')
     try:
@@ -324,6 +329,7 @@ def view_enquiries(request):
         leads = paginator.page(paginator.num_pages)
 
     return render_to_response('sway/view_enquiries.html', {"enquiryList": leads})
+
 
 def add_lead(request):
     return render(request, 'sway/add_enquiry.html', None)
@@ -357,6 +363,6 @@ def save_followup(request):
 
 def search_enquiry(request):
     searchStr = request.POST.get('searchStr')
-    leads = Lead.objects.filter(Q(name__startswith=searchStr)|Q(contact_detail__startswith=searchStr)|Q(email__startswith=searchStr)|Q(mobile__startswith=searchStr))
+    leads = Lead.objects.filter((Q(name__startswith=searchStr)|Q(contact_detail__startswith=searchStr)|Q(email__startswith=searchStr)|Q(mobile__startswith=searchStr))&Q(studio = request.user.studiouser.studio_id))
     context_dict = {'enquiryList': leads}
     return render(request, 'sway/view_enquiries.html', context_dict)
