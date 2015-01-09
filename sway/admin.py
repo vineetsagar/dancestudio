@@ -1,7 +1,8 @@
 from django.contrib import admin
 
 from sway.models import Members, EventCategory, EventType, Events, \
-    EventOccurence, Lead, LeadFollowUp
+    EventOccurence, LeadFollowUp, Studio, StudioUser
+
 
 class MembersAdmin(admin.ModelAdmin):
 	search_fields = ['first_name','last_name','email',]
@@ -37,4 +38,6 @@ admin.site.register(EventCategory,EventCategoryAdmin)
 admin.site.register(EventType,EventTypeAdmin)
 admin.site.register(Events,EventsAdmin)
 admin.site.register(EventOccurence,EventOccurenceAdmin)
+admin.site.register(Studio)
+admin.site.register(StudioUser)
 

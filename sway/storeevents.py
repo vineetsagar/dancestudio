@@ -202,7 +202,8 @@ def storeevents(request):
     else:
         data.event_type = EventType.objects.get(event_type_name='Once')
         print 'once event type value ', data.event_type  
-     
+    studio_data=request.user.studiouser.studio_id
+    data.studio =studio_data
     Events.save(data)    
    
     #  event_id = models.ForeignKey(Events)
