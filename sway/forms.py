@@ -60,8 +60,10 @@ class EventsForm(ModelForm):
                 self.add_error('start_time', "Start time should be less than end time")
                 self.add_error('end_time', "End time should be greater than start time")
         else:
-            del self._errors["start_time"]
-            del self._errors["end_time"]
+            if 'start_time' not in self.cleaned_data:
+                del self._errors["start_time"]
+            if 'end_time' not in self.cleaned_data:
+                del self._errors["end_time"]
             
         never = cd.get("never")
         if never =='2':

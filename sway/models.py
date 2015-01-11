@@ -2,8 +2,7 @@ from datetime import datetime
 
 from django.contrib.auth.models import User
 from django.db import models
-
-
+from django.template.defaultfilters import default
 
 
 #from scipy.special.lambertw import __str__
@@ -22,6 +21,7 @@ class Category(models.Model):
     def __unicode__(self):
         return self.name
     
+
 class Members(models.Model):
         first_name = models.CharField(max_length=128)
         last_name = models.CharField(max_length=128)
@@ -31,6 +31,12 @@ class Members(models.Model):
         def __unicode__(self):
             return self.email
 
+class MembersView(models.Model):
+        selected = models.BooleanField(default = False)
+        member = models.OneToOneField(Members)
+        class Meta:
+            abstract = True
+            
 class EventType(models.Model):
         event_type_name = models.CharField(max_length = 128)
         def __unicode__(self):
@@ -76,6 +82,12 @@ class EventOccurence(models.Model):
 
     def __unicode__(self):
             return str(self.pk)
+
+class EventMembers(models.Model):
+    event = models.ForeignKey(Events)
+    member = models.ForeignKey(Members)
+    def __unicode__(self):
+            return u'%s' % (self.pk)
         
 class Instructors(models.Model):
     first_name = models.CharField(max_length = 128)

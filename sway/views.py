@@ -5,19 +5,18 @@ import json
 import math
 
 from django.contrib.auth import authenticate, login
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse
-from django.db.models import Q
+from django.db.models.query_utils import Q
 from django.http.response import HttpResponse
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render, render_to_response
 from django.template.context import RequestContext
-from django.db.models import Q
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-from sway.events.event_forms_helper import getForm, getEventForm, \
-    setFormDefaultCssAndPlaceHolder
+from sway.events.event_forms_helper import getForm, getEventForm, setFormDefaultCssAndPlaceHolder
 from sway.forms import EventsForm
-from sway.models import Members, Events, EventType, EventCategory, Instructors, Lead, LeadFollowUp
+from sway.models import Members, Events, EventType, EventCategory, Instructors, Lead, LeadFollowUp, \
+    EventMembers, MembersView
 from sway.storeevents import storeevents, updateEvents
 
 
@@ -69,12 +68,46 @@ def search_member(request):
     context_dict = {'membersList': members}
     return render(request, 'sway/members.html', context_dict)
 
-def member_event_subscribe(request):
-    return render(request, 'sway/members_events.html')
+def view_eventmembers(request):
+    event_id = request.GET.get('id')
+    if event_id is None:
+        print "exception"
+        
+    allMembers = Members.objects.filter(Q(studio = request.user.studiouser.studio_id))
+    selected_members = EventMembers.objects.filter(Q(event=Events.objects.get(pk=event_id))).prefetch_related('member')
+    membersList = []
+    for em in selected_members:
+        membersList.append(em.member)
+        
+    toReturn  = []    
+    for members in allMembers:
+        if members in membersList:
+            toSend = MembersView(member = members, selected = True)
+            toReturn.append(toSend)
+        else:
+            toSend = MembersView(member = members, selected = False)
+            toReturn.append(toSend)
+        
+    if allMembers.count() <=0:
+        print "exception"
+    context_dict = {'allMembers': toReturn, 'event_id':event_id}
+    return render(request, 'sway/members_events.html', context_dict)
+
+def save_eventmembers(request):
+    selected_members_id_arrays = request.POST.getlist("dual_box_name")
+    event_id = request.POST.get("event_id")
+    #allMembers = Members.objects.filter(Q(studio = request.user.studiouser.studio_id))
+    event_object = Events.objects.get(pk=event_id)
+    print selected_members_id_arrays , event_id
+    for member_id in selected_members_id_arrays:
+        members = Members.objects.get(pk=member_id)
+        eventMembers = EventMembers(event=event_object, member = members)
+        eventMembers.save()
+         
+    return HttpResponseRedirect(reverse("events"))
 
 def viewevents(request):
     events = Events.objects.filter(Q(studio = request.user.studiouser.studio_id)).order_by('-id')[:10]
-    print events
     event_type = EventType.objects.order_by('-id')
     category_type = EventCategory.objects.order_by('-id')
     context_dict = {'eventsList': events, 'eventList':event_type, 'categoryList':category_type}
