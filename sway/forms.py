@@ -5,6 +5,12 @@ from django.db.models.query_utils import Q
 from django.forms.models import ModelForm
 
 from sway.models import Events, EventType
+from sway.models import Members,EventCategory, Instructors
+from django.core import validators
+from django.forms.forms import Form
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
+from sway.form_validators import validate_name_field, validate_address, validate_phone_number 
 
 
 class EventsForm(ModelForm):
@@ -80,5 +86,92 @@ class EventsForm(ModelForm):
                 self.add_error('on', "Please choose date greater than start date")
                         
         return cd
+
+class MemberForm(forms.ModelForm):
+    first_name = forms.CharField(max_length=128)
+    last_name = forms.CharField(max_length=128)
+    email = forms.EmailField()
+    area = forms.CharField(max_length=128)
+        
+    def __init__(self, *args, **kwargs):
+        super(MemberForm, self).__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'
+            field.widget.attrs['required'] = True
+    
+    class Meta:
+        model = Members
+        exclude = ('studio',)
+        
+    def clean(self):
+        cleaned_data=super(MemberForm, self).clean()
+        first_name = cleaned_data.get("first_name")
+        last_name = cleaned_data.get("last_name")
+        email =cleaned_data.get("email")
+        addr=cleaned_data.get("area")
+        
+        msg_invalid_name=u"Invalid name."
+       
+        if validate_name_field(first_name):
+            print "Correct name",first_name;
+        else:
+            print "Invalid chars in first_name",first_name;
+            self.add_error('first_name',msg_invalid_name)
+        
+        if validate_name_field(last_name):
+            print "Correct name",last_name;
+        else:
+            print "Invalid chars in last_name",last_name;
+            self.add_error('last_name',msg_invalid_name)
+               
+        if validate_address(addr):
+            print "Valid addr",addr;
+        else:
+            print "Invalid address=",addr;
+            self.add_error('area',u"Invalid address.")    
+    
+class InstructorForm(forms.ModelForm):
+    first_name = forms.CharField(max_length=128)
+    last_name = forms.CharField(max_length=128)
+    email = forms.EmailField()
+    contact_number = forms.CharField(max_length=128)
+        
+    def __init__(self, *args, **kwargs):
+        super(InstructorForm, self).__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'
+            field.widget.attrs['required'] = True
+            
+    
+    class Meta:
+        model = Instructors
+        exclude = ('studio',)
+        
+    def clean(self):
+        cleaned_data=super(InstructorForm, self).clean()
+        first_name = cleaned_data.get("first_name")
+        last_name = cleaned_data.get("last_name")
+        email =cleaned_data.get("email")
+        contact_number=cleaned_data.get("contact_number")
+        
+        msg_invalid_name=u"Invalid name."
+       
+        if validate_name_field(first_name):
+            print "Correct name",first_name;
+        else:
+            print "Invalid chars in first_name",first_name;
+            self.add_error('first_name',msg_invalid_name)
+        
+        if validate_name_field(last_name):
+            print "Correct name",last_name;
+        else:
+            print "Invalid chars in last_name",last_name;
+            self.add_error('last_name',msg_invalid_name)
+               
+        if validate_phone_number(contact_number):
+            print "Valid contact no",contact_number;
+        else:
+            print "Invalid contact no=",contact_number;
+            self.add_error('contact_number',u"Invalid contact number.")    
         
         

@@ -13,6 +13,18 @@ Art 2 Fitness
 {% endblock%}
 
 {% block container %}
+<!-- script that will fill delete popup data before showing it -->
+<script type="text/javascript">
+  $('#confirmDelete').on('show.bs.modal', function (e) {
+      $message = $(e.relatedTarget).attr('data-message');
+      $(this).find('.modal-body p').text($message);
+      $title = $(e.relatedTarget).attr('data-title');
+      $(this).find('.modal-title').text($title);
+      $href = $(e.relatedTarget).attr('data-href');
+      $('#confirmDelete').find('.modal-footer #deletehref').attr('href',$href);
+   });
+ </script>
+
 <!-- Define your content here-->
 					<form action="{% url 'search_instructor'  %}" method="POST" role="form">
 						{% csrf_token %}
@@ -47,6 +59,14 @@ Art 2 Fitness
 					      <td>{{ instructor.last_name }}</td>
 					      <td>{{ instructor.email }}</td>
 					      <td>{{ instructor.contact_number }}</td>
+					      <td>
+					      		<a href="/sway/instructors/edit/{{instructor.id}}">
+					      			<span rel="tooltip" title="Edit instructor" class="glyphicon glyphicon-edit green"  onmouseover="this.style.cursor='pointer'"></span>
+					      		</a>
+					      </td>
+					      <td>
+					       		<span rel="tooltip" title="Delete instructor" class="glyphicon glyphicon-trash red" data-href="/sway/instructors/delete/{{instructor.id}}/" data-toggle="modal" data-target="#confirmDelete" data-title="Delete User" data-message="Are you sure you want to delete this instructor ?" onmouseover="this.style.cursor='pointer'"></span>
+					      </td>
 					      </tr>
 					                {% endfor %}
 					        {% else %}
@@ -56,8 +76,8 @@ Art 2 Fitness
 					</table>
 			
 					  <div id="Buttonset2">
-					    <button id="Button3" class="btn btn-default"><a href="/sway/add_instructor">Add Instructor</a></button>
-					  </div>
+					  	<button id="Button3" class="btn btn-default"><a href="/sway/instructors/new">Add Instructor</a></button>
+					   </div>
 
 <script type="text/javascript">
 $(function() {

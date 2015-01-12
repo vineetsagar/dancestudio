@@ -18,6 +18,8 @@ from sway.forms import EventsForm
 from sway.models import Members, Events, EventType, EventCategory, Instructors, Lead, LeadFollowUp, \
     EventMembers, MembersView
 from sway.storeevents import storeevents, updateEvents
+from sway.forms import MemberForm,InstructorForm
+from django.shortcuts import get_object_or_404
 
 
 def addevents(request):
@@ -399,3 +401,75 @@ def search_enquiry(request):
     leads = Lead.objects.filter((Q(name__startswith=searchStr)|Q(contact_detail__startswith=searchStr)|Q(email__startswith=searchStr)|Q(mobile__startswith=searchStr))&Q(studio = request.user.studiouser.studio_id))
     context_dict = {'enquiryList': leads}
     return render(request, 'sway/view_enquiries.html', context_dict)
+
+def member_edit(request, id=None):
+    print "member_edit is called"
+    if id:
+        print "member_edit called  for edit id=" ,id
+        member=get_object_or_404(Members,pk=id)
+        
+    else:
+        print "member_edit called  for new member"
+        member=Members()
+        '''member=Members(user=request.user)'''
+    
+    print "member_edit"        
+    if request.POST:
+        print "member_edit POST request"
+        form=MemberForm(request.POST,instance=member)
+        print form.is_valid(), form.errors, type(form.errors)
+        if form.is_valid():
+            print "MemberForm is valid"
+            post = form.save(commit=False)
+            post.studio = request.user.studiouser.studio_id
+            post.save()
+            return HttpResponseRedirect("/sway/members")
+        else:
+            print "MemberForm is invalid"
+    else:
+        print "member_edit GET request"
+        form=MemberForm(instance=member)
+                        
+    return render(request, 'sway/add_members.html', {'form': form, 'id':member.id})
+
+def member_delete(request, id):
+    print "member_delete is called"
+    member_to_delete=get_object_or_404(Members,pk=id)
+    member_to_delete.delete()
+    return HttpResponseRedirect("/sway/members")
+    
+
+def instructor_edit(request, id=None):
+    print "instructor_edit is called"
+    if id:
+        print "instructor_edit called  for edit id=" ,id
+        instructor=get_object_or_404(Instructors,pk=id)
+        
+    else:
+        print "instructor_edit called  for new instructor"
+        instructor=Instructors()
+            
+    if request.POST:
+        print "instructor_edit POST request"
+        form=InstructorForm(request.POST,instance=instructor)
+        print form.is_valid(), form.errors, type(form.errors)
+        if form.is_valid():
+            print "InstructorForm is valid"
+            post = form.save(commit=False)
+            post.studio = request.user.studiouser.studio_id
+            post.save()
+            return HttpResponseRedirect("/sway/instructors")
+        else:
+            print "InstructorForm is invalid"
+    else:
+        print "instrcutor_edit GET request"
+        form=InstructorForm(instance=instructor)
+                        
+    return render(request, 'sway/add_instructor.html', {'form': form, 'id':instructor.id})
+
+def instructor_delete(request, id):
+    print "member_delete is called"
+    instructor_to_delete=get_object_or_404(Instructors,pk=id)
+    instructor_to_delete.delete()
+    return HttpResponseRedirect("/sway/instructors")
+    
