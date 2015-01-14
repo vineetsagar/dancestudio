@@ -41,6 +41,7 @@ def delete_events(request, id):
             print "valid event but event does not belong to logged in user studio"
     return HttpResponseRedirect(reverse("events"))
     
+@login_required
 def addevents(request):
     if request.method =='GET':
         form = getForm()
@@ -83,6 +84,7 @@ def loginAuth(request):
         print 'data ', data
         return HttpResponse(json.dumps(data), content_type="application/json")
 
+@login_required
 def viewmembers(request):
     members = Members.objects.filter(Q(studio = request.user.studiouser.studio_id)).order_by('-id')[:10]
     paginator = Paginator(members, 10,0,True) # Show 10 leads per page
@@ -98,6 +100,7 @@ def viewmembers(request):
     context_dict = {'membersList': members}
     return render(request, 'sway/members.html', context_dict, context_instance=RequestContext(request))
 
+@login_required
 def search_member(request):
     searchStr = request.POST.get('searchStr')
     members = Members.objects.filter((Q(first_name__startswith=searchStr)|Q(last_name__startswith=searchStr)|Q(email__startswith=searchStr)|Q(area__startswith=searchStr)) &Q(studio = request.user.studiouser.studio_id) )
@@ -114,6 +117,7 @@ def search_member(request):
     context_dict = {'membersList': members}
     return render(request, 'sway/members.html', context_dict, context_instance=RequestContext(request))
 
+@login_required
 def view_eventmembers(request, id = None):
     print "view_eventmembers is called"
     if id:
@@ -142,6 +146,7 @@ def view_eventmembers(request, id = None):
     context_dict = {'allMembers': toReturn, 'event_id':eventObj.id}
     return render(request, 'sway/members_events.html', context_dict)
 
+@login_required
 def save_eventmembers(request):
     selected_members_id_arrays = request.POST.getlist("dual_box_name")
     event_id = request.POST.get("event_id")
@@ -155,6 +160,8 @@ def save_eventmembers(request):
          
     return HttpResponseRedirect(reverse("events"))
 
+
+@login_required
 def viewevents(request):
     events = Events.objects.filter(Q(studio = request.user.studiouser.studio_id)).order_by('-id')[:10]
     event_type = EventType.objects.order_by('-id')
@@ -178,10 +185,11 @@ def home(request):
 def index(request):
     return home(request)
 
-
+@login_required
 def addmembers(request):
     return render(request, 'sway/add_members.html')
 
+@login_required
 def savemembers(request):
     data = Members()
     data.first_name = request.POST.get("first_name")
@@ -196,6 +204,7 @@ def savemembers(request):
     #return render(request, 'sway/members.html', context_dict)
     return HttpResponseRedirect(reverse("members")) 
 
+@login_required
 def saveevents(request):
     if request.method == "POST":
         form = EventsForm(request.POST)
@@ -208,7 +217,7 @@ def saveevents(request):
     # now redirect this request to events view
     return HttpResponseRedirect(reverse("events"))
 
-
+@login_required
 def updateEvent(request):
     if request.method == "POST":
         form = EventsForm(request.POST)
@@ -221,6 +230,7 @@ def updateEvent(request):
     # now redirect this request to events view
     return HttpResponseRedirect(reverse("events"))
 
+@login_required
 def show_instructors(request):
     instructors = Instructors.objects.filter(Q(studio = request.user.studiouser.studio_id)).order_by('-id')[:10]
     paginator = Paginator(instructors, 10,0,True) # Show 10 leads per page
@@ -236,6 +246,7 @@ def show_instructors(request):
     context_dict = {'instructor_list': instructors}
     return render_to_response( 'sway/instructors.html', context_dict, context_instance=RequestContext(request))
 
+@login_required
 def search_instructor(request):
     searchStr = request.POST.get('searchStr')
     instructors = Instructors.objects.filter((Q(first_name__startswith=searchStr)|Q(last_name__startswith=searchStr)|Q(email__startswith=searchStr)|Q(contact_number__startswith=searchStr))&Q(studio = request.user.studiouser.studio_id))
@@ -252,9 +263,11 @@ def search_instructor(request):
     context_dict = {'instructor_list': instructors}
     return render_to_response( 'sway/instructors.html', context_dict, context_instance=RequestContext(request))
 
+@login_required
 def add_instructor(request):
     return render(request, 'sway/add_instructor.html')
 
+@login_required
 def save_instructor(request):
     data = Instructors()
     data.first_name = request.POST.get("first_name")
@@ -266,6 +279,7 @@ def save_instructor(request):
     Instructors.save(data)
     return HttpResponseRedirect(reverse("instructors"))
 
+@login_required
 def show_dashboard(request):
     'get the event based on the current user'
     'convert it into json fromat required to full calender'
@@ -330,6 +344,7 @@ def isEventOnForWeekDay(wmdValue, dayValue):
         value = (wmdValue & int(math.pow( 2, 8 )) ) == (int(math.pow( 2, 8 )))
     return value
 
+@login_required
 def get_events_json(request):
     'it will get the logged in customer events from DB'
     'it will use this data and convert into its equivalent json (keep check for no events)'
@@ -426,6 +441,7 @@ def get_events_json(request):
     print "final json is ----------->",events_json
     return HttpResponse(events_json, content_type="application/json")
 
+@login_required
 def view_enquiries(request):
     leads = Lead.objects.filter(Q(studio = request.user.studiouser.studio_id)).order_by('-id')
     paginator = Paginator(leads, 10,0,True) # Show 10 leads per page
@@ -443,15 +459,18 @@ def view_enquiries(request):
     return render_to_response('sway/view_enquiries.html', {"enquiryList": leads}, context_instance=RequestContext(request))
 
 
+@login_required
 def add_lead(request):
     return render(request, 'sway/add_enquiry.html', None)
 
+@login_required
 def view_followups(request):
     leadId = request.GET.get('lead')
     followups = LeadFollowUp.objects.filter(lead=leadId)
     context_dict = {'followups': followups,'lead':leadId}
     return render(request, 'sway/view_followups.html', context_dict)    
 
+@login_required
 def save_enquiry(request):
     name = request.POST.get('name')
     email = request.POST.get('email')
@@ -461,10 +480,12 @@ def save_enquiry(request):
     lead.save();
     return HttpResponseRedirect("/sway/enquiries")
 
+@login_required
 def followup(request):
     context_dict = {'lead': request.GET.get('lead')}
     return render(request, 'sway/add_followup.html', context_dict)
 
+@login_required
 def save_followup(request):
     notes = request.POST.get('notes')
     lead = Lead.objects.filter(id=request.POST.get('lead'))[0]
@@ -473,12 +494,14 @@ def save_followup(request):
     redirectString = '/sway/followups?lead='+request.POST.get('lead')
     return HttpResponseRedirect(redirectString) 
 
+@login_required
 def search_enquiry(request):
     searchStr = request.POST.get('searchStr')
     leads = Lead.objects.filter((Q(name__startswith=searchStr)|Q(contact_detail__startswith=searchStr)|Q(email__startswith=searchStr)|Q(mobile__startswith=searchStr))&Q(studio = request.user.studiouser.studio_id))
     context_dict = {'enquiryList': leads}
     return render(request, 'sway/view_enquiries.html', context_dict, context_instance=RequestContext(request))
 
+@login_required
 def member_edit(request, id=None):
     print "member_edit is called"
     if id:
@@ -509,13 +532,14 @@ def member_edit(request, id=None):
                         
     return render(request, 'sway/add_members.html', {'form': form, 'id':member.id}, context_instance=RequestContext(request))
 
+@login_required
 def member_delete(request, id):
     print "member_delete is called"
     member_to_delete=get_object_or_404(Members,pk=id)
     member_to_delete.delete()
     return HttpResponseRedirect("/sway/members")
     
-
+@login_required
 def instructor_edit(request, id=None):
     print "instructor_edit is called"
     if id:
@@ -544,6 +568,8 @@ def instructor_edit(request, id=None):
                         
     return render(request, 'sway/add_instructor.html', {'form': form, 'id':instructor.id})
 
+
+@login_required
 def instructor_delete(request, id):
     print "member_delete is called"
     instructor_to_delete=get_object_or_404(Instructors,pk=id)
