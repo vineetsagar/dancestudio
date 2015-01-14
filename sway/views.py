@@ -15,6 +15,7 @@ from django.shortcuts import get_object_or_404
 from django.shortcuts import render, render_to_response
 from django.template.context import RequestContext
 
+from sway import events
 from sway.events.event_forms_helper import getForm, getEventForm, setFormDefaultCssAndPlaceHolder
 from sway.forms import EventsForm
 from sway.forms import MemberForm, InstructorForm
@@ -50,9 +51,8 @@ def addevents(request):
 
 @login_required
 def editevents(request, id=None):
-    print "editevents is called"
+    print "user value is ", request.user
     if id:
-        print "editevents called  for edit id=" ,id
         event=get_object_or_404(Events,pk=id)
         print event
     event = Events.objects.get(pk=id)
@@ -166,7 +166,7 @@ def viewevents(request):
     events = Events.objects.filter(Q(studio = request.user.studiouser.studio_id)).order_by('-id')[:10]
     event_type = EventType.objects.order_by('-id')
     category_type = EventCategory.objects.order_by('-id')
-    paginator = Paginator(events, 10,0,True) # Show 10 leads per page
+    paginator = Paginator(events, 5,0,True) # Show 10 leads per page
     page = request.GET.get('page')
     try:
         events = paginator.page(page)
@@ -246,6 +246,8 @@ def show_instructors(request):
     context_dict = {'instructor_list': instructors}
     return render_to_response( 'sway/instructors.html', context_dict, context_instance=RequestContext(request))
 
+
+
 @login_required
 def search_instructor(request):
     searchStr = request.POST.get('searchStr')
@@ -262,6 +264,27 @@ def search_instructor(request):
         instructors = paginator.page(paginator.num_pages)
     context_dict = {'instructor_list': instructors}
     return render_to_response( 'sway/instructors.html', context_dict, context_instance=RequestContext(request))
+
+
+@login_required
+def search_events(request):
+    searchStr = request.POST.get('searchStr')
+    events = Events.objects.filter((Q(event_name__startswith=searchStr))&Q(studio = request.user.studiouser.studio_id))
+    paginator = Paginator(events, 10,0,True) # Show 10 leads per page
+    page = request.GET.get('page')
+    try:
+        events = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        events = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        events = paginator.page(paginator.num_pages)
+    
+    event_type = EventType.objects.order_by('-id')
+    category_type = EventCategory.objects.order_by('-id')
+    context_dict = {'eventsList': events, 'eventList':event_type, 'categoryList':category_type}
+    return render_to_response( 'sway/events.html', context_dict, context_instance=RequestContext(request))
 
 @login_required
 def add_instructor(request):

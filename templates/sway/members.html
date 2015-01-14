@@ -66,7 +66,7 @@ Art 2 Fitness
 					    {% endif %}
 					  </ul>
 					</nav>
-					<div class="well well-lg" style="clear:both">
+					<div class="well well-sm" style="clear:both">
   					<form action="{% url 'search_member'  %}" method="POST" role="form">
 						{% csrf_token %}
 						<div class="row">
@@ -74,7 +74,7 @@ Art 2 Fitness
 						    <div class="input-group">
 						      <input type="text" class="form-control" name="searchStr" placeholder="Search for...">
 						      <span class="input-group-btn">
-						        <button class="btn btn-default" type="Submit">Go!</button>
+						        <button class="btn btn-primary" type="Submit">Go!</button>
 						      </span>
 						    </div><!-- /input-group -->
 						  </div><!-- /.col-lg-6 -->
@@ -117,8 +117,8 @@ Art 2 Fitness
 					</table>
 				</div>
 					  <div id="Buttonset2">
-					  	<button id="Button3" class="btn btn-default "><a href="/sway/members/new">Add Member</a></button>
-					    <button id="Button4" class="btn btn-default"><a href="/sway/members/eventsubscribe">Subscribe Event</a></button>
+					  	<button id="Button3" class="btn btn-primary"><a href="/sway/members/new">Add Member</a></button>
+					    <button id="Button4" class="btn btn-primary"><a href="/sway/members/eventsubscribe">Subscribe Event</a></button>
 					  </div>
 					  <nav>
 					  <ul class="pagination" style="float:right">
