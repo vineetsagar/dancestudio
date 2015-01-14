@@ -167,7 +167,7 @@ def viewevents(request):
         # If page is out of range (e.g. 9999), deliver last page of results.
         events = paginator.page(paginator.num_pages)
     context_dict = {'eventsList': events, 'eventList':event_type, 'categoryList':category_type}
-    return render_to_response(request, 'sway/events.html', context_dict)
+    return render_to_response('sway/events.html', context_dict)
 
 def home(request):
     return render(request, 'sway/index.html')
@@ -231,7 +231,7 @@ def show_instructors(request):
         # If page is out of range (e.g. 9999), deliver last page of results.
         instructors = paginator.page(paginator.num_pages)
     context_dict = {'instructor_list': instructors}
-    return render_to_response(request, 'sway/instructors.html', context_dict)
+    return render_to_response('sway/instructors.html', context_dict)
 
 def search_instructor(request):
     searchStr = request.POST.get('searchStr')
@@ -247,7 +247,7 @@ def search_instructor(request):
         # If page is out of range (e.g. 9999), deliver last page of results.
         instructors = paginator.page(paginator.num_pages)
     context_dict = {'instructor_list': instructors}
-    return render_to_response(request, 'sway/instructors.html', context_dict)
+    return render_to_response('sway/instructors.html', context_dict)
 
 def add_instructor(request):
     return render(request, 'sway/add_instructor.html')
