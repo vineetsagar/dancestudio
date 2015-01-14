@@ -5,6 +5,7 @@ import json
 import math
 
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse
 from django.db.models.query_utils import Q
@@ -22,6 +23,7 @@ from sway.models import Members, Events, EventType, EventCategory, Instructors, 
 from sway.storeevents import storeevents, updateEvents
 
 
+@login_required
 def delete_events(request, id):
     if request.method =='GET':
         #deleteEvent = get_object_or_404(Events,pk=id)
@@ -45,6 +47,7 @@ def addevents(request):
         event_type = EventType.objects.order_by('-id')
         return render_to_response("sway/add_events.html", { "form": form,'eventList':event_type,}, context_instance=RequestContext(request))
 
+@login_required
 def editevents(request, id=None):
     print "editevents is called"
     if id:
@@ -82,7 +85,7 @@ def loginAuth(request):
 
 def viewmembers(request):
     members = Members.objects.filter(Q(studio = request.user.studiouser.studio_id)).order_by('-id')[:10]
-    paginator = Paginator(members, 1,0,True) # Show 10 leads per page
+    paginator = Paginator(members, 10,0,True) # Show 10 leads per page
     page = request.GET.get('page')
     try:
         members = paginator.page(page)
@@ -93,12 +96,12 @@ def viewmembers(request):
         # If page is out of range (e.g. 9999), deliver last page of results.
         members = paginator.page(paginator.num_pages)
     context_dict = {'membersList': members}
-    return render(request, 'sway/members.html', context_dict)
+    return render(request, 'sway/members.html', context_dict, context_instance=RequestContext(request))
 
 def search_member(request):
     searchStr = request.POST.get('searchStr')
     members = Members.objects.filter((Q(first_name__startswith=searchStr)|Q(last_name__startswith=searchStr)|Q(email__startswith=searchStr)|Q(area__startswith=searchStr)) &Q(studio = request.user.studiouser.studio_id) )
-    paginator = Paginator(members, 1,0,True) # Show 10 leads per page
+    paginator = Paginator(members, 10,0,True) # Show 10 leads per page
     page = request.GET.get('page')
     try:
         members = paginator.page(page)
@@ -109,7 +112,7 @@ def search_member(request):
         # If page is out of range (e.g. 9999), deliver last page of results.
         members = paginator.page(paginator.num_pages)
     context_dict = {'membersList': members}
-    return render(request, 'sway/members.html', context_dict)
+    return render(request, 'sway/members.html', context_dict, context_instance=RequestContext(request))
 
 def view_eventmembers(request, id = None):
     print "view_eventmembers is called"
@@ -156,7 +159,7 @@ def viewevents(request):
     events = Events.objects.filter(Q(studio = request.user.studiouser.studio_id)).order_by('-id')[:10]
     event_type = EventType.objects.order_by('-id')
     category_type = EventCategory.objects.order_by('-id')
-    paginator = Paginator(events, 1,0,True) # Show 10 leads per page
+    paginator = Paginator(events, 10,0,True) # Show 10 leads per page
     page = request.GET.get('page')
     try:
         events = paginator.page(page)
@@ -167,7 +170,7 @@ def viewevents(request):
         # If page is out of range (e.g. 9999), deliver last page of results.
         events = paginator.page(paginator.num_pages)
     context_dict = {'eventsList': events, 'eventList':event_type, 'categoryList':category_type}
-    return render_to_response(request, 'sway/events.html', context_dict)
+    return render_to_response('sway/events.html', context_dict, context_instance=RequestContext(request))
 
 def home(request):
     return render(request, 'sway/index.html')
@@ -220,7 +223,7 @@ def updateEvent(request):
 
 def show_instructors(request):
     instructors = Instructors.objects.filter(Q(studio = request.user.studiouser.studio_id)).order_by('-id')[:10]
-    paginator = Paginator(instructors, 1,0,True) # Show 10 leads per page
+    paginator = Paginator(instructors, 10,0,True) # Show 10 leads per page
     page = request.GET.get('page')
     try:
         instructors = paginator.page(page)
@@ -231,12 +234,12 @@ def show_instructors(request):
         # If page is out of range (e.g. 9999), deliver last page of results.
         instructors = paginator.page(paginator.num_pages)
     context_dict = {'instructor_list': instructors}
-    return render_to_response(request, 'sway/instructors.html', context_dict)
+    return render_to_response( 'sway/instructors.html', context_dict, context_instance=RequestContext(request))
 
 def search_instructor(request):
     searchStr = request.POST.get('searchStr')
     instructors = Instructors.objects.filter((Q(first_name__startswith=searchStr)|Q(last_name__startswith=searchStr)|Q(email__startswith=searchStr)|Q(contact_number__startswith=searchStr))&Q(studio = request.user.studiouser.studio_id))
-    paginator = Paginator(instructors, 1,0,True) # Show 10 leads per page
+    paginator = Paginator(instructors, 10,0,True) # Show 10 leads per page
     page = request.GET.get('page')
     try:
         instructors = paginator.page(page)
@@ -247,7 +250,7 @@ def search_instructor(request):
         # If page is out of range (e.g. 9999), deliver last page of results.
         instructors = paginator.page(paginator.num_pages)
     context_dict = {'instructor_list': instructors}
-    return render_to_response(request, 'sway/instructors.html', context_dict)
+    return render_to_response( 'sway/instructors.html', context_dict, context_instance=RequestContext(request))
 
 def add_instructor(request):
     return render(request, 'sway/add_instructor.html')
@@ -425,7 +428,7 @@ def get_events_json(request):
 
 def view_enquiries(request):
     leads = Lead.objects.filter(Q(studio = request.user.studiouser.studio_id)).order_by('-id')
-    paginator = Paginator(leads, 1,0,True) # Show 10 leads per page
+    paginator = Paginator(leads, 10,0,True) # Show 10 leads per page
     page = request.GET.get('page')
     try:
         leads = paginator.page(page)
@@ -435,8 +438,9 @@ def view_enquiries(request):
     except EmptyPage:
         # If page is out of range (e.g. 9999), deliver last page of results.
         leads = paginator.page(paginator.num_pages)
+    print leads
 
-    return render_to_response('sway/view_enquiries.html', {"enquiryList": leads})
+    return render_to_response('sway/view_enquiries.html', {"enquiryList": leads}, context_instance=RequestContext(request))
 
 
 def add_lead(request):
@@ -473,7 +477,7 @@ def search_enquiry(request):
     searchStr = request.POST.get('searchStr')
     leads = Lead.objects.filter((Q(name__startswith=searchStr)|Q(contact_detail__startswith=searchStr)|Q(email__startswith=searchStr)|Q(mobile__startswith=searchStr))&Q(studio = request.user.studiouser.studio_id))
     context_dict = {'enquiryList': leads}
-    return render(request, 'sway/view_enquiries.html', context_dict)
+    return render(request, 'sway/view_enquiries.html', context_dict, context_instance=RequestContext(request))
 
 def member_edit(request, id=None):
     print "member_edit is called"
@@ -503,7 +507,7 @@ def member_edit(request, id=None):
         print "member_edit GET request"
         form=MemberForm(instance=member)
                         
-    return render(request, 'sway/add_members.html', {'form': form, 'id':member.id})
+    return render(request, 'sway/add_members.html', {'form': form, 'id':member.id}, context_instance=RequestContext(request))
 
 def member_delete(request, id):
     print "member_delete is called"
