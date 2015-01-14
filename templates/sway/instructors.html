@@ -26,6 +26,32 @@ Art 2 Fitness
  </script>
 
 <!-- Define your content here-->
+					<nav>
+					  <ul class="pagination" style="float:right">
+					    {% if instructor_list.has_previous %}
+					    <li>
+					      <a aria-label="Previous" href="?page={{ instructor_list.previous_page_number }}">
+					        <span aria-hidden="true">&laquo;</span>
+					      </a>
+					    </li>
+					    {% endif %}
+					    {% for i in instructor_list.paginator.page_range %}
+					    {% if instructor_list.number == i %}
+					    <li class="active"><a href="#">{{i}}</a></li>
+					    {% else %}
+					    <li><a href="?page={{i}}">{{i}}</a></li>
+					    {% endif %}
+					    {% endfor %}
+					    {% if instructor_list.has_next %}
+				        <li>
+				      		<a href="?page={{ instructor_list.next_page_number }}" aria-label="Next">
+				        		<span aria-hidden="true">&raquo;</span>
+				      		</a>
+				    	</li>
+					    {% endif %}
+					  </ul>
+					</nav>
+					<div class="well well-lg" style="clear:both">
 					<form action="{% url 'search_instructor'  %}" method="POST" role="form">
 						{% csrf_token %}
 						<div class="row">
@@ -74,11 +100,35 @@ Art 2 Fitness
 					        {% endif %}
 					    </tbody>
 					</table>
-			
+					</div>
 					  <div id="Buttonset2">
 					  	<button id="Button3" class="btn btn-default"><a href="/sway/instructors/new">Add Instructor</a></button>
 					   </div>
-
+					   <nav>
+					  <ul class="pagination" style="float:right">
+					    {% if instructor_list.has_previous %}
+					    <li>
+					      <a aria-label="Previous" href="?page={{ instructor_list.previous_page_number }}">
+					        <span aria-hidden="true">&laquo;</span>
+					      </a>
+					    </li>
+					    {% endif %}
+					    {% for i in instructor_list.paginator.page_range %}
+					    {% if instructor_list.number == i %}
+					    <li class="active"><a href="#">{{i}}</a></li>
+					    {% else %}
+					    <li><a href="?page={{i}}">{{i}}</a></li>
+					    {% endif %}
+					    {% endfor %}
+					    {% if instructor_list.has_next %}
+				        <li>
+				      		<a href="?page={{ instructor_list.next_page_number }}" aria-label="Next">
+				        		<span aria-hidden="true">&raquo;</span>
+				      		</a>
+				    	</li>
+					    {% endif %}
+					  </ul>
+					</nav>
 <script type="text/javascript">
 $(function() {
 	$( "#Buttonset2" ).buttonset(); 
