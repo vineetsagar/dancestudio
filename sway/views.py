@@ -82,12 +82,32 @@ def loginAuth(request):
 
 def viewmembers(request):
     members = Members.objects.filter(Q(studio = request.user.studiouser.studio_id)).order_by('-id')[:10]
+    paginator = Paginator(members, 1,0,True) # Show 10 leads per page
+    page = request.GET.get('page')
+    try:
+        members = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        members = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        members = paginator.page(paginator.num_pages)
     context_dict = {'membersList': members}
     return render(request, 'sway/members.html', context_dict)
 
 def search_member(request):
     searchStr = request.POST.get('searchStr')
     members = Members.objects.filter((Q(first_name__startswith=searchStr)|Q(last_name__startswith=searchStr)|Q(email__startswith=searchStr)|Q(area__startswith=searchStr)) &Q(studio = request.user.studiouser.studio_id) )
+    paginator = Paginator(members, 1,0,True) # Show 10 leads per page
+    page = request.GET.get('page')
+    try:
+        members = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        members = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        members = paginator.page(paginator.num_pages)
     context_dict = {'membersList': members}
     return render(request, 'sway/members.html', context_dict)
 
@@ -136,8 +156,18 @@ def viewevents(request):
     events = Events.objects.filter(Q(studio = request.user.studiouser.studio_id)).order_by('-id')[:10]
     event_type = EventType.objects.order_by('-id')
     category_type = EventCategory.objects.order_by('-id')
+    paginator = Paginator(events, 1,0,True) # Show 10 leads per page
+    page = request.GET.get('page')
+    try:
+        events = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        events = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        events = paginator.page(paginator.num_pages)
     context_dict = {'eventsList': events, 'eventList':event_type, 'categoryList':category_type}
-    return render(request, 'sway/events.html', context_dict)
+    return render_to_response(request, 'sway/events.html', context_dict)
 
 def home(request):
     return render(request, 'sway/index.html')
@@ -190,15 +220,34 @@ def updateEvent(request):
 
 def show_instructors(request):
     instructors = Instructors.objects.filter(Q(studio = request.user.studiouser.studio_id)).order_by('-id')[:10]
+    paginator = Paginator(instructors, 1,0,True) # Show 10 leads per page
+    page = request.GET.get('page')
+    try:
+        instructors = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        instructors = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        instructors = paginator.page(paginator.num_pages)
     context_dict = {'instructor_list': instructors}
-    return render(request, 'sway/instructors.html', context_dict)
+    return render_to_response(request, 'sway/instructors.html', context_dict)
 
 def search_instructor(request):
     searchStr = request.POST.get('searchStr')
     instructors = Instructors.objects.filter((Q(first_name__startswith=searchStr)|Q(last_name__startswith=searchStr)|Q(email__startswith=searchStr)|Q(contact_number__startswith=searchStr))&Q(studio = request.user.studiouser.studio_id))
+    paginator = Paginator(instructors, 1,0,True) # Show 10 leads per page
+    page = request.GET.get('page')
+    try:
+        instructors = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        instructors = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        instructors = paginator.page(paginator.num_pages)
     context_dict = {'instructor_list': instructors}
-    return render(request, 'sway/instructors.html', context_dict)
-
+    return render_to_response(request, 'sway/instructors.html', context_dict)
 
 def add_instructor(request):
     return render(request, 'sway/add_instructor.html')

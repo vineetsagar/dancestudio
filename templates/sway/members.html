@@ -41,10 +41,36 @@ Art 2 Fitness
 <!-- Define your content here-->
 
   <!-- Default panel contents -->
+  					<nav>
+					  <ul class="pagination" style="float:right">
+					    {% if membersList.has_previous %}
+					    <li>
+					      <a aria-label="Previous" href="?page={{ membersList.previous_page_number }}">
+					        <span aria-hidden="true">&laquo;</span>
+					      </a>
+					    </li>
+					    {% endif %}
+					    {% for i in membersList.paginator.page_range %}
+					    {% if membersList.number == i %}
+					    <li class="active"><a href="#">{{i}}</a></li>
+					    {% else %}
+					    <li><a href="?page={{i}}">{{i}}</a></li>
+					    {% endif %}
+					    {% endfor %}
+					    {% if membersList.has_next %}
+				        <li>
+				      		<a href="?page={{ membersList.next_page_number }}" aria-label="Next">
+				        		<span aria-hidden="true">&raquo;</span>
+				      		</a>
+				    	</li>
+					    {% endif %}
+					  </ul>
+					</nav>
+					<div class="well well-lg" style="clear:both">
   					<form action="{% url 'search_member'  %}" method="POST" role="form">
 						{% csrf_token %}
 						<div class="row">
-						  <div class="col-lg-6">
+						  <div class="col-lg-3">
 						    <div class="input-group">
 						      <input type="text" class="form-control" name="searchStr" placeholder="Search for...">
 						      <span class="input-group-btn">
@@ -89,10 +115,36 @@ Art 2 Fitness
 					        {% endif %}
 					    </tbody>
 					</table>
+				</div>
 					  <div id="Buttonset2">
 					  	<button id="Button3" class="btn btn-default "><a href="/sway/members/new">Add Member</a></button>
 					    <button id="Button4" class="btn btn-default"><a href="/sway/members/eventsubscribe">Subscribe Event</a></button>
 					  </div>
+					  <nav>
+					  <ul class="pagination" style="float:right">
+					    {% if membersList.has_previous %}
+					    <li>
+					      <a aria-label="Previous" href="?page={{ membersList.previous_page_number }}">
+					        <span aria-hidden="true">&laquo;</span>
+					      </a>
+					    </li>
+					    {% endif %}
+					    {% for i in membersList.paginator.page_range %}
+					    {% if membersList.number == i %}
+					    <li class="active"><a href="#">{{i}}</a></li>
+					    {% else %}
+					    <li><a href="?page={{i}}">{{i}}</a></li>
+					    {% endif %}
+					    {% endfor %}
+					    {% if membersList.has_next %}
+				        <li>
+				      		<a href="?page={{ membersList.next_page_number }}" aria-label="Next">
+				        		<span aria-hidden="true">&raquo;</span>
+				      		</a>
+				    	</li>
+					    {% endif %}
+					  </ul>
+					</nav>
 
 {% endblock%}
 
