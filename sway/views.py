@@ -10,27 +10,48 @@ from django.core.urlresolvers import reverse
 from django.db.models.query_utils import Q
 from django.http.response import HttpResponse
 from django.http.response import HttpResponseRedirect
+from django.shortcuts import get_object_or_404
 from django.shortcuts import render, render_to_response
 from django.template.context import RequestContext
 
 from sway.events.event_forms_helper import getForm, getEventForm, setFormDefaultCssAndPlaceHolder
 from sway.forms import EventsForm
+from sway.forms import MemberForm, InstructorForm
 from sway.models import Members, Events, EventType, EventCategory, Instructors, Lead, LeadFollowUp, \
-    EventMembers, MembersView
+    EventMembers, MembersView, EventOccurence
 from sway.storeevents import storeevents, updateEvents
-from sway.forms import MemberForm,InstructorForm
-from django.shortcuts import get_object_or_404
 
 
+def delete_events(request, id):
+    if request.method =='GET':
+        #deleteEvent = get_object_or_404(Events,pk=id)
+        deleteEvent = Events.objects.get(pk=id)
+
+        studio_id = request.user.studiouser.studio_id
+        if deleteEvent.studio ==studio_id:
+
+            # check that event belong to logged in user only
+            EventOccurence.objects.filter(events = deleteEvent).delete()
+            EventMembers.objects.filter(event = deleteEvent).delete()
+            deleteEvent.delete()
+            print "Delete all three tables event, eventmembers,eventoccurence", deleteEvent
+        else:
+            print "valid event but event does not belong to logged in user studio"
+    return HttpResponseRedirect(reverse("events"))
+    
 def addevents(request):
     if request.method =='GET':
         form = getForm()
         event_type = EventType.objects.order_by('-id')
         return render_to_response("sway/add_events.html", { "form": form,'eventList':event_type,}, context_instance=RequestContext(request))
 
-def editevents(request):
-    pId =  request.GET.get('id')
-    event = Events.objects.get(pk=pId)
+def editevents(request, id=None):
+    print "editevents is called"
+    if id:
+        print "editevents called  for edit id=" ,id
+        event=get_object_or_404(Events,pk=id)
+        print event
+    event = Events.objects.get(pk=id)
     #01/02/2015  -> in this format wanted
     #2015-01-06 --> actual
     event.start_date = datetime.datetime.strptime(str(event.start_date), '%Y-%m-%d').strftime('%m/%d/%Y')
@@ -70,13 +91,16 @@ def search_member(request):
     context_dict = {'membersList': members}
     return render(request, 'sway/members.html', context_dict)
 
-def view_eventmembers(request):
-    event_id = request.GET.get('id')
-    if event_id is None:
-        print "exception"
-        
+def view_eventmembers(request, id = None):
+    print "view_eventmembers is called"
+    if id:
+        print "view_eventmembers called  for edit id=" ,id
+        event=get_object_or_404(Events,pk=id)
+        print event
+    
+    eventObj = Events.objects.get(pk=id)
     allMembers = Members.objects.filter(Q(studio = request.user.studiouser.studio_id))
-    selected_members = EventMembers.objects.filter(Q(event=Events.objects.get(pk=event_id))).prefetch_related('member')
+    selected_members = EventMembers.objects.filter(Q(event=eventObj)).prefetch_related('member')
     membersList = []
     for em in selected_members:
         membersList.append(em.member)
@@ -92,7 +116,7 @@ def view_eventmembers(request):
         
     if allMembers.count() <=0:
         print "exception"
-    context_dict = {'allMembers': toReturn, 'event_id':event_id}
+    context_dict = {'allMembers': toReturn, 'event_id':eventObj.id}
     return render(request, 'sway/members_events.html', context_dict)
 
 def save_eventmembers(request):

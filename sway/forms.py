@@ -1,16 +1,16 @@
 import datetime
 
 from django import forms
+from django.core import validators
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 from django.db.models.query_utils import Q
+from django.forms.forms import Form
 from django.forms.models import ModelForm
 
-from sway.models import Events, EventType
-from sway.models import Members,EventCategory, Instructors
-from django.core import validators
-from django.forms.forms import Form
-from django.core.validators import validate_email
-from django.core.exceptions import ValidationError
 from sway.form_validators import validate_name_field, validate_address, validate_phone_number 
+from sway.models import Events, EventType
+from sway.models import Members, EventCategory, Instructors
 
 
 class EventsForm(ModelForm):
