@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 {% extends "bs_base.html" %} 
 {% block container %}
+<!-- Script to show selection for the loaded tab -->
+<script type="text/javascript">
+	jQuery(function(){
+    	 $('.nav a:contains("Events")').parent().addClass('active');
+});
+</script>
 <script type="text/javascript">
   $('#confirmDelete').on('show.bs.modal', function (e) {
       $message = $(e.relatedTarget).attr('data-message');

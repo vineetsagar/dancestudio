@@ -2,6 +2,13 @@
 {% extends "bs_base.html" %}
 
 {% block container %}
+<!-- Script to show selection for the loaded tab -->
+<script type="text/javascript">
+	jQuery(function(){
+    	 $('.nav a:contains("Leads")').parent().addClass('active');
+});
+</script>
+
 		<div style="margin-top:5px">
 			<section class="ui-widget-content" id="main_widget">
 					<table class="table table-striped" id="followupTable" >
