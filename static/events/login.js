@@ -1,4 +1,6 @@
-$(function(){
+$(login());
+
+function login(){
 	 $("#loginForm").submit(function(e){
 		 e.preventDefault();
 		 $form = $(this);
@@ -11,4 +13,4 @@ $(function(){
 			 	}
 		 } );
 	 });
-});
+}
