@@ -3,7 +3,7 @@ import datetime
 from dateutil.relativedelta import relativedelta
 import json
 import math
-
+from datetime import datetime
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -510,7 +510,11 @@ def save_followup(request):
     notes = request.POST.get('notes')
     lead = Lead.objects.filter(id=request.POST.get('lead'))[0]
     followup = LeadFollowUp(notes=notes,followed_by=request.user,lead=lead)
-    followup.save();
+    followup.save()
+    print request.POST.get('nextFollowupDate')
+    print datetime.strptime(request.POST.get('nextFollowupDate'),'%m/%d/%Y %H:%M %p')
+    lead.nextFollowUpDate = datetime.strptime(request.POST.get('nextFollowupDate'),'%m/%d/%Y %H:%M %p')
+    lead.save()
     redirectString = '/sway/followups?lead='+request.POST.get('lead')
     return HttpResponseRedirect(redirectString) 
 
