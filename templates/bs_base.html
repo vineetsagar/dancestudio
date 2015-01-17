@@ -31,7 +31,8 @@
     {
         background-color: white;
         color: orange;
-        }     
+    }
+
 	</style>
 {% block head %}
 
@@ -42,8 +43,8 @@
 <body>
 
     <!-- Navigation -->
-    <nav class="navbar navbar-fixed-top navbar-inverse" role="navigation">
-        <div class="container">
+    
+        <div class="container" style="">
         	<div class="modal fade" id="confirmDelete" role="dialog" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
   				<div class="modal-dialog">
     				<div class="modal-content">
@@ -65,22 +66,13 @@
 		</div>
 		
             <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="#">
-                <!-- <img src="http://placehold.it/150x50&text=Logo" alt=""> -->
-                </a>
-            </div>
+            
+            <nav class="navbar navbar-fixed-top navbar-inverse"  role="navigation" style="height: 50px;">
             <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="top_level_navigation">
+            <div class="collapse navbar-collapse" id="top_level_navigation" style="height: 50px;">
                 {% block navigation %}
              
-                <ul class="nav navbar-nav ">
+                <ul class="nav navbar-nav " style="height: 50px;">
                 	<li>
                      <a href="/sway/dashboard">Dashboard</a>
                     </li>
@@ -97,11 +89,11 @@
                         <a href="/sway/enquiries">Leads</a>
                     </li>
               	</ul>
-				<ul class="nav navbar-nav navbar-right" >
+				<ul class="nav navbar-nav navbar-right" id="userName">
 							 {% if user.is_anonymous %}
 							     <li class="dropdown" ><a href="{% url 'django.contrib.auth.views.login' %}" title="Login" >Login</a></li>
 							      {% else %}
-							  			<li class="dropdown">
+							  			<li class="dropdown" >
 								  			<a href="#" class="dropdown-toggle" data-toggle="dropdown" title="user profile options" aria-expanded="false">
 									  			<i class="fa fa-star text-yellow"></i> {{user.username}} 
 									  			<b class="caret"></b>
