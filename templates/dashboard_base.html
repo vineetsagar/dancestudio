@@ -46,6 +46,21 @@
 
 {% endblock %}
 
+<style>
+    body 
+    {
+        padding-top: 50px;
+    }
+
+    .navbar-collapse.collapse{
+        max-height:50px;
+    }
+
+    .navbar-nav > li > a {
+        padding-bottom: 5px;
+        padding-top: 5px;
+    }
+</style>
 </head>
 
 <body>
@@ -66,7 +81,7 @@
                 </a>
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
                    {% block navigation %}
                    <li>
