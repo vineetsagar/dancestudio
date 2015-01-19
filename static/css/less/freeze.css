@@ -763,7 +763,7 @@ header .navbar-default.scrolled {
   border-bottom: 3px solid #339999;
 }
 header .navbar-default.scrolled ul.navbar-nav li a {
-  color: #339999;
+  color: #339999 !important;
 }
 header .navbar-default.scrolled ul.navbar-nav li a:hover {
   color: #339999;
@@ -772,7 +772,7 @@ header .navbar-default.scrolled ul.navbar-nav li a:hover:after {
   background: #339999;
 }
 header .navbar-default.scrolled .navbar-brand {
-  background: #339999;
+  background: #339999 !important;
 }
 section .section-heading .divider:after {
   background: #66cc99;
@@ -926,7 +926,7 @@ section#support .media:hover h3 {
 }
 /* footer section */
 footer {
-  background: #66cc99;
+  background: #66cc99 !important;
   /* Old browsers */
   background: -moz-linear-gradient(-45deg, #66cc99 0%, #339999 100%);
   /* FF3.6+ */
