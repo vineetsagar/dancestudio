@@ -3,7 +3,7 @@ import datetime
 from dateutil.relativedelta import relativedelta
 import json
 import math
-from datetime import datetime
+
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -15,7 +15,6 @@ from django.shortcuts import get_object_or_404
 from django.shortcuts import render, render_to_response
 from django.template.context import RequestContext
 
-from sway import events
 from sway.events.event_forms_helper import getForm, getEventForm, setFormDefaultCssAndPlaceHolder
 from sway.forms import EventsForm
 from sway.forms import MemberForm, InstructorForm
@@ -369,7 +368,8 @@ def get_events_json(request):
     'it will get the logged in customer events from DB'
     'it will use this data and convert into its equivalent json (keep check for no events)'
     'return the json feed for events'
-    paramStartDate =    datetime.datetime.strptime(request.GET.get("start"), "%Y-%m-%d")
+    start = request.GET.get("start")
+    paramStartDate =    datetime.datetime.strptime(start, "%Y-%m-%d")
     paramEndDate =    datetime.datetime.strptime(request.GET.get("end"), "%Y-%m-%d")
     p_start_date =  paramStartDate.replace(hour=0, minute=0, second=0, microsecond=0)
     p_end_date =  paramEndDate.replace(hour=0, minute=0, second=0, microsecond=0)
