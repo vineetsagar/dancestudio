@@ -109,6 +109,13 @@ class StudioUser(models.Model):
     studio_id = models.ForeignKey(Studio)    
     def __unicode__(self):
             return str(self.pk)
+        
+class ProductContacts(models.Model):
+    name = models.CharField(max_length = 128)
+    email = models.CharField(max_length = 128)
+    message = models.CharField(max_length = 1024)
+    def __unicode__(self):
+            return str(self.pk)
     
 
 class Lead(models.Model):    

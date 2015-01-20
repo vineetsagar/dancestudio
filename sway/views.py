@@ -19,7 +19,7 @@ from sway.events.event_forms_helper import getForm, getEventForm, setFormDefault
 from sway.forms import EventsForm
 from sway.forms import MemberForm, InstructorForm
 from sway.models import Members, Events, EventType, EventCategory, Instructors, Lead, LeadFollowUp, \
-    EventMembers, MembersView, EventOccurence
+    EventMembers, MembersView, EventOccurence, ProductContacts
 from sway.storeevents import storeevents, updateEvents
 
 
@@ -159,6 +159,35 @@ def save_eventmembers(request):
          
     return HttpResponseRedirect(reverse("events"))
 
+
+def save_contact(request):
+    data={}
+    name = request.POST.get("name")
+    if name is None or name == 'Your name':
+        data['error'] = "Please provide name." 
+    email = request.POST.get("email")
+    message = request.POST.get("message")
+    
+    if email is None :
+        data['error'] = "Please provide email." 
+    elif message is None or message == 'Your message':
+        data['error'] = "Please provide message."
+    elif len(message) > 1024:
+        data['error'] = "Your message length has exceed 1024 character limit."
+    
+    if len(data) > 0:
+        data['error'] = "<li class='fa fa-cross fa-3x' style='color:red'></li>" + data['error'] +" "
+        return HttpResponse(json.dumps(data), content_type="application/json")
+    
+    contacts = ProductContacts()
+    contacts.name = name
+    contacts.email = email
+    contacts.message = message
+    contacts.save()
+    
+    data['success'] = "<li class='fa fa-check-circle fa-3x' style='color:green'></li> Thank you for contact us, we will contact you soon."
+    return HttpResponse(json.dumps(data), content_type="application/json")
+    
 
 @login_required
 def viewevents(request):
@@ -307,11 +336,14 @@ def show_dashboard(request):
 
 def onceEvents(event):
     dct_obj2={}
-    id
     dct_obj2["id"]=event.id
     dct_obj2["title"]=event.event_name.encode("ascii", "ignore")
     dct_obj2["start"]=datetime.datetime.combine(event.start_date,event.start_time).strftime("%Y-%m-%d %H:%M")
-    dct_obj2["end"]=datetime.datetime.combine(event.end_date, event.start_time).strftime("%Y-%m-%d %H:%M")  
+    # adding +1 day to end date so that full calender can render this event correctly
+    if event.all_day:
+        dct_obj2["end"]=(datetime.datetime.combine(event.end_date, event.start_time) + relativedelta(days=1) ).strftime("%Y-%m-%d %H:%M")
+    else:
+        dct_obj2["end"]=(datetime.datetime.combine(event.end_date, event.start_time) ).strftime("%Y-%m-%d %H:%M")  
     dct_obj2["allDay"]=event.all_day
     return dct_obj2
 
@@ -395,6 +427,7 @@ def get_events_json(request):
                 endDate = datetime.datetime.strptime(str(eventOccurenceValue.eo_end_date), "%Y-%m-%d")
                 e_start_date = startDate.replace(hour=0, minute=0, second=0, microsecond=0)
                 e_end_date = endDate.replace(hour=0, minute=0, second=0, microsecond=0)
+    
                 if (leftSide(p_start_date, p_end_date, e_start_date, e_end_date)):
                     # CASE 1
                     todaysDate = e_start_date

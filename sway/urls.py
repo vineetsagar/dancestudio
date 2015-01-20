@@ -9,6 +9,7 @@ admin.autodiscover()
 
 urlpatterns=patterns('',
 		 url(r'^$', views.index, name='index'),
+		 url(r'^contact/$', views.save_contact, name='save_contact'),
 		 url(r'^events/$', views.viewevents, name='events'),
 		 url(r'^updateevents/$', views.updateEvent, name='updateevents'),
 		 url(r'^events/editevents/(?P<id>\d+)/$', views.editevents, name='eventevents'),
