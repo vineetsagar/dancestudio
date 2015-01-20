@@ -46,7 +46,7 @@
 					<form action="{% url 'search_events'  %}" method="POST" role="form">
 											{% csrf_token %}
 											<div class="row">
-											  <div class="col-lg-6">
+											  <div class="col-lg-3">
 											    <div class="input-group">
 											      <input type="text" class="form-control" name="searchStr" placeholder="Search for...">
 											      <span class="input-group-btn">
@@ -98,13 +98,10 @@
 			</tbody>
 		</table>
 	</div>
-		<div id="Buttonset2">
-		<span class="input-group-btn">
+	<div id="Buttonset2">
 			<button class="btn btn-primary">
 				<a href="/sway/addevents">Add Event</a>
 			</button>
-		</span>
-		</div>
 		</div>
 		 	<nav>
 					  <ul class="pagination" style="float:right">
@@ -131,6 +128,7 @@
 					    {% endif %}
 					  </ul>
 					</nav>
+	</div>
 	<script type="text/javascript">
 $(function() {
 	$( "#Buttonset2" ).buttonset(); 
