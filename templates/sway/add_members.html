@@ -1,13 +1,14 @@
-{% extends "bs_base.html" %}
+{% extends "bs_base.html" %}{% load staticfiles %}
+{% block head%}
+<link href="{% static 'sway/css/forms.css' %}" rel="stylesheet">
+{% endblock%}
 
 {% block title %}
 Art 2 Fitness
 
 {% endblock%}
-
 {% block container %}
-
-<div>
+<div id="form">
 {% if id %}
 <form action="{% url 'member_edit' id=id %}" class="form-horizontal"  method="POST" role="form">
 {% else %}
@@ -98,7 +99,7 @@ Art 2 Fitness
  {% endif %}
  
 <div class="span7 text-center">
-	<button type="submit" class="btn btn-default" >Submit</button>
+	<button type="submit" class="btn btn-primary" >Submit</button>
 </div>
   
 </form>

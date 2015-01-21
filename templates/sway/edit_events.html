@@ -11,6 +11,7 @@
 
 <!-- all the content that will go into body tag -->
 {% block container %}
+<div id="form">
 <form action="{% url 'updateevents'   %}" method="POST" role="form">
 	{% csrf_token %}
 	<div class="form-group">
@@ -150,8 +151,8 @@
 			</tr>
 			<tr>
 				<td>
-					<div>
-						<input type="submit" class="btn btn-default" value="Save">
+					<div class="span7 text-center">
+						<input type="submit" class="btn btn-primary" value="Save">
 					</div>
 				</td>
 			<tr>
@@ -165,5 +166,5 @@
 <!-- scripts for repeat event window -->
 <script src="{% static 'events/events.js' %}"></script>
 
-
+</div>
 {% endblock%}
