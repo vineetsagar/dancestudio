@@ -1,0 +1,10 @@
+dj-database-url==0.3.0
+Django==1.7.3
+django-postgrespool==0.3.0
+MySQL-python==1.2.5
+psycopg2==2.5.4
+python-dateutil==2.4.0
+six==1.9.0
+SQLAlchemy==0.9.8
+waitress==0.8.9
+whitenoise==1.0.6

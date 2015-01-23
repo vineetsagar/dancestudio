@@ -10,9 +10,8 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+import dj_database_url
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
 
@@ -20,11 +19,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 SECRET_KEY = '3!jvl^a_$ms^d-v!)$yd%48xv!=1vj_j)ao8zr2ua3d0wn&siu'
 
 # SECURITY WARNING: don't run with debug turned on in production!
+STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 DEBUG = True
 
 TEMPLATE_DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 LOGIN_REDIRECT_URL = '/sway/members'
 
@@ -71,14 +71,20 @@ WSGI_APPLICATION = 'dancestudio.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql', 
-        'NAME': 'sway',
-        'USER': 'sway',
-        'PASSWORD': 'sway',
-        'HOST': '127.0.0.1',   # Or an IP Address that your DB is hosted on
-        'PORT': '3306',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2', 
+        'NAME': 'daod3b1jd4s735',
+        'USER': 'vxluorpfyrippk',
+        'PASSWORD': 'REuIKg21og15EcmaWm_AMcXujo',
+        'HOST': 'ec2-54-83-204-244.compute-1.amazonaws.com',   # Or an IP Address that your DB is hosted on
+        'PORT': '5432',
     }
 }
+# default port is 3306
+# Parse database configuration from $DATABASE_URL
+DATABASES['default'] =  dj_database_url.config()
+
+# Enable Connection Pooling (if desired)
+DATABASES['default']['ENGINE'] = 'django_postgrespool'
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
@@ -99,10 +105,11 @@ USE_TZ = True
 
 STATIC_PATH = os.path.join(BASE_DIR,'static')
 
+STATIC_ROOT = 'staticfiles'
 STATIC_URL = '/static/' # You may find this is already defined as such.
 
 STATICFILES_DIRS = (
-    STATIC_PATH,
+os.path.join(BASE_DIR, 'static'),
 )
 
 LOGIN_URL='/sway/members/login'
