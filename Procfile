@@ -1,1 +1,1 @@
-web: gunicorn_django --pythonpath=/app/dancestudio --settings=settings
+web: waitress-serve --port=$PORT dancestudio.wsgi:application
