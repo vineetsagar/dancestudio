@@ -1,0 +1,69 @@
+{% extends "bs_base.html" %}
+{% load staticfiles %}
+
+{% block head %}
+<!-- for adding anything to html head -->
+
+{% endblock%}
+
+{% block title %}
+Art 2 Fitness
+
+{% endblock%}
+
+{% block container %}
+<!-- Define your content here-->
+
+<section  id="main_widget" class="ui-widget-content">
+<div class="well well-lg">
+			<form id="demoform" action="{% url 'saveeventsubscribe'   %}" method="post">
+			{% csrf_token %}
+			<input type='hidden' value="{{ event_id}}" name="event_id" />
+            <div class="bootstrap-duallistbox-container row moveonselect"> 
+                                <select multiple="multiple" id="id_id" class="form-control" name="dual_box_name" style="height: 181px;">
+                               
+                                {% for members in allMembers %}
+								 <option value="{{ members.member.id}}" {% if members.selected %} selected="selected" {% endif %}>
+								 <table class="table row">
+								 <tr>
+								 <td>{{members.member.first_name}}</td><td> | </td><td>{{members.member.email}}</td>
+								 </tr>
+								 </table></option>				
+									{% endfor %}
+                                </select> 
+                                  
+            <br>
+            <div id="Buttonset2">
+					    <button id="Button3" class="btn btn-default  ">Save</button>
+					    <button id="Button4" class="btn btn-default"><a href="javascript:history.back()">Back</a></button>
+					  </div>
+          </form>
+		</section>
+		   
+     	</div>
+{% endblock%}
+{% block script %}
+ <link href="{% static 'bootstrap/css/bootstrap-duallistbox.css' %}" rel="stylesheet"/>
+  <script src="{% static 'bootstrap/js/jquery.bootstrap-duallistbox.js' %}"></script>
+  <script>
+    var demo1 = $('select[name="dual_box_name').bootstrapDualListbox(
+    {
+  		nonSelectedListLabel: 'Non-selected',
+  		selectedListLabel: 'Selected',
+  		preserveSelectionOnMove: 'moved',
+  		moveOnSelect: false
+	}
+    );
+    $("#demoform").submit(function() {
+		x = $('[name="dual_box_name"]').val();
+		
+		if (x == null || x == "") {
+        	alert("select atleast one value");
+        return false;
+    }
+      return true;
+    });
+     </script>
+
+{% endblock %}
+
