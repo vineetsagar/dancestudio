@@ -17,7 +17,7 @@ from django.template.context import RequestContext
 
 from sway.events.event_forms_helper import getForm, getEventForm, setFormDefaultCssAndPlaceHolder
 from sway.forms import EventsForm
-from sway.forms import MemberForm, InstructorForm
+from sway.forms import MemberForm, InstructorForm, LeadForm
 from sway.models import Members, Events, EventType, EventCategory, Instructors, Lead, LeadFollowUp, \
     EventMembers, MembersView, EventOccurence, ProductContacts
 from sway.storeevents import storeevents, updateEvents
@@ -514,7 +514,9 @@ def view_enquiries(request):
 
 @login_required
 def add_lead(request):
-    return render(request, 'sway/add_enquiry.html', None)
+    form = LeadForm()
+    return render_to_response('sway/add_enquiry.html', { "form": form}, context_instance=RequestContext(request))
+    
 
 @login_required
 def view_followups(request):
@@ -527,8 +529,8 @@ def view_followups(request):
 def save_enquiry(request):
     name = request.POST.get('name')
     email = request.POST.get('email')
-    phone = request.POST.get('phone')
-    contact = request.POST.get('contact') 
+    phone = request.POST.get('mobile')
+    contact = request.POST.get('contact_detail') 
     lead = Lead(name=name,mobile=phone,email=email,contact_detail=contact,studio=request.user.studiouser.studio_id)
     lead.save();
     return HttpResponseRedirect("/sway/enquiries")

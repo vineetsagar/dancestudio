@@ -10,7 +10,7 @@ from django.forms.models import ModelForm
 
 from sway.form_validators import validate_name_field, validate_address, validate_phone_number 
 from sway.models import Events, EventType
-from sway.models import Members, EventCategory, Instructors
+from sway.models import Members, EventCategory, Instructors,Lead
 
 
 class EventsForm(ModelForm):
@@ -174,4 +174,45 @@ class InstructorForm(forms.ModelForm):
             print "Invalid contact no=",contact_number;
             self.add_error('contact_number',u"Invalid contact number.")    
         
+class LeadForm(forms.ModelForm):
+    name = forms.CharField(max_length=128)
+    contact_detail = forms.CharField(max_length=255)
+    email = forms.EmailField()
+    mobile = forms.CharField(max_length=128)
         
+    def __init__(self, *args, **kwargs):
+        super(LeadForm, self).__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'
+            field.widget.attrs['required'] = True
+    
+    class Meta:
+        model = Lead
+        exclude = ('studio',)
+        
+    def clean(self):
+        cleaned_data=super(LeadForm, self).clean()
+        name = cleaned_data.get("name")
+        contact_detail = cleaned_data.get("contact_detail")
+        email =cleaned_data.get("email")
+        mobile=cleaned_data.get("mobile")
+        
+        msg_invalid_name=u"Invalid name."
+       
+        if validate_name_field(name):
+            print "Correct name",name;
+        else:
+            print "Invalid chars in name",name;
+            self.add_error('name',msg_invalid_name)
+        
+        if validate_name_field(contact_detail):
+            print "Correct name",contact_detail;
+        else:
+            print "Invalid chars in contact_detail",contact_detail;
+            self.add_error('contact_detail',msg_invalid_name)
+               
+        if validate_phone_number(mobile):
+            print "Valid contact no",mobile;
+        else:
+            print "Invalid contact no=",mobile;
+            self.add_error('mobile',u"Invalid contact number.")        

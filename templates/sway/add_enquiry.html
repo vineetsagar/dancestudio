@@ -15,20 +15,24 @@
 <form action="{% url 'save_enquiry'  %}" method="POST" role="form">
 {% csrf_token %}
   <div class="form-group">
-    <label for="name">Name:</label>
-    <input name="name" type="text" class="form-control" id="name">
+    {{ form.name.errors }}
+    <label for="{{ form.name.id_for_label }}">Name:</label>
+     {{ form.name }}
   </div>
   <div class="form-group">
+    {{ form.email.errors }}
     <label for="email">Email:</label>
-    <input name="email" type="email" class="form-control" id="email">
+     {{ form.email }}
   </div>
   <div class="form-group">
+    {{ form.mobile.errors }}
     <label for="phone">Mobile/Phone:</label>
-    <input name="phone" type="text" class="form-control" id="phone">
+     {{ form.mobile }}
   </div>
   <div class="form-group">
+    {{ form.contact_detail.errors }}
     <label for="contact">Contact:</label>
-    <textarea name="contact" class="form-control" rows="5" id="contact"></textarea>
+     {{ form.contact_detail }}
   </div>
   <div class="span7 text-center">
   <button type="submit" class="btn btn-primary">Save</button>
