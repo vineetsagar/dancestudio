@@ -1,18 +1,19 @@
 from datetime import datetime
 
 from django.contrib.auth.models import User
+from django.core.validators import RegexValidator
 from django.db import models
-from django.template.defaultfilters import default
 
 
 #from scipy.special.lambertw import __str__
 class Studio(models.Model):
-    studio_name = models.CharField(max_length = 128)
-    studio_contact = models.CharField(max_length = 255)
-    studio_logo = models.CharField(max_length = 255)
-    studio_phone = models.CharField(max_length = 128)
+    name = models.CharField(max_length = 128)
+    area = models.CharField(max_length = 512)
+    email = models.EmailField()
+    phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: '+91'. Up to 10 digits allowed.")
+    mobile = models.CharField(validators=[phone_regex], blank=True, max_length=15)
     def __unicode__(self):
-            return self.studio_name
+            return self.name
 
 # Create your models here.
 class Category(models.Model):
@@ -27,6 +28,7 @@ class Members(models.Model):
         last_name = models.CharField(max_length=128)
         email = models.EmailField()
         area = models.TextField()
+        birth_date = models.DateField(null=True)
         studio = models.ForeignKey(Studio)
         def __unicode__(self):
             return self.email
@@ -124,7 +126,7 @@ class Lead(models.Model):
     email = models.CharField(max_length = 128)
     mobile = models.CharField(max_length = 128)
     nextFollowUpDate = models.DateTimeField(default=None)
-    inquiryFor = models.CharField(max_length=255,default=None)
+    inquiryFor = models.CharField(max_length=255,null=True)
     studio = models.ForeignKey(Studio) 
     def __unicode__(self):
             return self.pk  

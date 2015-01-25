@@ -21,10 +21,6 @@ $(function() {
 
 {% endblock%}
 
-{% block title %}
-Art 2 Fitness
-
-{% endblock%}
 
 {% block container %}
 <!-- Script to show selection for the loaded tab -->
@@ -94,6 +90,7 @@ Art 2 Fitness
 					      <th data-priority="3" >Last Name</th>
 					      <th data-priority="4" >Email</th>
 					      <th data-priority="5" >Address</th>
+					      <th data-priority="6" >Birth Date</th>
 					      </tr>
 					      </thead>
 					      
@@ -106,6 +103,7 @@ Art 2 Fitness
 					      <td>{{ members.last_name }}</td>
 					      <td>{{ members.email }}</td>
 					      <td>{{ members.area }}</td>
+					      <td>{{ members.birth_date }}</td>
 					      <td>
 					      		<a href="/sway/members/edit/{{members.id}}">
 					      			<span rel="tooltip" title="Edit member" class="glyphicon glyphicon-edit green"  onmouseover="this.style.cursor='pointer'"></span>
@@ -124,7 +122,6 @@ Art 2 Fitness
 				</div>
 					  <div id="Buttonset2">
 					  	<a href="/sway/members/new" class="btn btn-primary">Add Member</a>
-					    <a href="/sway/members/eventsubscribe" class="btn btn-primary">Subscribe Event</a>
 					  </div>
 					  <nav>
 					  <ul class="pagination" style="float:right">

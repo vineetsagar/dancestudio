@@ -1,8 +1,12 @@
+from django.conf import settings
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
-from django.conf import settings
+
+from sway import views
+
 
 urlpatterns = patterns('',
+                url(r'^$', views.index, name='index'),
     			url(r'^admin/', include(admin.site.urls)),
 			url(r'^sway/', include('sway.urls')),
             url(r'^sway/members/', include('sway.urls')),

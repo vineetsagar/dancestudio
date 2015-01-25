@@ -1,12 +1,11 @@
 {% extends "bs_base.html" %}{% load staticfiles %}
 {% block head%}
 <link href="{% static 'sway/css/forms.css' %}" rel="stylesheet">
+<link href="{% static 'jquery/jquery.datetimepicker.css' %}"
+	rel="stylesheet">
+<script src="{% static 'jquery/bootstrap-datetimepicker.min.js' %}"></script>
 {% endblock%}
 
-{% block title %}
-Art 2 Fitness
-
-{% endblock%}
 {% block container %}
 <div id="form">
 {% if id %}
@@ -91,9 +90,28 @@ Art 2 Fitness
  	<p class="col-sm-10 text-danger">{{ form.area.errors.as_text }}</p>
  </div>	
  <div class="form-group has-error">
-   	<label for="{{ form.first_name.id_for_label }}" class="col-sm-2 control-label">Address:</label>
+   	<label for="{{ form.area.id_for_label }}" class="col-sm-2 control-label">Address:</label>
  	<div class="col-sm-10">
  	   {{ form.area }}
+    </div>
+ </div>
+ {% endif %}
+ {% if not form.birth_date.errors %}
+ <div class="form-group">
+ 	<label for="{{ form.birth_date.id_for_label }}" class="col-sm-2 control-label">Birth Date:</label>
+ 	<div class="col-sm-10">
+    {{ form.birth_date }}
+    </div>
+  </div>
+ {% else %}
+ <div class="row">
+ 	<p class="col-sm-2"></p>
+ 	<p class="col-sm-10 text-danger">{{ form.birth_date.errors.as_text }}</p>
+ </div>	
+ <div class="form-group has-error">
+   	<label for="{{ form.birth_date.id_for_label }}" class="col-sm-2 control-label">Birth Date:</label>
+ 	<div class="col-sm-10">
+ 	   {{ form.birth_date }}
     </div>
  </div>
  {% endif %}
@@ -105,4 +123,10 @@ Art 2 Fitness
 </form>
 </div>
 {% endblock %}
+
+{% block script %}
+
+<!-- scripts for repeat event window -->
+<script src="{% static 'js/member/member.js' %}"></script>
+{% endblock%}
 
