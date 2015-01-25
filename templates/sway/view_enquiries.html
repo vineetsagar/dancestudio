@@ -55,7 +55,8 @@
 						      <th data-priority="1" >Name</th>
 						      <th data-priority="2" >Email</th>
 						      <th data-priority="3" >Mobile</th>
-						      <th data-priority="4" >Contact Details</th>
+						      <th data-priority="3" >Interested In</th>
+						      <th data-priority="4" >Comments</th>
 						      <th data-priority="4" >Next Follow Up</th>
 						      <th data-priority="4" >Action</th>
 						    </tr>
@@ -67,9 +68,10 @@
 									      <td>{{ lead.name }}</td>
 									      <td>{{ lead.email }}</td>
 									      <td>{{ lead.mobile }}</td>
+									      <td>{{ lead.inquiryFor }}</td>
 									      <td>{{ lead.contact_detail }}</td>
 									      <td>{{ lead.nextFollowUpDate }}</td>
-									      <td><a href="/sway/followups?lead={{lead.id}}" title="Add Notes"><span class="glyphicon glyphicon-file" aria-hidden="true"></span></a></td>
+									      <td><a href="/sway/followups?lead={{lead.id}}" title="Notes"><span class="glyphicon glyphicon-file" aria-hidden="true"></span></a></td>
 								      </tr>
 					                {% endfor %}
 							{% endif %}

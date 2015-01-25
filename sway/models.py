@@ -123,7 +123,8 @@ class Lead(models.Model):
     contact_detail = models.CharField(max_length = 255)
     email = models.CharField(max_length = 128)
     mobile = models.CharField(max_length = 128)
-    nextFollowUpDate = models.DateTimeField()
+    nextFollowUpDate = models.DateTimeField(default=None)
+    inquiryFor = models.CharField(max_length=255,default=None)
     studio = models.ForeignKey(Studio) 
     def __unicode__(self):
             return self.pk  

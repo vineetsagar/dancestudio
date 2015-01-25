@@ -10,7 +10,7 @@ from django.forms.models import ModelForm
 
 from sway.form_validators import validate_name_field, validate_address, validate_phone_number 
 from sway.models import Events, EventType
-from sway.models import Members, EventCategory, Instructors,Lead
+from sway.models import Members, EventCategory, Instructors, Lead, LeadFollowUp
 
 
 class EventsForm(ModelForm):
@@ -179,6 +179,7 @@ class LeadForm(forms.ModelForm):
     contact_detail = forms.CharField(max_length=255)
     email = forms.EmailField()
     mobile = forms.CharField(max_length=128)
+    inquiryFor = forms.CharField(max_length=255)
         
     def __init__(self, *args, **kwargs):
         super(LeadForm, self).__init__(*args, **kwargs)
@@ -196,6 +197,7 @@ class LeadForm(forms.ModelForm):
         contact_detail = cleaned_data.get("contact_detail")
         email =cleaned_data.get("email")
         mobile=cleaned_data.get("mobile")
+        inquiryFor=cleaned_data.get("inquiryFor")
         
         msg_invalid_name=u"Invalid name."
        
@@ -216,3 +218,24 @@ class LeadForm(forms.ModelForm):
         else:
             print "Invalid contact no=",mobile;
             self.add_error('mobile',u"Invalid contact number.")        
+
+class FollowupForm(forms.ModelForm):
+    notes = forms.CharField(max_length=128,required=True)
+    nextFollowupDate = forms.DateTimeField(required=False)
+        
+    def __init__(self, *args, **kwargs):
+        super(FollowupForm, self).__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'
+            
+    
+    class Meta:
+        model = LeadFollowUp
+        
+    def clean(self):
+        cleaned_data=super(FollowupForm, self).clean()
+        notes = cleaned_data.get("notes")
+        nextFollowupDate = cleaned_data.get("nextFollowupDate")
+        
+               
+        

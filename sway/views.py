@@ -17,7 +17,7 @@ from django.template.context import RequestContext
 
 from sway.events.event_forms_helper import getForm, getEventForm, setFormDefaultCssAndPlaceHolder
 from sway.forms import EventsForm
-from sway.forms import MemberForm, InstructorForm, LeadForm
+from sway.forms import MemberForm, InstructorForm, LeadForm, FollowupForm
 from sway.models import Members, Events, EventType, EventCategory, Instructors, Lead, LeadFollowUp, \
     EventMembers, MembersView, EventOccurence, ProductContacts
 from sway.storeevents import storeevents, updateEvents
@@ -522,7 +522,8 @@ def add_lead(request):
 def view_followups(request):
     leadId = request.GET.get('lead')
     followups = LeadFollowUp.objects.filter(lead=leadId)
-    context_dict = {'followups': followups,'lead':leadId}
+    leadObj = Lead.objects.get(id=request.GET.get('lead'));
+    context_dict = {'followups': followups,'lead':leadId,"leadObj":leadObj}
     return render(request, 'sway/view_followups.html', context_dict)    
 
 @login_required
@@ -531,14 +532,17 @@ def save_enquiry(request):
     email = request.POST.get('email')
     phone = request.POST.get('mobile')
     contact = request.POST.get('contact_detail') 
-    lead = Lead(name=name,mobile=phone,email=email,contact_detail=contact,studio=request.user.studiouser.studio_id)
+    inquiryFor = request.POST.get('inquiryFor') 
+    lead = Lead(name=name,mobile=phone,email=email,contact_detail=contact,inquiryFor=inquiryFor,studio=request.user.studiouser.studio_id)
     lead.save();
     return HttpResponseRedirect("/sway/enquiries")
 
 @login_required
 def followup(request):
-    context_dict = {'lead': request.GET.get('lead')}
-    return render(request, 'sway/add_followup.html', context_dict)
+    form = FollowupForm()
+    leadObj = Lead.objects.get(id=request.GET.get('lead'));
+    return render_to_response('sway/add_followup.html', { "form": form,'lead': request.GET.get('lead'),"leadObj":leadObj}, context_instance=RequestContext(request))
+    
 
 @login_required
 def save_followup(request):

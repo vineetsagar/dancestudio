@@ -11,16 +11,31 @@
 
 <!-- all the content that will go into body tag -->
 {% block container %}
+<script type="text/javascript">
+  jQuery(function(){
+       $('.nav a:contains("Leads")').parent().addClass('active');
+});
+</script>
 <div id="form">
+ <ol class="breadcrumb">
+  <li><a href="/sway/enquiries">{{leadObj.name}}</a></li>
+  <li><a href="/sway/followups?lead={{lead}}">Followups</a></li>
+  
+</ol>
 <form action="{% url 'save_followup'  %}" method="POST" role="form">
 <input type="hidden" name="lead" value="{{lead}}"/>	
 {% csrf_token %}
   <div class="form-group">
   	<div>
+      {{ form.notes.errors }}
     <label for="notes">Followup Comments:</label>
-    <textarea name="notes" type="text" class="form-control" id="notes"></textarea>
-    </div>	
+      {{ form.notes }}
+    </div>
+    <div>	
+      <label for="notes">Next Followup On:</label>
     <div class='input-group date' id='nextFollowupDate'>
+                  {{ form.nextFollowupDate.errors }}
+                  
                     <input name="nextFollowupDate" type='text' class="form-control"/>
                     <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
                     </span>
@@ -31,7 +46,7 @@
             });
         </script>	
   </div>
-  
+</div>
   <div class="span7 text-center">
   <button type="submit" class="btn btn-primary">Save</button>
 </div>
