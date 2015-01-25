@@ -45,5 +45,6 @@ urlpatterns=patterns('',
          url(r'^instructors/edit/(?P<id>\d+)/$', views.instructor_edit, name='instructor_edit'),
          url(r'^instructors/delete/(?P<id>\d+)/$', views.instructor_delete, name='instructor_delete'),
          url(r'^events/eventsubscribe/(?P<id>\d+)/$', views.view_eventmembers, name='event_members'),
+         url(r'^alerts/$', views.alerts, name='alerts'),
 
 		)

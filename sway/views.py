@@ -637,4 +637,21 @@ def instructor_delete(request, id):
     instructor_to_delete=get_object_or_404(Instructors,pk=id)
     instructor_to_delete.delete()
     return HttpResponseRedirect("/sway/instructors")
+
+@login_required
+def alerts(request):
+    leads = Lead.objects.filter(studio = request.user.studiouser.studio_id, nextFollowUpDate__lte=datetime.date.today()).order_by('nextFollowUpDate')
+    paginator = Paginator(leads, 10,0,True) # Show 10 leads per page
+    page = request.GET.get('page')
+    try:
+        leads = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        leads = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        leads = paginator.page(paginator.num_pages)
+    print leads
+
+    return render_to_response('sway/view_enquiries.html', {"enquiryList": leads}, context_instance=RequestContext(request))
     
