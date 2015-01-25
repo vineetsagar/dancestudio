@@ -5,13 +5,20 @@
 <link href="{% static 'jquery/jquery.timepicker.css' %}" rel="stylesheet">
 <link href="{% static 'jquery/jquery.datetimepicker.css' %}" rel="stylesheet">
 <link href="{% static 'sway/css/forms.css' %}" rel="stylesheet">
+<script src="{% static 'bootstrap/js/jquery.js' %}"></script> 
 <script src="{% static 'jquery/jquery.timepicker.js' %}"></script> 	 	
 <script src="{% static 'jquery/jquery.datetimepicker.js' %}"></script>
 {% endblock%}
 
 <!-- all the content that will go into body tag -->
 {% block container %}
+<script type="text/javascript">
+jQuery(function(){
+       $('.nav a:contains("Leads")').parent().addClass('active');
+});
+</script>
 <div id="form">
+
 <form action="{% url 'save_enquiry'  %}" method="POST" role="form">
 {% csrf_token %}
   <div class="form-group">
