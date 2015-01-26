@@ -1,9 +1,12 @@
 {% extends "bs_base.html" %}{% load staticfiles %}
+
 {% block head%}
+<link href="{% static 'bootstrap/css/bootstrap-datetimepicker.min.css' %}" rel="stylesheet">
 <link href="{% static 'sway/css/forms.css' %}" rel="stylesheet">
-<link href="{% static 'jquery/jquery.datetimepicker.css' %}"
-	rel="stylesheet">
-<script src="{% static 'jquery/bootstrap-datetimepicker.min.js' %}"></script>
+<script src="{% static 'bootstrap/js/jquery.js' %}"></script>   
+<script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script> 
+<script src="{% static 'bootstrap/js/moment.js' %}"></script> 	 	
+<script src="{% static 'bootstrap/js/bootstrap-datetimepicker.js' %}"></script>
 {% endblock%}
 
 {% block container %}
@@ -97,25 +100,37 @@
  </div>
  {% endif %}
  {% if not form.birth_date.errors %}
- <div class="form-group">
- 	<label for="{{ form.birth_date.id_for_label }}" class="col-sm-2 control-label">Birth Date:</label>
- 	<div class="col-sm-10">
-    {{ form.birth_date }}
-    </div>
+   <div class="form-group">	
+	<label for="{{ form.birth_date.id_for_label }}" class="col-sm-2 control-label">Birth Date:</label>
+    <div class='col-sm-10' >
+			{{ form.birth_date }}
+                </div>
+                <script type="text/javascript">
+            $(function () {
+                $('#id_birth_date').datetimepicker({viewMode:'years',pickTime: false});
+            });
+        </script>	
   </div>
  {% else %}
  <div class="row">
  	<p class="col-sm-2"></p>
  	<p class="col-sm-10 text-danger">{{ form.birth_date.errors.as_text }}</p>
  </div>	
- <div class="form-group has-error">
-   	<label for="{{ form.birth_date.id_for_label }}" class="col-sm-2 control-label">Birth Date:</label>
- 	<div class="col-sm-10">
- 	   {{ form.birth_date }}
-    </div>
- </div>
+  <div>	
+	<label for="{{ form.birth_date.id_for_label }}" class="col-sm-2 control-label">Birth Date:</label>
+    <div class='col-sm-10' >
+			{{ form.birth_date }}
+                </div>
+                <script type="text/javascript">
+            $(function () {
+	 		$('#id_birth_date').datepicker({viewMode:'years', pickTime: false});
+            });
+        </script>	
+  </div>
+ 
  {% endif %}
  
+
 <div class="span7 text-center">
 	<button type="submit" class="btn btn-primary" >Submit</button>
 </div>
@@ -123,10 +138,4 @@
 </form>
 </div>
 {% endblock %}
-
-{% block script %}
-
-<!-- scripts for repeat event window -->
-<script src="{% static 'js/member/member.js' %}"></script>
-{% endblock%}
 
