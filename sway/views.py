@@ -563,6 +563,7 @@ def save_followup(request):
     from datetime import datetime
     lead.nextFollowUpDate = datetime.strptime(request.POST.get('nextFollowupDate'),'%m/%d/%Y %H:%M %p')
     lead.save()
+    getAlerts(request);
     redirectString = '/sway/followups?lead='+request.POST.get('lead')
     return HttpResponseRedirect(redirectString) 
 
