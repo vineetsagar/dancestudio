@@ -77,6 +77,7 @@ def loginAuth(request):
         user = authenticate(username=username, password=password)
         if (not user is None) and (user.is_active):
             login(request, user)
+            #request.session['alertsCount'] = '1';
             data['success'] = "/sway/dashboard"
         else:
             data['error'] = "There was an error logging you in. Please Try again"
@@ -97,7 +98,16 @@ def viewmembers(request):
         # If page is out of range (e.g. 9999), deliver last page of results.
         members = paginator.page(paginator.num_pages)
     context_dict = {'membersList': members}
-    return render(request, 'sway/members.html', context_dict, context_instance=RequestContext(request))
+    getAlerts(request)
+    return render_to_response('sway/members.html', context_dict, context_instance=RequestContext(request))
+
+def getAlerts(request):
+    from datetime import timedelta
+    start_date=datetime.date.today();
+    end_date = start_date + datetime.timedelta(days=5)
+    leads = Lead.objects.filter(studio = request.user.studiouser.studio_id, nextFollowUpDate__gte=start_date,nextFollowUpDate__lte=end_date).count()
+    print leads
+    request.session['alertsCount'] = leads;
 
 @login_required
 def search_member(request):
@@ -640,7 +650,10 @@ def instructor_delete(request, id):
 
 @login_required
 def alerts(request):
-    leads = Lead.objects.filter(studio = request.user.studiouser.studio_id, nextFollowUpDate__lte=datetime.date.today()).order_by('nextFollowUpDate')
+    from datetime import timedelta
+    start_date=datetime.date.today();
+    end_date = start_date + datetime.timedelta(days=5)
+    leads = Lead.objects.filter(studio = request.user.studiouser.studio_id, nextFollowUpDate__gte=start_date,nextFollowUpDate__lte=end_date).order_by('nextFollowUpDate')
     paginator = Paginator(leads, 10,0,True) # Show 10 leads per page
     page = request.GET.get('page')
     try:
