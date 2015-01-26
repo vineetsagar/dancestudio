@@ -5,6 +5,7 @@
 	rel="stylesheet">
 <link href="{% static 'jquery/jquery.datetimepicker.css' %}"
 	rel="stylesheet">
+<link href="{% static 'sway/css/forms.css' %}" rel="stylesheet"/>
 <script src="{% static 'jquery/jquery.timepicker.js' %}"></script>
 <script src="{% static 'jquery/jquery.datetimepicker.js' %}"></script>
 {% endblock%}
@@ -14,25 +15,19 @@
 <div id="form">
 <form action="{% url 'updateevents'   %}" method="POST" role="form">
 	{% csrf_token %}
+	<input type='hidden' value="{{ event.id}}" name="event_id" />
 	<div class="form-group">
-		<div class="form-group">
 			{{ form.event_name.errors }} <label
 				for="{{ form.event_name.id_for_label }}">Event Name:</label> 
 				{{form.event_name }}
-		</div>
-
-		<div>
+	</div>
+	<div class="form-group">
 			{{ form.event_category.errors }} <label
 				for="{{ form.event_category.id_for_label }}">Event Category:</label>
 			{{ form.event_category }}
-		</div>
-
-		<input type='hidden' value="{{ event.id}}" name="event_id" />
-
-
-		<div class="col">
-
-			<table class=' table-condensed '>
+	</div>
+	<div class="col">
+		<table class='table-condensed'>
 				<tr>
 					<td>
 						<div class="form-group">

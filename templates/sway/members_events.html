@@ -1,17 +1,16 @@
 {% extends "bs_base.html" %}
 {% load staticfiles %}
 
-{% block head %}
-<!-- for adding anything to html head -->
-
+{% block head%}
+<link href="{% static 'sway/css/forms.css' %}" rel="stylesheet"/>
 {% endblock%}
 
 
 {% block container %}
 <!-- Define your content here-->
 
-<section  id="main_widget" class="ui-widget-content">
-<div class="well well-lg">
+
+<div id="form">
 			<form id="demoform" action="{% url 'saveeventsubscribe'   %}" method="post">
 			{% csrf_token %}
 			<input type='hidden' value="{{ event_id}}" name="event_id" />
@@ -30,8 +29,8 @@
                                   
             <br>
             <div id="Buttonset2">
-					    <button id="Button3" class="btn btn-default  ">Save</button>
-					    <button id="Button4" class="btn btn-default"><a href="javascript:history.back()">Back</a></button>
+					    <button id="Button3" class="btn btn-primary  ">Save</button>
+					    <button id="Button4" class="btn btn-primary"><a href="javascript:history.back()">Back</a></button>
 					  </div>
           </form>
 		</section>
@@ -39,7 +38,7 @@
      	</div>
 {% endblock%}
 {% block script %}
- <link href="{% static 'bootstrap/css/bootstrap-duallistbox.css' %}" rel="stylesheet"/>
+  <link href="{% static 'bootstrap/css/bootstrap-duallistbox.css' %}" rel="stylesheet"/>
   <script src="{% static 'bootstrap/js/jquery.bootstrap-duallistbox.js' %}"></script>
   <script>
     var demo1 = $('select[name="dual_box_name').bootstrapDualListbox(
