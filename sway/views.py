@@ -112,7 +112,7 @@ def getAlerts(request):
 @login_required
 def search_member(request):
     searchStr = request.POST.get('searchStr')
-    members = Members.objects.filter((Q(first_name__startswith=searchStr)|Q(last_name__startswith=searchStr)|Q(email__startswith=searchStr)|Q(area__startswith=searchStr)) &Q(studio = request.user.studiouser.studio_id) )
+    members = Members.objects.filter((Q(first_name__icontains=searchStr)|Q(last_name__icontains=searchStr)|Q(email__icontains=searchStr)|Q(area__icontains=searchStr)) &Q(studio = request.user.studiouser.studio_id) )
     paginator = Paginator(members, 10,0,True) # Show 10 leads per page
     page = request.GET.get('page')
     try:
@@ -288,7 +288,7 @@ def show_instructors(request):
 @login_required
 def search_instructor(request):
     searchStr = request.POST.get('searchStr')
-    instructors = Instructors.objects.filter((Q(first_name__startswith=searchStr)|Q(last_name__startswith=searchStr)|Q(email__startswith=searchStr)|Q(contact_number__startswith=searchStr))&Q(studio = request.user.studiouser.studio_id))
+    instructors = Instructors.objects.filter((Q(first_name__icontains=searchStr)|Q(last_name__icontains=searchStr)|Q(email__icontains=searchStr)|Q(contact_number__icontains=searchStr))&Q(studio = request.user.studiouser.studio_id))
     paginator = Paginator(instructors, 10,0,True) # Show 10 leads per page
     page = request.GET.get('page')
     try:
@@ -305,7 +305,7 @@ def search_instructor(request):
 @login_required
 def search_events(request):
     searchStr = request.POST.get('searchStr')
-    events = Events.objects.filter((Q(event_name__startswith=searchStr))&Q(studio = request.user.studiouser.studio_id))
+    events = Events.objects.filter((Q(event_name__icontains=searchStr))&Q(studio = request.user.studiouser.studio_id))
     paginator = Paginator(events, 10,0,True) # Show 10 leads per page
     page = request.GET.get('page')
     try:
@@ -571,7 +571,7 @@ def save_followup(request):
 @login_required
 def search_enquiry(request):
     searchStr = request.POST.get('searchStr')
-    leads = Lead.objects.filter((Q(name__startswith=searchStr)|Q(contact_detail__startswith=searchStr)|Q(email__startswith=searchStr)|Q(mobile__startswith=searchStr))&Q(studio = request.user.studiouser.studio_id))
+    leads = Lead.objects.filter((Q(name__icontains=searchStr)|Q(contact_detail__icontains=searchStr)|Q(email__icontains=searchStr)|Q(mobile__icontains=searchStr))&Q(studio = request.user.studiouser.studio_id))
     context_dict = {'enquiryList': leads}
     return render(request, 'sway/view_enquiries.html', context_dict, context_instance=RequestContext(request))
 
