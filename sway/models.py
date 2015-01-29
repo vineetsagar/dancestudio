@@ -30,6 +30,10 @@ class Members(models.Model):
         area = models.TextField()
         birth_date = models.DateField(null=True)
         studio = models.ForeignKey(Studio)
+        GENDER_CHOICES = (
+        ('M', 'Male'),
+        ('F', 'Female'))
+        gender = models.CharField(max_length=1, choices=GENDER_CHOICES, default='M')
         def __unicode__(self):
             return self.email
 

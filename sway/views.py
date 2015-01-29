@@ -234,6 +234,7 @@ def savemembers(request):
     data.last_name = request.POST.get("last_name")
     data.email = request.POST.get("email")
     data.area = request.POST.get("address")
+    data.gender = request.POST.get("gender")
     studio_data=request.user.studiouser.studio_id
     data.studio =studio_data
     Members.save(data)
