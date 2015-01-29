@@ -1,8 +1,12 @@
-{% extends "dashboard_base.html" %}
-
-
+{% extends "bs_base.html" %}
+{% load staticfiles %}
 {% block head%}
   
+  	<!--FullCalendar Dependencies-->
+	<link href="{% static 'fullcalendar_2_2_3/fullcalendar.css' %}" rel="stylesheet">
+	<link href="{% static 'fullcalendar_2_2_3/fullcalendar.print.css' %}" rel="stylesheet"  media='print'>
+	<script src="{% static 'fullcalendar_2_2_3/lib/moment.min.js' %}"></script>
+	<script src="{% static 'fullcalendar_2_2_3/fullcalendar.min.js' %}"></script>
 	<script type="text/javascript">
 	jQuery(function(){
     	 $('.nav a:contains("Dashboard")').parent().addClass('active');
