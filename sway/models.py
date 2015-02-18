@@ -5,25 +5,43 @@ from django.core.validators import RegexValidator
 from django.db import models
 
 
+# A base model that alll other model shall extend
+# THis model is abstract since this can't be instantiated an is a mean to keep all the common fields in one class
+class BaseModel(models.Model):
+    Created_Date = models.DateTimeField(default=datetime.now())
+    Created_By =  models.ForeignKey(User,related_name='%(class)s_created_by',null=True,blank=True)
+    Modified_Date = models.DateTimeField(null=True,default=datetime.now())
+    Modified_By =   models.ForeignKey(User,related_name='%(class)s_modified_by',null=True,blank=True)
+    class Meta:
+        abstract = True
+    def save(self, *args, **kwargs):
+        Modified_Date = datetime.now()
+        super(BaseModel, self).save(*args, **kwargs)
+
 #from scipy.special.lambertw import __str__
-class Studio(models.Model):
+class Studio(BaseModel):
     name = models.CharField(max_length = 128)
     area = models.CharField(max_length = 512)
     email = models.EmailField()
     phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: '+91'. Up to 10 digits allowed.")
     mobile = models.CharField(validators=[phone_regex], blank=True, max_length=15)
+    email_host = models.CharField(max_length=100,null=True)
+    email_port = models.PositiveIntegerField()
+    email_user_name = models.CharField(max_length=512,null=True)
+    email_password = models.CharField(max_length=512,null=True)
+    global_email_from = models.EmailField(null=True) 
     def __unicode__(self):
             return self.name
 
 # Create your models here.
-class Category(models.Model):
+class Category(BaseModel):
     name = models.CharField(max_length=128, unique=True)
 
     def __unicode__(self):
         return self.name
     
 
-class Members(models.Model):
+class Members(BaseModel):
         first_name = models.CharField(max_length=128)
         last_name = models.CharField(max_length=128)
         email = models.EmailField()
@@ -37,23 +55,23 @@ class Members(models.Model):
         def __unicode__(self):
             return self.email
 
-class MembersView(models.Model):
+class MembersView(BaseModel):
         selected = models.BooleanField(default = False)
         member = models.OneToOneField(Members)
         class Meta:
             abstract = True
             
-class EventType(models.Model):
+class EventType(BaseModel):
         event_type_name = models.CharField(max_length = 128)
         def __unicode__(self):
             return self.event_type_name
         
-class EventCategory(models.Model):
+class EventCategory(BaseModel):
         event_category_name = models.CharField(max_length = 128)
         def __unicode__(self):
             return self.event_category_name
     
-class Events(models.Model):
+class Events(BaseModel):
         event_name = models.CharField(max_length=128)
         all_day= models.BooleanField(default=False)
         event_category = models.ForeignKey(EventCategory)
@@ -70,7 +88,7 @@ class Events(models.Model):
             return self.event_name
         
         
-class EventOccurence(models.Model):
+class EventOccurence(BaseModel):
     events = models.OneToOneField(Events)
     frequency = models.IntegerField(default=0)
     wmd = models.IntegerField(default=0)
@@ -89,13 +107,13 @@ class EventOccurence(models.Model):
     def __unicode__(self):
             return str(self.pk)
 
-class EventMembers(models.Model):
+class EventMembers(BaseModel):
     event = models.ForeignKey(Events)
     member = models.ForeignKey(Members)
     def __unicode__(self):
             return u'%s' % (self.pk)
         
-class Instructors(models.Model):
+class Instructors(BaseModel):
     first_name = models.CharField(max_length = 128)
     last_name = models.CharField(max_length = 128)  
     email = models.CharField(max_length = 128)
@@ -104,19 +122,19 @@ class Instructors(models.Model):
     def __unicode__(self):
             return self.pk
     
-class EventsInstructors(models.Model):
+class EventsInstructors(BaseModel):
     event_id = models.ForeignKey(Events)
     instructors_id = models.ForeignKey(Instructors)
     def __unicode__(self):
             return self.pk
         
-class StudioUser(models.Model):
+class StudioUser(BaseModel):
     user = models.OneToOneField(User)
     studio_id = models.ForeignKey(Studio)    
     def __unicode__(self):
             return str(self.pk)
         
-class ProductContacts(models.Model):
+class ProductContacts(BaseModel):
     name = models.CharField(max_length = 128)
     email = models.CharField(max_length = 128)
     message = models.CharField(max_length = 1024)
@@ -124,7 +142,7 @@ class ProductContacts(models.Model):
             return str(self.pk)
     
 
-class Lead(models.Model):    
+class Lead(BaseModel):    
     name =  models.CharField(max_length = 128)
     contact_detail = models.CharField(max_length = 255)
     email = models.CharField(max_length = 128)
@@ -136,7 +154,7 @@ class Lead(models.Model):
             return self.pk  
          
 
-class LeadFollowUp(models.Model):    
+class LeadFollowUp(BaseModel):    
     lead = models.ForeignKey(Lead)
     notes = models.CharField(max_length = 255)
     followed_by = models.ForeignKey(User)
