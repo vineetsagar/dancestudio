@@ -46,5 +46,8 @@ urlpatterns=patterns('',
          url(r'^instructors/delete/(?P<id>\d+)/$', views.instructor_delete, name='instructor_delete'),
          url(r'^events/eventsubscribe/(?P<id>\d+)/$', views.view_eventmembers, name='event_members'),
          url(r'^alerts/$', views.alerts, name='alerts'),
+         url(r'^forgotpassword/$', views.forgotpassword, name='forgotpassword'),
+         url(r'^resetpassword/$', views.resetpassword, name='resetpassword'),
+         url(r'^changepassword/$', views.change_password, name='changepassword'),
 
 		)

@@ -669,4 +669,40 @@ def alerts(request):
     print leads
 
     return render_to_response('sway/view_enquiries.html', {"enquiryList": leads}, context_instance=RequestContext(request))
-    
+
+def forgotpassword(request):   
+    return render(request, 'registration/forgotpassword.html', None)
+
+def resetpassword(request):
+    from django.core.mail import send_mail
+    from django.contrib.auth.models import User
+    from django.contrib.auth.hashers import make_password
+    user_name = request.POST.get('username')
+    print user_name
+    tgt_user = User.objects.get(username=user_name)
+    if tgt_usr is None:
+        pass # return error message that user does not exist with username
+    if not tgt_usr.email:
+        pass # return error message that email is not configured for user
+    import uuid
+    random = str(uuid.uuid4()) # Convert UUID format to a Python string.
+    random = random.upper() # Make all characters uppercase.
+    random = random.replace("-","") # Remove the UUID '-'.
+    raw_password = random[0:10]
+    password = make_password(random[0:10]) # Return the random string.
+    tgt_user.password = password
+    tgt_user.save()
+    send_mail('Password Reset','Your password is reset to '+raw_password+', use this password to login. Please modify password of your choice.','balwinder.mca@gmail.com',[tgt_user.email]) 
+    return HttpResponseRedirect("/sway/login")
+
+def change_password(request):
+    from django.core.mail import send_mail
+    from django.contrib.auth.models import User
+    from django.contrib.auth.hashers import make_password
+    password = request.POST.get('password')
+    tgt_user = User.objects.get(id=request.user.id)
+    password = make_password(password) # Return the random string.
+    tgt_user.password = password
+    tgt_user.save()
+    send_mail('Password Modified','Youhave modified your password to '+password+', use this password to login.','balwinder.mca@gmail.com',[tgt_user.email]) 
+    return HttpResponseRedirect("/sway/login")
