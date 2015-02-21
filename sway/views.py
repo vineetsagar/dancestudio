@@ -751,9 +751,9 @@ def resetpassword(request):
     user_name = request.POST.get('username')
     print user_name
     tgt_user = User.objects.get(username=user_name)
-    if tgt_usr is None:
+    if tgt_user is None:
         pass # return error message that user does not exist with username
-    if not tgt_usr.email:
+    if not tgt_user.email:
         pass # return error message that email is not configured for user
     import uuid
     random = str(uuid.uuid4()) # Convert UUID format to a Python string.
