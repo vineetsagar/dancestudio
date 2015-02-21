@@ -1,0 +1,154 @@
+{% extends "bs_base.html" %}
+
+
+{% block head%}
+<!-- for adding anything to html head -->
+
+<script type="text/javascript">
+$(function() {
+	$( "#Buttonset2" ).buttonset(); 
+});
+$(function() {
+	$( "#Buttonset1" ).buttonset(); 
+});
+$(function() {
+	$( "#Checkboxes1" ).buttonset(); 
+});
+$(function() {
+	$( "#Checkboxes" ).buttonset(); 
+});
+</script>
+
+{% endblock%}
+
+
+{% block container %}
+<!-- Script to show selection for the loaded tab -->
+<!-- script that will fill delete popup data before showing it -->
+<script type="text/javascript">
+  $('#confirmDelete').on('show.bs.modal', function (e) {
+      $message = $(e.relatedTarget).attr('data-message');
+      $(this).find('.modal-body p').text($message);
+      $title = $(e.relatedTarget).attr('data-title');
+      $(this).find('.modal-title').text($title);
+      $href = $(e.relatedTarget).attr('data-href');
+      $('#confirmDelete').find('.modal-footer #deletehref').attr('href',$href);
+   });
+ </script>
+<!-- Define your content here-->
+
+  <!-- Default panel contents -->
+  
+
+  					<nav>
+					  <ul class="pagination" style="float:right">
+					    {% if locationsList.has_previous %}
+					    <li>
+					      <a aria-label="Previous" href="?page={{ locationsList.previous_page_number }}">
+					        <span aria-hidden="true">&laquo;</span>
+					      </a>
+					    </li>
+					    {% endif %}
+					    {% for i in locationsList.paginator.page_range %}
+					    {% if locationsList.number == i %}
+					    <li class="active"><a href="#">{{i}}</a></li>
+					    {% else %}
+					    <li><a href="?page={{i}}">{{i}}</a></li>
+					    {% endif %}
+					    {% endfor %}
+					    {% if locationsList.has_next %}
+				        <li>
+				      		<a href="?page={{ locationsList.next_page_number }}" aria-label="Next">
+				        		<span aria-hidden="true">&raquo;</span>
+				      		</a>
+				    	</li>
+					    {% endif %}
+					  </ul>
+					</nav>
+					<div class="well well-sm" style="clear:both">
+					 <div class="col">
+  					<form action="{% url 'search_member'  %}" method="POST" role="form">
+						{% csrf_token %}
+						  <div class="col-lg-3">
+						    <div class="input-group">
+						      <input type="text" class="form-control" name="searchStr" placeholder="Search for...">
+						      <span class="input-group-btn">
+						        <button class="btn btn-primary" type="Submit">Go!</button>
+						      </span>
+						    </div><!-- /input-group -->
+						  </div><!-- /.col-lg-6 -->
+					</form>
+					<div class="col">
+					  
+					  
+			<ul class="nav navbar-nav">
+                     <li >
+                     <span style="margin:5px">
+					<a href="/sway/categories" class="btn btn-default">Category</a></span>
+                    </li>
+                     <li class="active">
+                     <span style="margin:5px">
+					<a href="/sway/locations" class="btn btn-primary">Location</a></span>
+                    </li>
+                    </ul>
+					</div>
+					</div>
+					  	<table class="table table-striped table-hover" id="myTable" >
+					  <thead >
+					   <tr>
+					      <th data-priority="2" >Location Name</th>
+					      </tr>
+					      </thead>
+					      
+					  <tbody>
+					         {% if locationsList %}
+					                {% for location in locationsList %}
+					                   <tr>
+					      <td>{{ location.event_location_name }}</td>
+					      <td>
+					      		<a href="/sway/locations/edit/{{location.id}}">
+					      			<span rel="tooltip" title="Edit Category" class="glyphicon glyphicon-edit green"  onmouseover="this.style.cursor='pointer'"></span>
+					      		</a>
+					      </td>
+					      <td>
+					       		<span rel="tooltip" title="Delete Category" class="glyphicon glyphicon-trash red" data-href="/sway/locations/delete/{{location.id}}/" data-toggle="modal" data-target="#confirmDelete" data-title="Delete Location" data-message="Are you sure you want to delete this location ?" onmouseover="this.style.cursor='pointer'"></span>
+					      </td>
+					      </tr>
+					                {% endfor %}
+					        {% else %}
+					        <div style="clear:both;margin-left:7px; padding-top:5px">    <strong>There are no locations present.</strong></div>
+					        {% endif %}
+					    </tbody>
+					</table>
+				</div>
+					  <div id="Buttonset2">
+					  	<a href="/sway/locations/new" class="btn btn-primary">Add Location</a>
+					  </div>
+					  <nav>
+					  <ul class="pagination" style="float:right">
+					    {% if locationsList.has_previous %}
+					    <li>
+					      <a aria-label="Previous" href="?page={{ locationsList.previous_page_number }}">
+					        <span aria-hidden="true">&laquo;</span>
+					      </a>
+					    </li>
+					    {% endif %}
+					    {% for i in locationsList.paginator.page_range %}
+					    {% if locationsList.number == i %}
+					    <li class="active"><a href="#">{{i}}</a></li>
+					    {% else %}
+					    <li><a href="?page={{i}}">{{i}}</a></li>
+					    {% endif %}
+					    {% endfor %}
+					    {% if locationsList.has_next %}
+				        <li>
+				      		<a href="?page={{ locationsList.next_page_number }}" aria-label="Next">
+				        		<span aria-hidden="true">&raquo;</span>
+				      		</a>
+				    	</li>
+					    {% endif %}
+					  </ul>
+					</nav>
+
+{% endblock%}
+

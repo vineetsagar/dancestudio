@@ -68,7 +68,7 @@ def add_event_occurence_object(request, db_event_obj, event_type, startDate, rep
             else:
                 eventOccurence.wmd = 1 # get all the selected days
         elif (str(never) == '2'):
-            print "after case", never # need to get the frequency here
+            # need to get the frequency here
             # will get a number of times this event should occurred
             # it is daily, weekly or monthly
             frequency = eventOccurence.frequency
@@ -86,7 +86,6 @@ def add_event_occurence_object(request, db_event_obj, event_type, startDate, rep
                 eventOccurence.wmd = 1
                 eventOccurence.eo_end_date = eventOccurence.eo_start_date + relativedelta(days=(int(frequency) * int(after_value)))
         else:
-            print "else case", never
             eventOccurence.eo_end_date = eventOccurence.eo_start_date + relativedelta(years=1)
             eventOccurence.e_never = True
             if eventTypeValue.event_type_name == 'Weekly':
@@ -98,7 +97,6 @@ def add_event_occurence_object(request, db_event_obj, event_type, startDate, rep
                 eventOccurence.wmd = 1
         #save event occurrence now
             # never selected by user, hence set the end date to be exactly after a year
-        print "Updated Event Successfully"
         EventOccurence.save(eventOccurence)
 
 def updateEvents(request):
@@ -145,7 +143,6 @@ def updateEvents(request):
         db_event_obj.event_type = EventType.objects.get(pk=event_type )
     else:
         db_event_obj.event_type = EventType.objects.get(event_type_name='Once')
-        print 'once event type value ', db_event_obj.event_type  
      
     Events.save(db_event_obj)    
    
@@ -164,6 +161,8 @@ def updateEvents(request):
         
 def storeevents(request):
     data= Events()
+    data.created_by = request.user
+    data.modified_by = request.user
     data.event_name = request.POST.get("event_name")
 
     # event category salsa or bachata as of now
@@ -201,7 +200,6 @@ def storeevents(request):
         data.event_type = EventType.objects.get(pk=event_type )
     else:
         data.event_type = EventType.objects.get(event_type_name='Once')
-        print 'once event type value ', data.event_type  
     studio_data=request.user.studiouser.studio_id
     data.studio =studio_data
     Events.save(data)    

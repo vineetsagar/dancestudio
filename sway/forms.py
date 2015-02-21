@@ -9,7 +9,7 @@ from django.forms.forms import Form
 from django.forms.models import ModelForm
 
 from sway.form_validators import validate_name_field, validate_address, validate_phone_number 
-from sway.models import Events, EventType
+from sway.models import Events, EventType, EventCategory, Studio, EventLocations
 from sway.models import Members, EventCategory, Instructors, Lead, LeadFollowUp
 
 
@@ -23,11 +23,12 @@ class EventsForm(ModelForm):
     after = forms.IntegerField(required = False)
     on = forms.CharField(required = False)
     
-    def __init__(self, *args, **kwargs):
+    def __init__(self, request, *args, **kwargs):
         super(EventsForm, self).__init__(*args, **kwargs)
         # this will filter the event type value, i.e we do not want to render 'once' value on the UI, hence this will filter it
         self.fields['event_type'].queryset = EventType.objects.filter(~Q(id = 1))
         self.fields['event_type'].empty_label = None
+        self.fields['event_category'].queryset = EventCategory.objects.filter(Q(studio = request.user.studiouser.studio_id))
     class Meta:
         model = Events
         fields = ['event_name', 'event_category','start_date','start_time', 'end_date','end_time', 'all_day', 'repeat', 'event_type']
@@ -36,7 +37,6 @@ class EventsForm(ModelForm):
     def clean_event_name(self):
         cd = self.cleaned_data
         event_name = cd.get("event_name")
-        print "length ", len(event_name)
         if len(event_name) < 5 or len(event_name) > 100   : 
             raise forms.ValidationError("Event name character length should be in between 5 to 100 characters.")
         return event_name
@@ -75,9 +75,7 @@ class EventsForm(ModelForm):
         if never =='2':
             # that user should provide value of after as well
                 after = cd.get("after")
-                print 'print after', after
                 if after <= 0 or after > 10:
-                    print 'inside ',after
                     self.add_error('after', "This should be between 1 to 10")
         elif never == '3':
             on = cd.get("on")
@@ -219,6 +217,51 @@ class LeadForm(forms.ModelForm):
             print "Invalid contact no=",mobile;
             self.add_error('mobile',u"Invalid contact number.")        
 
+
+class EventLocationForm(forms.ModelForm):
+    event_location_name = forms.CharField(max_length=128)
+    class Meta:
+        model = EventLocations
+        exclude = ('studio','created_date', 'modified_date', 'created_by', 'modified_by')
+    def __init__(self,  *args, **kwargs):
+        super(EventLocationForm, self).__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'
+            field.widget.attrs['required'] = True    
+    def clean(self):
+        print "*******inside self method*********"
+        cleaned_data=super(EventLocationForm, self).clean()
+        event_location_name = cleaned_data.get("event_location_name")
+        msg_invalid_name=u"Invalid location name."
+        if validate_address(event_location_name):
+            print "location name",event_location_name;
+        else:
+            print "Invalid chars in location name",event_location_name;
+            self.add_error('event_location_name',msg_invalid_name)
+        return cleaned_data
+    
+class EventCategoryForm(forms.ModelForm):
+    event_category_name = forms.CharField(max_length=128)
+    class Meta:
+        model = EventCategory
+        exclude = ('studio','created_date', 'modified_date', 'created_by', 'modified_by')
+    def __init__(self,  *args, **kwargs):
+        super(EventCategoryForm, self).__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'
+            field.widget.attrs['required'] = True    
+    def clean(self):
+        print "*******inside self method*********"
+        cleaned_data=super(EventCategoryForm, self).clean()
+        event_category_name = cleaned_data.get("event_category_name")
+        msg_invalid_name=u"Invalid category name."
+        if validate_name_field(event_category_name):
+            print "Category name",event_category_name;
+        else:
+            print "Invalid chars in category name",event_category_name;
+            self.add_error('name',msg_invalid_name)
+        return cleaned_data
+        
 class FollowupForm(forms.ModelForm):
     notes = forms.CharField(max_length=128,required=True)
     nextFollowupDate = forms.DateTimeField(required=False)

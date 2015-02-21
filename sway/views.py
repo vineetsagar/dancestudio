@@ -16,10 +16,10 @@ from django.shortcuts import render, render_to_response
 from django.template.context import RequestContext
 
 from sway.events.event_forms_helper import getForm, getEventForm, setFormDefaultCssAndPlaceHolder
-from sway.forms import EventsForm
+from sway.forms import EventsForm, EventCategoryForm, EventLocationForm
 from sway.forms import MemberForm, InstructorForm, LeadForm, FollowupForm
 from sway.models import Members, Events, EventType, EventCategory, Instructors, Lead, LeadFollowUp, \
-    EventMembers, MembersView, EventOccurence, ProductContacts
+    EventMembers, MembersView, EventOccurence, ProductContacts, EventLocations
 from sway.storeevents import storeevents, updateEvents
 
 
@@ -36,7 +36,6 @@ def delete_events(request, id):
             EventOccurence.objects.filter(events = deleteEvent).delete()
             EventMembers.objects.filter(event = deleteEvent).delete()
             deleteEvent.delete()
-            print "Delete all three tables event, eventmembers,eventoccurence", deleteEvent
         else:
             print "valid event but event does not belong to logged in user studio"
     return HttpResponseRedirect(reverse("events"))
@@ -44,13 +43,12 @@ def delete_events(request, id):
 @login_required
 def addevents(request):
     if request.method =='GET':
-        form = getForm()
+        form = getForm(request)
         event_type = EventType.objects.order_by('-id')
         return render_to_response("sway/add_events.html", { "form": form,'eventList':event_type,}, context_instance=RequestContext(request))
 
 @login_required
 def editevents(request, id=None):
-    print "user value is ", request.user
     if id:
         event=get_object_or_404(Events,pk=id)
         print event
@@ -63,13 +61,15 @@ def editevents(request, id=None):
     event.end_time =event.end_time.strftime('%H:%M')
     
     event_type = EventType.objects.order_by('-id')
-    category_type = EventCategory.objects.order_by('-id')
-    form = getEventForm(event)
+    category_type = EventCategory.objects.filter(Q(studio = request.user.studiouser.studio_id)).order_by('-id')
+    if category_type is None:
+        context_dict = {'error': 'Looks no category you have not defined any category, please go to settings and create few categories.'}
+        return render(request, 'sway/error.html', context_dict)
+    form = getEventForm(request, event)
     context_dict = {'eventList':event_type, 'categoryList':category_type , 'form':form, 'event': event}
     return render(request, 'sway/edit_events.html', context_dict)
 
 def loginAuth(request):
-    print "request for authenticate"
     data={}
     if request.method == 'POST':
         username = request.POST['username']
@@ -81,7 +81,6 @@ def loginAuth(request):
             data['success'] = "/sway/dashboard"
         else:
             data['error'] = "There was an error logging you in. Please Try again"
-        print 'data ', data
         return HttpResponse(json.dumps(data), content_type="application/json")
 
 @login_required
@@ -170,6 +169,38 @@ def save_eventmembers(request):
     return HttpResponseRedirect(reverse("events"))
 
 
+@login_required
+def view_locations(request):
+    locations = EventLocations.objects.filter(Q(studio = request.user.studiouser.studio_id)).order_by('-id')[:10]
+    paginator = Paginator(locations, 10,0,True) # Show 10 leads per page
+    page = request.GET.get('page')
+    try:
+        locations = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        locations = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        locations = paginator.page(paginator.num_pages)
+    context_dict = {'locationsList': locations}
+    return render_to_response('sway/view_locations.html', context_dict, context_instance=RequestContext(request))
+
+@login_required
+def view_categories(request):
+    categories = EventCategory.objects.filter(Q(studio = request.user.studiouser.studio_id)).order_by('-id')[:10]
+    paginator = Paginator(categories, 10,0,True) # Show 10 leads per page
+    page = request.GET.get('page')
+    try:
+        categories = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        categories = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        categories = paginator.page(paginator.num_pages)
+    context_dict = {'categoriesList': categories}
+    return render_to_response('sway/view_categories.html', context_dict, context_instance=RequestContext(request))
+
 def save_contact(request):
     data={}
     name = request.POST.get("name")
@@ -246,7 +277,7 @@ def savemembers(request):
 @login_required
 def saveevents(request):
     if request.method == "POST":
-        form = EventsForm(request.POST)
+        form = EventsForm(request, request.POST)
         if form.is_valid():
             storeevents(request)
         else:
@@ -259,7 +290,7 @@ def saveevents(request):
 @login_required
 def updateEvent(request):
     if request.method == "POST":
-        form = EventsForm(request.POST)
+        form = EventsForm(request, request.POST)
         if form.is_valid():
             updateEvents(request)
         else:
@@ -327,6 +358,47 @@ def add_instructor(request):
     return render(request, 'sway/add_instructor.html')
 
 @login_required
+def add_edit_locations(request, id=None):
+    if id:
+        event_location=get_object_or_404(EventLocations,pk=id)
+    else:
+        event_location=EventLocations()
+    if request.POST:
+        form = EventLocationForm(request.POST, instance=event_location)
+        print form.is_valid()
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.studio = request.user.studiouser.studio_id
+            post.save()
+            return HttpResponseRedirect("/sway/locations")
+        else:
+            print "Location form is invalid"
+    else:
+        form=EventLocationForm( instance=event_location)
+    return render(request, 'sway/add_locations.html', {'form': form, 'id':event_location.id}, context_instance=RequestContext(request))
+
+
+@login_required
+def add_edit_categories(request, id=None):
+    if id:
+        event_category=get_object_or_404(EventCategory,pk=id)
+    else:
+        event_category=EventCategory()
+    if request.POST:
+        form= EventCategoryForm(request.POST, instance=event_category)
+        print form.is_valid()
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.studio = request.user.studiouser.studio_id
+            post.save()
+            return HttpResponseRedirect("/sway/categories")
+        else:
+            print "Category form is invalid"
+    else:
+        form=EventCategoryForm( instance= event_category)
+    return render(request, 'sway/add_categories.html', {'form': form, 'id':event_category.id}, context_instance=RequestContext(request))
+
+@login_required
 def save_instructor(request):
     data = Instructors()
     data.first_name = request.POST.get("first_name")
@@ -344,6 +416,11 @@ def show_dashboard(request):
     'convert it into json fromat required to full calender'
     'render the page now'
     return render(request, 'sway/dashboard.html', None)
+    
+    
+@login_required
+def show_settings(request):
+    return HttpResponseRedirect(reverse("view_categories"))
 
 def onceEvents(event):
     dct_obj2={}
@@ -438,7 +515,7 @@ def get_events_json(request):
                 endDate = datetime.datetime.strptime(str(eventOccurenceValue.eo_end_date), "%Y-%m-%d")
                 e_start_date = startDate.replace(hour=0, minute=0, second=0, microsecond=0)
                 e_end_date = endDate.replace(hour=0, minute=0, second=0, microsecond=0)
-    
+                
                 if (leftSide(p_start_date, p_end_date, e_start_date, e_end_date)):
                     # CASE 1
                     todaysDate = e_start_date
@@ -446,6 +523,7 @@ def get_events_json(request):
                         ## add a event here 
                         lst.append(otherEvents(event, todaysDate))
                         todaysDate = todaysDate+ relativedelta(days=1)
+                        print todaysDate
                 elif (fullyCollapsed(p_start_date, p_end_date, e_start_date, e_end_date) ):
                     #CASE 3
                     todaysDate = e_start_date
@@ -456,11 +534,10 @@ def get_events_json(request):
                 elif(rightSide(p_start_date, p_end_date, e_start_date, e_end_date)):
                     #CASE 2
                     todaysDate = p_start_date
-                    while (todaysDate <= p_end_date):
+                    while (todaysDate <= e_end_date):
                         ## add a event here 
                         lst.append(otherEvents(event, todaysDate))
                         todaysDate = todaysDate+ relativedelta(days=1)
-                    
             elif event.event_type_id ==3:
                 eventOccurenceValue  = event.eventoccurence
                 event_occ_wmd = eventOccurenceValue.wmd
@@ -502,7 +579,7 @@ def get_events_json(request):
     
     
     events_json=json.dumps(lst)
-    print "final json is ----------->",events_json
+    #print "final json is ----------->",events_json
     return HttpResponse(events_json, content_type="application/json")
 
 @login_required
@@ -577,7 +654,6 @@ def search_enquiry(request):
 
 @login_required
 def member_edit(request, id=None):
-    print "member_edit is called"
     if id:
         print "member_edit called  for edit id=" ,id
         member=get_object_or_404(Members,pk=id)
@@ -585,11 +661,8 @@ def member_edit(request, id=None):
     else:
         print "member_edit called  for new member"
         member=Members()
-        '''member=Members(user=request.user)'''
-    
     print "member_edit"        
     if request.POST:
-        print "member_edit POST request"
         form=MemberForm(request.POST,instance=member)
         print form.is_valid(), form.errors, type(form.errors)
         if form.is_valid():
@@ -608,28 +681,29 @@ def member_edit(request, id=None):
 
 @login_required
 def member_delete(request, id):
-    print "member_delete is called"
     member_to_delete=get_object_or_404(Members,pk=id)
     member_to_delete.delete()
     return HttpResponseRedirect("/sway/members")
+
+@login_required
+def category_delete(request, id):
+    member_to_delete=get_object_or_404(EventCategory,pk=id)
+    member_to_delete.delete()
+    return HttpResponseRedirect("/sway/categories")
     
 @login_required
 def instructor_edit(request, id=None):
-    print "instructor_edit is called"
     if id:
         print "instructor_edit called  for edit id=" ,id
         instructor=get_object_or_404(Instructors,pk=id)
         
     else:
-        print "instructor_edit called  for new instructor"
         instructor=Instructors()
             
     if request.POST:
-        print "instructor_edit POST request"
         form=InstructorForm(request.POST,instance=instructor)
         print form.is_valid(), form.errors, type(form.errors)
         if form.is_valid():
-            print "InstructorForm is valid"
             post = form.save(commit=False)
             post.studio = request.user.studiouser.studio_id
             post.save()
@@ -637,7 +711,6 @@ def instructor_edit(request, id=None):
         else:
             print "InstructorForm is invalid"
     else:
-        print "instrcutor_edit GET request"
         form=InstructorForm(instance=instructor)
                         
     return render(request, 'sway/add_instructor.html', {'form': form, 'id':instructor.id})
@@ -645,7 +718,6 @@ def instructor_edit(request, id=None):
 
 @login_required
 def instructor_delete(request, id):
-    print "member_delete is called"
     instructor_to_delete=get_object_or_404(Instructors,pk=id)
     instructor_to_delete.delete()
     return HttpResponseRedirect("/sway/instructors")
@@ -666,7 +738,6 @@ def alerts(request):
     except EmptyPage:
         # If page is out of range (e.g. 9999), deliver last page of results.
         leads = paginator.page(paginator.num_pages)
-    print leads
 
     return render_to_response('sway/view_enquiries.html', {"enquiryList": leads}, context_instance=RequestContext(request))
 

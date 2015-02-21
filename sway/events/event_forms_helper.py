@@ -1,9 +1,10 @@
 import datetime
 import math
 
-from sway.forms import EventsForm
-from sway.models import EventOccurence, EventType
+from django.db.models.query_utils import Q
 
+from sway.forms import EventsForm
+from sway.models import EventOccurence, EventType, EventCategory
 
 
 def setFormDefaultCssAndPlaceHolder(form):
@@ -17,8 +18,8 @@ def setFormDefaultCssAndPlaceHolder(form):
     form.fields['on'].widget.attrs = {'class':'date start'}
     form.fields['after'].widget.attrs = {'placeholder':'Number of times'}
 
-def getForm():
-    form = EventsForm(initial={'start_date':datetime.datetime.now().strftime("%m/%d/%Y"), 'end_date':datetime.datetime.now().strftime("%m/%d/%Y")})
+def getForm(request):
+    form = EventsForm(request, initial={'start_date':datetime.datetime.now().strftime("%m/%d/%Y"), 'end_date':datetime.datetime.now().strftime("%m/%d/%Y")})
     setFormDefaultCssAndPlaceHolder(form)
     return form
 
@@ -47,7 +48,7 @@ def weekDaysValue(wmdValue):
         lst.append(6 )
     return lst
 
-def getEventForm(event):
+def getEventForm(request, event):
     
     eventOccurence = EventOccurence.objects.filter(events = event)
 
@@ -65,7 +66,6 @@ def getEventForm(event):
                 list =  weekDaysValue(v.wmd)
     
     never_List = 1
-    print "repeatflag", repeatflag
     if repeatflag:
         if eventOccurence[0].e_never:
             never_List = 1
@@ -74,7 +74,7 @@ def getEventForm(event):
         if eventOccurence[0].e_after:
             never_List = 2
         
-    form = EventsForm(instance=event, initial={'repeat':repeatflag, 'all_day':event.all_day, 'event_type':eventType, 'weeklyRepeat': list, 'never':never_List})
+    form = EventsForm(request, instance=event, initial={'repeat':repeatflag, 'all_day':event.all_day, 'event_type':eventType, 'weeklyRepeat': list, 'never':never_List})
     #form.fields['weeklyRepeat'].widget.attrs = {'checked':'1,2'}
     form.fields['event_name'].widget.attrs = {'class':'form-control', 'placeholder':'Enter event name'}
     form.fields['event_category'].widget.attrs = {'class':'form-control'}

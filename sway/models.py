@@ -3,19 +3,20 @@ from datetime import datetime
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
 from django.db import models
+from django.template.defaultfilters import default
 
 
 # A base model that alll other model shall extend
 # THis model is abstract since this can't be instantiated an is a mean to keep all the common fields in one class
 class BaseModel(models.Model):
-    Created_Date = models.DateTimeField(default=datetime.now())
-    Created_By =  models.ForeignKey(User,related_name='%(class)s_created_by',null=True,blank=True)
-    Modified_Date = models.DateTimeField(null=True,default=datetime.now())
-    Modified_By =   models.ForeignKey(User,related_name='%(class)s_modified_by',null=True,blank=True)
+    created_date = models.DateTimeField(default=datetime.now())
+    created_by =  models.ForeignKey(User,related_name='%(class)s_created_by',null=True,blank=True)
+    modified_date = models.DateTimeField(null=True,default=datetime.now())
+    modified_by =   models.ForeignKey(User,related_name='%(class)s_modified_by',null=True,blank=True)
     class Meta:
         abstract = True
     def save(self, *args, **kwargs):
-        Modified_Date = datetime.now()
+        modified_date = datetime.now()
         super(BaseModel, self).save(*args, **kwargs)
 
 #from scipy.special.lambertw import __str__
@@ -32,14 +33,6 @@ class Studio(BaseModel):
     global_email_from = models.EmailField(null=True) 
     def __unicode__(self):
             return self.name
-
-# Create your models here.
-class Category(BaseModel):
-    name = models.CharField(max_length=128, unique=True)
-
-    def __unicode__(self):
-        return self.name
-    
 
 class Members(BaseModel):
         first_name = models.CharField(max_length=128)
@@ -66,11 +59,24 @@ class EventType(BaseModel):
         def __unicode__(self):
             return self.event_type_name
         
+class EventLocations(BaseModel):
+        event_location_name = models.CharField(max_length = 128)
+        studio = models.ForeignKey(Studio)
+        def __unicode__(self):
+            return self.event_location_name
+        
 class EventCategory(BaseModel):
         event_category_name = models.CharField(max_length = 128)
+        studio = models.ForeignKey(Studio)
         def __unicode__(self):
             return self.event_category_name
-    
+        
+class UserActionLogs(BaseModel):
+        description = models.CharField(max_length = 200)
+        studio = models.ForeignKey(Studio)
+        def __unicode__(self):
+            return self.description
+
 class Events(BaseModel):
         event_name = models.CharField(max_length=128)
         all_day= models.BooleanField(default=False)

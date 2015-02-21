@@ -10,7 +10,6 @@ def validate_name_field(name):
     else:
         return False
     
-
 def validate_phone_number(number):
     if phone_re.match(number):
         return True
