@@ -99,10 +99,12 @@ class MemberForm(forms.ModelForm):
     
     class Meta:
         model = Members
-        exclude = ('studio',)
+        exclude = ('studio','created_date', 'modified_date', 'created_by', 'modified_by')
+        
         
     def clean(self):
         cleaned_data=super(MemberForm, self).clean()
+        print cleaned_data
         first_name = cleaned_data.get("first_name")
         last_name = cleaned_data.get("last_name")
         email =cleaned_data.get("email")

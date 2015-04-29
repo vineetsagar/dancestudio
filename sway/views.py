@@ -655,13 +655,9 @@ def search_enquiry(request):
 @login_required
 def member_edit(request, id=None):
     if id:
-        print "member_edit called  for edit id=" ,id
         member=get_object_or_404(Members,pk=id)
-        
     else:
-        print "member_edit called  for new member"
         member=Members()
-    print "member_edit"        
     if request.POST:
         form=MemberForm(request.POST,instance=member)
         print form.is_valid(), form.errors, type(form.errors)
@@ -669,6 +665,12 @@ def member_edit(request, id=None):
             print "MemberForm is valid"
             post = form.save(commit=False)
             post.studio = request.user.studiouser.studio_id
+            post.created_by = request.user
+            post.modified_by = request.user
+            if id:
+                post.modified_date = datetime.datetime.now()   
+            else:
+                post.created_date = datetime.datetime.now()
             post.save()
             return HttpResponseRedirect("/sway/members")
         else:
