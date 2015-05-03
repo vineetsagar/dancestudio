@@ -32,6 +32,7 @@ class EventsForm(ModelForm):
     class Meta:
         model = Events
         fields = ['event_name', 'event_category','start_date','start_time', 'end_date','end_time', 'all_day', 'repeat', 'event_type']
+        exclude = ('studio','created_date', 'modified_date', 'created_by', 'modified_by')
     def clean_start_time(self):
         return self.cleaned_data.get("start_time")
     def clean_event_name(self):
@@ -145,7 +146,7 @@ class InstructorForm(forms.ModelForm):
     
     class Meta:
         model = Instructors
-        exclude = ('studio',)
+        exclude = ('studio','created_date', 'modified_date', 'created_by', 'modified_by')
         
     def clean(self):
         cleaned_data=super(InstructorForm, self).clean()
@@ -276,7 +277,7 @@ class FollowupForm(forms.ModelForm):
     
     class Meta:
         model = LeadFollowUp
-        
+        exclude = ('studio','created_date', 'modified_date', 'created_by', 'modified_by')
     def clean(self):
         cleaned_data=super(FollowupForm, self).clean()
         notes = cleaned_data.get("notes")
