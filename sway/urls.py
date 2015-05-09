@@ -1,7 +1,10 @@
 from django.conf.urls import patterns, url
 from django.contrib import admin
 
+from rest_framework.authtoken.views import obtain_auth_token
 from sway import views
+from sway.api import api_view
+from sway import api_helper
 
 
 admin.autodiscover()
@@ -57,5 +60,10 @@ urlpatterns=patterns('',
          url(r'^forgotpassword/$', views.forgotpassword, name='forgotpassword'),
          url(r'^resetpassword/$', views.resetpassword, name='resetpassword'),
          url(r'^changepassword/$', views.change_password, name='changepassword'),
-
+         url(r'^api-token-auth/', obtain_auth_token),
+         url(r'^loginApp/$', api_view.api_app_login, name='loginApp'),
+         url(r'^validateToken/$', api_view.api_validate_token, name='validateToken'),
+         url(r'^getleads/$', api_view.api_lead_list, name='getleads'),
+         url(r'^getleadsCount/$', api_view.api_lead_count_view, name='getleadsCount'),
+         url(r'^api_add_lead/$', api_view.api_add_lead, name='api_add_lead'),
 		)

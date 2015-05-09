@@ -5,6 +5,14 @@ from django.core.validators import RegexValidator
 from django.db import models
 from django.template.defaultfilters import default
 
+from django.conf import settings
+from django.contrib.auth import get_user_model
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from rest_framework.authtoken.models import Token
+from django.core import serializers
+import json
+
 
 # A base model that alll other model shall extend
 # THis model is abstract since this can't be instantiated an is a mean to keep all the common fields in one class
@@ -167,3 +175,10 @@ class LeadFollowUp(BaseModel):
     followed_date = models.DateField(default=datetime.now()) 
     def __unicode__(self):
             return self.pk         
+
+
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_auth_token(sender, instance=None, created=False, **kwargs):
+    print "post_save is called"
+    if created:
+        Token.objects.create(user=instance)
