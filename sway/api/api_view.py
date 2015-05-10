@@ -38,7 +38,7 @@ from sway.storeevents import storeevents, updateEvents
 
 #REST API for mobile app
 def api_app_login(request):
-    print "loginApp is called"
+    print "loginApp is called", request.method
     if request.method == 'POST':
         msg=request.body;
         string_msg=msg.decode("utf-8")
