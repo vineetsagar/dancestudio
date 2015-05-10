@@ -4,7 +4,7 @@ from django.contrib import admin
 from rest_framework.authtoken.views import obtain_auth_token
 from sway import views
 from sway.api import api_view
-from sway import api_helper
+from sway.api import api_helper
 
 
 admin.autodiscover()
