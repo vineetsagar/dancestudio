@@ -49,6 +49,9 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
+    'rest_framework',
+    'rest_framework.authtoken',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -61,9 +64,45 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    )
+}
+
 ROOT_URLCONF = 'dancestudio.urls'
 
 WSGI_APPLICATION = 'dancestudio.wsgi.application'
+
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_METHODS = (
+        'GET',
+        'POST',
+        'PUT',
+        'PATCH',
+        'DELETE',
+        'OPTIONS',
+)
+
+CORS_ALLOW_HEADERS = (
+        'x-requested-with',
+        'content-type',
+        'accept',
+        'origin',
+        'authorization',
+        'withcredentials',
+        #'x-csrftoken',
+)
+
+'''CORS_ORIGIN_WHITELIST = (
+        'http://localhost:8080',
+        'http://192.168.0.1:8000',                
+        'http://192.168.122.132:3000',
+        'http://192.168.121.20:3000',
+)
+'''
 
 
 # Database
@@ -72,7 +111,7 @@ WSGI_APPLICATION = 'dancestudio.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-	'NAME': 'daod3b1jd4s735',
+		'NAME': 'daod3b1jd4s735',
         'USER': 'vxluorpfyrippk',
         'PASSWORD': 'REuIKg21og15EcmaWm_AMcXujo',
         'HOST': 'ec2-54-83-204-244.compute-1.amazonaws.com',   # Or an IP Address that your DB is hosted on
