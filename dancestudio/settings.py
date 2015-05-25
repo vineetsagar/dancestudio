@@ -26,7 +26,7 @@ TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-LOGIN_REDIRECT_URL = '/sway/members'
+LOGIN_REDIRECT_URL = '/sway'
 
 TEMPLATE_PATH = os.path.join(BASE_DIR, 'templates')
 TEMPLATE_DIRS = [
@@ -43,6 +43,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media') # Absolute path to the media direct
 
 INSTALLED_APPS = (
     'django.contrib.admin',
+    'django.contrib.sitemaps',
     'sway',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -153,7 +154,7 @@ STATICFILES_DIRS = (
 os.path.join(BASE_DIR, 'static'),
 )
 
-LOGIN_URL='/sway/members/login'
+LOGIN_URL='/sway/login'
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.request',

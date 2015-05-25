@@ -6,7 +6,6 @@ from sway import views
 from sway.api import api_view
 from sway.api import api_helper
 
-
 admin.autodiscover()
 
 
