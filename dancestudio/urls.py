@@ -13,8 +13,7 @@ urlpatterns = patterns('',
                 url(r'^$', views.index, name='index'),
     			url(r'^admin/', include(admin.site.urls)),
 				url(r'^sway/', include('sway.urls')),
-				 url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps},
-        			name='django.contrib.sitemaps.views.sitemap'),
+				 url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps}),
 		      )
 if settings.DEBUG:
     urlpatterns += patterns(

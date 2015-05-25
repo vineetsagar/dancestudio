@@ -71,6 +71,5 @@ urlpatterns=patterns('',
          url(r'^getleads/$', api_view.api_lead_list, name='getleads'),
          url(r'^getleadsCount/$', api_view.api_lead_count_view, name='getleadsCount'),
          url(r'^api_add_lead/$', api_view.api_add_lead, name='api_add_lead'),
-         url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps},
-        			name='django.contrib.sitemaps.views.sitemap'),
+         url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps}),
 		)
