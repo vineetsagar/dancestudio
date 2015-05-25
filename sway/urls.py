@@ -1,16 +1,10 @@
 from django.conf.urls import patterns, url
 from django.contrib import admin
-from django.contrib.sitemaps.views import sitemap
-from .sitemaps import StaticViewSitemap
 from rest_framework.authtoken.views import obtain_auth_token
 from sway import views
 from sway.api import api_view
 from sway.api import api_helper
 
-
-sitemaps = {
-    'static': StaticViewSitemap,
-}
 
 admin.autodiscover()
 
@@ -71,5 +65,4 @@ urlpatterns=patterns('',
          url(r'^getleads/$', api_view.api_lead_list, name='getleads'),
          url(r'^getleadsCount/$', api_view.api_lead_count_view, name='getleadsCount'),
          url(r'^api_add_lead/$', api_view.api_add_lead, name='api_add_lead'),
-         url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps}),
 		)
