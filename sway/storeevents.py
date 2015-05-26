@@ -110,9 +110,12 @@ def updateEvents(request):
 
     # event category salsa or bachata as of now
     event_category_name = request.POST.get("event_category")
+    event_location_name = request.POST.get("event_location")
     eventCategory = EventCategory.objects.get(pk=event_category_name)
+    eventLocation = EventLocations.objects.get(pk=event_location_name)
 
     db_event_obj.event_category = eventCategory
+    db_event_obj.event_location = eventLocation
     
     event_type = request.POST.get("event_type")
     
