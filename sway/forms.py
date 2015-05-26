@@ -29,9 +29,10 @@ class EventsForm(ModelForm):
         self.fields['event_type'].queryset = EventType.objects.filter(~Q(id = 1))
         self.fields['event_type'].empty_label = None
         self.fields['event_category'].queryset = EventCategory.objects.filter(Q(studio = request.user.studiouser.studio_id))
+        self.fields['event_location'].queryset = EventLocations.objects.filter(Q(studio = request.user.studiouser.studio_id))
     class Meta:
         model = Events
-        fields = ['event_name', 'event_category','start_date','start_time', 'end_date','end_time', 'all_day', 'repeat', 'event_type']
+        fields = ['event_name', 'event_category','start_date','start_time', 'end_date','end_time', 'all_day', 'repeat', 'event_type', 'event_location']
         exclude = ('studio','created_date', 'modified_date', 'created_by', 'modified_by')
     def clean_start_time(self):
         return self.cleaned_data.get("start_time")

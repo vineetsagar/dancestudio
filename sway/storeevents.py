@@ -1,7 +1,7 @@
 import datetime
 from dateutil.relativedelta import relativedelta
 
-from sway.models import Events, EventType, EventCategory, EventOccurence
+from sway.models import Events, EventType, EventCategory, EventOccurence, EventLocations
 
 
 def calculateMonthBitValue(request):
@@ -167,9 +167,12 @@ def storeevents(request):
 
     # event category salsa or bachata as of now
     event_category_name = request.POST.get("event_category")
+    event_location_name = request.POST.get("event_location")
     eventCategory = EventCategory.objects.get(pk=event_category_name)
+    eventLocation = EventLocations.objects.get(pk=event_location_name)
 
     data.event_category = eventCategory
+    data.event_location = eventLocation
     
     event_type = request.POST.get("event_type")
     

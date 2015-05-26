@@ -89,6 +89,7 @@ class Events(BaseModel):
         event_name = models.CharField(max_length=128)
         all_day= models.BooleanField(default=False)
         event_category = models.ForeignKey(EventCategory)
+        event_location = models.ForeignKey(EventLocations, null=True)
         event_type = models.ForeignKey(EventType)
         
         start_date = models.DateField(default=datetime.now())

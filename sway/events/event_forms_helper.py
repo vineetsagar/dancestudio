@@ -10,6 +10,7 @@ from sway.models import EventOccurence, EventType, EventCategory
 def setFormDefaultCssAndPlaceHolder(form):
     form.fields['event_name'].widget.attrs = {'class':'form-control', 'placeholder':'Enter event name'}
     form.fields['event_category'].widget.attrs = {'class':'form-control'}
+    form.fields['event_location'].widget.attrs = {'class':'form-control'}
     form.fields['start_date'].widget.attrs = {'class':'date start'}
     form.fields['end_date'].widget.attrs = {'class':'date start'}
     form.fields['start_time'].widget.attrs = {'class':'time start'}
@@ -78,6 +79,7 @@ def getEventForm(request, event):
     #form.fields['weeklyRepeat'].widget.attrs = {'checked':'1,2'}
     form.fields['event_name'].widget.attrs = {'class':'form-control', 'placeholder':'Enter event name'}
     form.fields['event_category'].widget.attrs = {'class':'form-control'}
+    form.fields['event_location'].widget.attrs = {'class':'form-control'}
     form.fields['start_date'].widget.attrs = {'class':'date start'}
     form.fields['start_time'].widget.attrs = {'class':'time start'}
     form.fields['end_time'].widget.attrs = {'class':'time start'}

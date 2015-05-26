@@ -102,8 +102,8 @@ def api_lead_list(request):
     print "in request for getting lead data search value", request.GET.get('search')
     if request.method == 'GET':
     	searchStr = request.GET.get('search')
-    	if searchStr is None or searchStr == 'null':
-            leads = Lead.objects.filter(Q(studio = request.user.studiouser.studio_id))
+    	if searchStr is None or searchStr == 'null' or searchStr =='':
+            leads = Lead.objects.filter(Q(studio = request.user.studiouser.studio_id)).order_by('nextFollowUpDate')
             paginator = Paginator(leads, 5,0,True) # Show 10 leads per page
             page = request.GET.get('page')
             try:
@@ -117,20 +117,19 @@ def api_lead_list(request):
             serializer = LeadSerializer(leads, many=True)
             return JSONResponse(serializer.data)
     	else:
-    		leads = Lead.objects.filter((Q(name__icontains=searchStr)|Q(contact_detail__icontains=searchStr)|Q(email__icontains=searchStr)|Q(mobile__icontains=searchStr)|Q(inquiryFor__icontains=searchStr)) &Q(studio = request.user.studiouser.studio_id))
-	    	paginator = Paginator(leads, 5,0,True) # Show 10 leads per page
-	    	page = request.GET.get('page')
-	    	try:
-	        	leads = paginator.page(page)
-	    	except PageNotAnInteger:
+            leads = Lead.objects.filter((Q(name__icontains=searchStr)|Q(contact_detail__icontains=searchStr)|Q(email__icontains=searchStr)|Q(mobile__icontains=searchStr)|Q(inquiryFor__icontains=searchStr)) &Q(studio = request.user.studiouser.studio_id)).order_by('nextFollowUpDate')
+            paginator = Paginator(leads, 5,0,True) # Show 10 leads per page
+            page = request.GET.get('page')
+            try:
+                leads = paginator.page(page)
+            except PageNotAnInteger:
 	        	# If page is not an integer, deliver first page.
-	        	leads = paginator.page(1)
-	    	except EmptyPage:
+                leads = paginator.page(1)
+            except EmptyPage:
 	        	# If page is out of range (e.g. 9999), deliver last page of results.
-	        	leads = paginator.page(paginator.num_pages)
-	    	print " inside the get lead call ", request.user.studiouser.studio_id
-	        serializer = LeadSerializer(leads, many=True)
-	        return JSONResponse(serializer.data)
+                leads = paginator.page(paginator.num_pages)
+            serializer = LeadSerializer(leads, many=True)
+            return JSONResponse(serializer.data)
 
 @api_view(['POST',])
 @authentication_classes((TokenAuthenticator,))
