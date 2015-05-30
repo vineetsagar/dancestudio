@@ -104,7 +104,7 @@ def api_lead_list(request):
     	searchStr = request.GET.get('search')
     	if searchStr is None or searchStr == 'null' or searchStr =='':
             leads = Lead.objects.filter(Q(studio = request.user.studiouser.studio_id)).order_by('nextFollowUpDate')
-            paginator = Paginator(leads, 5,0,True) # Show 10 leads per page
+            paginator = Paginator(leads, 10,0,True) # Show 10 leads per page
             page = request.GET.get('page')
             try:
                 leads = paginator.page(page)
@@ -118,7 +118,7 @@ def api_lead_list(request):
             return JSONResponse(serializer.data)
     	else:
             leads = Lead.objects.filter((Q(name__icontains=searchStr)|Q(contact_detail__icontains=searchStr)|Q(email__icontains=searchStr)|Q(mobile__icontains=searchStr)|Q(inquiryFor__icontains=searchStr)) &Q(studio = request.user.studiouser.studio_id)).order_by('nextFollowUpDate')
-            paginator = Paginator(leads, 5,0,True) # Show 10 leads per page
+            paginator = Paginator(leads, 10,0,True) # Show 10 leads per page
             page = request.GET.get('page')
             try:
                 leads = paginator.page(page)
