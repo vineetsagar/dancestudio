@@ -64,6 +64,8 @@ urlpatterns=patterns('',
          url(r'^loginApp/$', api_view.api_app_login, name='loginApp'),
          url(r'^validateToken/$', api_view.api_validate_token, name='validateToken'),
          url(r'^getleads/$', api_view.api_lead_list, name='getleads'),
+         url(r'^getleadfollowups/$', api_view.api_lead_followups_list, name='getleadfollowups'),
          url(r'^getleadsCount/$', api_view.api_lead_count_view, name='getleadsCount'),
          url(r'^api_add_lead/$', api_view.api_add_lead, name='api_add_lead'),
+         url(r'^registration/$', api_view.registration, name='registration'),
 		)

@@ -30,15 +30,15 @@ class BaseModel(models.Model):
 #from scipy.special.lambertw import __str__
 class Studio(BaseModel):
     name = models.CharField(max_length = 128)
-    area = models.CharField(max_length = 512)
+    area = models.CharField(max_length = 512,null=True,blank=True)
     email = models.EmailField()
     phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: '+91'. Up to 10 digits allowed.")
     mobile = models.CharField(validators=[phone_regex], blank=True, max_length=15)
-    email_host = models.CharField(max_length=100,null=True)
+    email_host = models.CharField(max_length=100,null=True,blank=True)
     email_port = models.PositiveIntegerField()
-    email_user_name = models.CharField(max_length=512,null=True)
-    email_password = models.CharField(max_length=512,null=True)
-    global_email_from = models.EmailField(null=True) 
+    email_user_name = models.CharField(max_length=512,null=True,blank=True)
+    email_password = models.CharField(max_length=512,null=True,blank=True)
+    global_email_from = models.EmailField(null=True,blank=True) 
     def __unicode__(self):
             return self.name
 
@@ -181,6 +181,5 @@ class LeadFollowUp(BaseModel):
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
-    print "post_save is called"
     if created:
         Token.objects.create(user=instance)

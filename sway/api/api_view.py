@@ -3,7 +3,9 @@ from dateutil.relativedelta import relativedelta
 import json
 import math
 
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse
@@ -26,7 +28,7 @@ from sway.api.api_helper import get_token,byteify
 from sway.api.api_helper import TokenAuthenticator
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
-from sway.api.serializers import LeadSerializer,FollowUpSerializer
+from sway.api.serializers import LeadSerializer,FollowUpSerializer,UserSerializer,StudioSerializer,StudioUserSerializer
 from django.db.transaction import commit
 from sway.api.api_helper import JSONResponse
 from sway.events.event_forms_helper import getForm, getEventForm, setFormDefaultCssAndPlaceHolder
@@ -35,6 +37,8 @@ from sway.forms import MemberForm, InstructorForm, LeadForm, FollowupForm
 from sway.models import Members, Events, EventType, EventCategory, Instructors, Lead, LeadFollowUp, \
     EventMembers, MembersView, EventOccurence, ProductContacts, EventLocations
 from sway.storeevents import storeevents, updateEvents
+
+
 
 #REST API for mobile app
 def api_app_login(request):
@@ -96,6 +100,19 @@ def api_lead_count_view(request, format=None):
     return Response(content)
     
 @api_view(['GET',])
+def api_lead_followups_list(request):
+    print "in request for getting lead followup data"
+    if request.method =='GET':
+        forLead = request.GET.get('lead_id')
+        print "found for lead value " , forLead
+        if forLead is not None:
+            foundLead = get_object_or_404(Lead,pk=forLead)
+            followups = LeadFollowUp.objects.filter(Q(lead = foundLead)).order_by('-followed_date')
+            serializer = FollowUpSerializer(followups, many=True)
+            return JSONResponse(serializer.data)
+
+
+@api_view(['GET',])
 @authentication_classes((TokenAuthenticator,))
 def api_lead_list(request):
     print "in request for getting lead data page value", request.GET.get('page')
@@ -131,6 +148,47 @@ def api_lead_list(request):
             serializer = LeadSerializer(leads, many=True)
             return JSONResponse(serializer.data)
 
+def registration(request):
+    data = JSONParser().parse(request)
+    id = data["username"]
+    print "username request", id
+    # need to search that username is already exist
+    userExist = User.objects.filter(Q(username=id))
+    print "user found value is ", userExist
+    if userExist is not None and len(userExist) != 0:
+        # need to retrun a reponse that user already exist here
+        print "User already exist hence returning the json response", id
+        return JSONResponse("User " + id + " already exist " , status=422)
+
+    if request.method == 'POST':
+        serializer = UserSerializer(data=data)
+        if serializer.is_valid():
+            createdUser = serializer.save()
+            studioName = data["first_name"] + " " +data["last_name"]
+            studioData = {}
+            studioData['name'] = studioName
+            studioData["email"]= data["email"]
+            studioData["mobile"] = data["mobile"]
+            studioData["email_port"] = 0
+            studioSerializer = StudioSerializer(data=studioData)
+            if studioSerializer.is_valid():
+                createdStudio = studioSerializer.save();
+                ## now create mapping of studio and user
+                studioUserData = {}
+                studioUserData["user"] = createdUser.id
+                studioUserData["studio_id"] = createdStudio.id
+                print "studio user data value is", studioUserData
+                studioUserSerializer = StudioUserSerializer(data=studioUserData)
+                if studioUserSerializer.is_valid():
+                    print "studio user data is valid"
+                    studioUserSerializer.save();
+                else:
+                    print "invalid"
+            # here we have to create a studio object
+            # here we have to create a studio user mapping also
+            return JSONResponse(serializer.data, status=200)
+    return JSONResponse(serializer.errors, status=400) 
+
 @api_view(['POST',])
 @authentication_classes((TokenAuthenticator,))
 def api_add_lead(request):
@@ -150,6 +208,7 @@ def api_lead_delete(request, id):
     lead_to_delete.delete()
     response = http.HttpResponse("OK")
     return response;
+
     
 @api_view(['POST',])
 @authentication_classes((TokenAuthenticator,))
