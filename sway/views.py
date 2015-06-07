@@ -604,6 +604,29 @@ def view_enquiries(request):
 def add_lead(request):
     form = LeadForm()
     return render_to_response('sway/add_enquiry.html', { "form": form}, context_instance=RequestContext(request))
+
+@login_required
+def edit_lead(request,id=None):
+    print 'In print lead '
+    if id:
+        lead=get_object_or_404(Lead,pk=id)
+        print lead.name
+    else:
+        lead=Lead()
+    if request.POST:
+        print lead.created_date
+        form = LeadForm(request.POST, instance=lead)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.studio = request.user.studiouser.studio_id
+            post.created_date=lead.created_date 
+            post.save()
+            return HttpResponseRedirect("/sway/enquiries")
+        else:
+            print "Lead form is invalid"
+    else:
+        form=LeadForm( instance=lead)
+    return render(request, 'sway/add_enquiry.html', {'form': form, 'id':lead.id}, context_instance=RequestContext(request))
     
 
 @login_required

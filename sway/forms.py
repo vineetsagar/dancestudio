@@ -12,7 +12,6 @@ from sway.form_validators import validate_name_field, validate_address, validate
 from sway.models import Events, EventType, EventCategory, Studio, EventLocations
 from sway.models import Members, EventCategory, Instructors, Lead, LeadFollowUp
 
-
 class EventsForm(ModelForm):
     all_day = forms.BooleanField(initial=False, required=False)
     repeat = forms.BooleanField(initial=False, required=False)
@@ -182,16 +181,16 @@ class LeadForm(forms.ModelForm):
     email = forms.EmailField()
     mobile = forms.CharField(max_length=128)
     inquiryFor = forms.CharField(max_length=255)
-        
+    status = forms.ChoiceField(choices=[(3,'Cold'),(4,'Warm'),(5,'Hot'),(2,'Converted'),(1,'Closed')],initial=3)    
     def __init__(self, *args, **kwargs):
         super(LeadForm, self).__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
-            field.widget.attrs['required'] = True
+            field.widget.attrs['required'] = 'True'
     
     class Meta:
         model = Lead
-        exclude = ('studio',)
+        exclude = ('studio','created_date', 'modified_date', 'created_by', 'modified_by')
         
     def clean(self):
         cleaned_data=super(LeadForm, self).clean()
@@ -200,7 +199,6 @@ class LeadForm(forms.ModelForm):
         email =cleaned_data.get("email")
         mobile=cleaned_data.get("mobile")
         inquiryFor=cleaned_data.get("inquiryFor")
-        
         msg_invalid_name=u"Invalid name."
        
         if validate_name_field(name):
@@ -210,7 +208,7 @@ class LeadForm(forms.ModelForm):
             self.add_error('name',msg_invalid_name)
         
         if validate_name_field(contact_detail):
-            print "Correct name",contact_detail;
+            print "Correct Contact Detail",contact_detail;
         else:
             print "Invalid chars in contact_detail",contact_detail;
             self.add_error('contact_detail',msg_invalid_name)

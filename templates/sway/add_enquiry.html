@@ -18,8 +18,11 @@ jQuery(function(){
 });
 </script>
 <div id="form">
-
-<form action="{% url 'save_enquiry'  %}" method="POST" role="form">
+{% if id %}
+<form action="{% url 'edit_lead' id=id %}" class="form-horizontal"  method="POST" role="form">
+{% else %}
+<form action="{% url 'save_enquiry' %}" class="form-horizontal" method="POST" role="form">
+{% endif %} 
 {% csrf_token %}
   <div class="form-group">
     {{ form.name.errors }}
@@ -45,6 +48,11 @@ jQuery(function(){
     {{ form.contact_detail.errors }}
     <label for="contact">Comments:</label>
      {{ form.contact_detail }}
+  </div>
+  <div class="form-group">
+    {{ form.status.errors }}
+    <label for="contact">Status:</label>
+     {{ form.status }}
   </div>
   <div class="span7 text-center">
   <button type="submit" class="btn btn-primary">Save</button>

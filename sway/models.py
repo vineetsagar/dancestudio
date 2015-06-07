@@ -17,9 +17,9 @@ import json
 # A base model that alll other model shall extend
 # THis model is abstract since this can't be instantiated an is a mean to keep all the common fields in one class
 class BaseModel(models.Model):
-    created_date = models.DateTimeField(default=datetime.now())
+    created_date = models.DateTimeField(default=datetime.now(),blank=True)
     created_by =  models.ForeignKey(User,related_name='%(class)s_created_by',null=True,blank=True)
-    modified_date = models.DateTimeField(null=True,default=datetime.now())
+    modified_date = models.DateTimeField(null=True,default=datetime.now(),auto_now=True)
     modified_by =   models.ForeignKey(User,related_name='%(class)s_modified_by',null=True,blank=True)
     class Meta:
         abstract = True
@@ -162,9 +162,10 @@ class Lead(BaseModel):
     contact_detail = models.CharField(max_length = 255)
     email = models.CharField(max_length = 128)
     mobile = models.CharField(max_length = 128)
-    nextFollowUpDate = models.DateTimeField(default=None,null=True)
+    nextFollowUpDate = models.DateTimeField(default=None,null=True,blank=True)
     inquiryFor = models.CharField(max_length=255,null=True)
     studio = models.ForeignKey(Studio) 
+    status = models.PositiveIntegerField(default=3)
     def __unicode__(self):
             return self.pk  
          
