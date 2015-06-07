@@ -584,7 +584,7 @@ def get_events_json(request):
 
 @login_required
 def view_enquiries(request):
-    leads = Lead.objects.filter(Q(studio = request.user.studiouser.studio_id)).order_by('-id')
+    leads = Lead.objects.filter(Q(studio = request.user.studiouser.studio_id)).exclude(status=1).order_by('-nextFollowUpDate','-status')
     paginator = Paginator(leads, 10,0,True) # Show 10 leads per page
     page = request.GET.get('page')
     try:
