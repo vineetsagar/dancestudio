@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
     
 class FollowUpSerializer(serializers.ModelSerializer):
-    followed_by_name=serializers.SerializerMethodField('get_followed_by_name')
+    followed_by_name=serializers.SerializerMethodField()
     class Meta:
         model=LeadFollowUp
         field=('id','lead','notes','follwed_by','followed_date', 'followed_by_name')
@@ -16,7 +16,8 @@ class LeadSerializer(serializers.ModelSerializer):
     followups = FollowUpSerializer(many=True,required=False)
     class Meta:
         model = Lead
-        fields=('id','name','contact_detail','email','mobile' ,'nextFollowUpDate' ,'inquiryFor','studio','followups')
+        fields=('id','name','contact_detail','email','mobile' ,'nextFollowUpDate' ,'inquiryFor','studio','followups', 'status')
+        read_only_fields = ('id', 'status',)
         #fields=('id','name','contact_detail','email','mobile' ,'nextFollowUpDate' ,'inquiryFor','followups')
         
     def create(self, validated_data):
