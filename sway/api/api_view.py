@@ -83,8 +83,8 @@ def api_validate_token(request):
     response = http.HttpResponse("OK")
     return response;
    
-
 @api_view(['GET'])
+@authentication_classes((TokenAuthenticator,))
 def api_lead_count_view(request, format=None):
     """
     A view that returns the count of active users in JSON.
@@ -100,15 +100,15 @@ def api_lead_count_view(request, format=None):
     return Response(content)
     
 @api_view(['GET',])
-def api_lead_followups_list(request):
+@authentication_classes((TokenAuthenticator,))
+def api_single_lead(request):
     print "in request for getting lead followup data"
     if request.method =='GET':
         forLead = request.GET.get('lead_id')
         print "found for lead value " , forLead
         if forLead is not None:
             foundLead = get_object_or_404(Lead,pk=forLead)
-            followups = LeadFollowUp.objects.filter(Q(lead = foundLead)).order_by('-followed_date')
-            serializer = FollowUpSerializer(followups, many=True)
+            serializer = LeadSerializer(foundLead, many=False)
             return JSONResponse(serializer.data)
 
 

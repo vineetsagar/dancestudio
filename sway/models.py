@@ -171,7 +171,7 @@ class Lead(BaseModel):
          
 
 class LeadFollowUp(BaseModel):    
-    lead = models.ForeignKey(Lead)
+    lead = models.ForeignKey(Lead, related_name="followups")
     notes = models.CharField(max_length = 255)
     followed_by = models.ForeignKey(User)
     followed_date = models.DateField(default=datetime.now()) 
