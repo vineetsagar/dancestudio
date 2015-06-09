@@ -7,10 +7,13 @@ class FollowUpSerializer(serializers.ModelSerializer):
     followed_by_name=serializers.SerializerMethodField()
     class Meta:
         model=LeadFollowUp
-        field=('id','lead','notes','followed_date', 'followed_by_name')
-            
+        fields=('id','lead','notes','followed_date', 'followed_by' , 'followed_by_name')
+        read_only_fields = ('id','followed_by_name')   
     def get_followed_by_name(self,obj):
         return obj.followed_by.username
+    def create(self, validated_data):
+        leadData =  LeadFollowUp.objects.create(**validated_data) 
+        return leadData
 
 class LeadSerializer(serializers.ModelSerializer):
     followups = FollowUpSerializer(many=True,required=False)

@@ -67,5 +67,6 @@ urlpatterns=patterns('',
          url(r'^getleadfollowups/$', api_view.api_single_lead, name='api_single_lead'),
          url(r'^getleadsCount/$', api_view.api_lead_count_view, name='getleadsCount'),
          url(r'^api_add_lead/$', api_view.api_add_lead, name='api_add_lead'),
+         url(r'^api_add_followup/$', api_view.api_add_followup, name='api_add_followup'),
          url(r'^registration/$', api_view.registration, name='registration'),
 		)

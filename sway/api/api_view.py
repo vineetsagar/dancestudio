@@ -2,7 +2,6 @@ import datetime
 from dateutil.relativedelta import relativedelta
 import json
 import math
-
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
@@ -214,10 +213,11 @@ def api_lead_delete(request, id):
 @authentication_classes((TokenAuthenticator,))
 def api_add_followup(request):
     data = JSONParser().parse(request)
-    #data['studio']=request.user.studiouser.studio_id.id
+    data['followed_by'] = request.user.id
     serializer = FollowUpSerializer(data=data)
     if serializer.is_valid():
         serializer.save()
         return JSONResponse(serializer.data, status=200)
-
+    else:
+        print "data is not valid, hence returning", serializer.errors
     return JSONResponse(serializer.errors, status=400)

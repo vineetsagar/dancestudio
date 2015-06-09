@@ -175,9 +175,9 @@ class LeadFollowUp(BaseModel):
     lead = models.ForeignKey(Lead, related_name="followups")
     notes = models.CharField(max_length = 255)
     followed_by = models.ForeignKey(User)
-    followed_date = models.DateField(default=datetime.now()) 
+    followed_date = models.DateField(auto_now_add=True) 
     def __unicode__(self):
-            return self.pk         
+            return str(self.pk)         
 
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
