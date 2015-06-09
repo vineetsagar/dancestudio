@@ -166,6 +166,7 @@ class Lead(BaseModel):
     inquiryFor = models.CharField(max_length=255,null=True)
     studio = models.ForeignKey(Studio) 
     status = models.PositiveIntegerField(default=3)
+    short_description = models.CharField(max_length=100,blank=True,null=True)
     def __unicode__(self):
             return self.pk  
          
