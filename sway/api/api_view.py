@@ -114,6 +114,21 @@ def api_single_lead(request):
 @api_view(['GET',])
 @authentication_classes((TokenAuthenticator,))
 def api_lead_list(request):
+    print "in request for getting lead data search value", request.GET.get('search')
+    if request.method == 'GET':
+        searchStr = request.GET.get('search')
+        if searchStr is None or searchStr == 'null' or searchStr =='':
+            leads = Lead.objects.filter(Q(studio = request.user.studiouser.studio_id)).order_by('nextFollowUpDate')
+            serializer = LeadSerializer(leads, many=True)
+            return JSONResponse(serializer.data)
+        else:
+            leads = Lead.objects.filter((Q(name__icontains=searchStr)|Q(contact_detail__icontains=searchStr)|Q(email__icontains=searchStr)|Q(mobile__icontains=searchStr)|Q(inquiryFor__icontains=searchStr)) &Q(studio = request.user.studiouser.studio_id)).order_by('nextFollowUpDate')
+            serializer = LeadSerializer(leads, many=True)
+            return JSONResponse(serializer.data)
+
+@api_view(['GET',])
+@authentication_classes((TokenAuthenticator,))
+def api_lead_list_temp(request):
     print "in request for getting lead data page value", request.GET.get('page')
     print "in request for getting lead data search value", request.GET.get('search')
     if request.method == 'GET':
