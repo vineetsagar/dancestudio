@@ -8,7 +8,7 @@ class FollowUpSerializer(serializers.ModelSerializer):
     class Meta:
         model=LeadFollowUp
         fields=('id','lead','notes','followed_date', 'followed_by' , 'followed_by_name')
-        read_only_fields = ('id','followed_by_name')   
+        read_only_fields = ('id','followed_by_name','followed_date')   
     def get_followed_by_name(self,obj):
         return obj.followed_by.username
     def create(self, validated_data):

@@ -168,7 +168,7 @@ class Lead(BaseModel):
     status = models.PositiveIntegerField(default=3)
     short_description = models.CharField(max_length=100,blank=True,null=True)
     def __unicode__(self):
-            return self.pk  
+            return str(self.pk)  
          
 
 class LeadFollowUp(BaseModel):    

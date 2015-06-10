@@ -232,6 +232,11 @@ def api_add_followup(request):
     serializer = FollowUpSerializer(data=data)
     if serializer.is_valid():
         serializer.save()
+        # not we need to update the followeup_date for lead object
+        lead = Lead.objects.filter(id=data["lead"])[0]
+        from datetime import datetime
+        lead.nextFollowUpDate = datetime.strptime(data["followed_date"],'%m/%d/%Y %H:%M %p')
+        lead.save()
         return JSONResponse(serializer.data, status=200)
     else:
         print "data is not valid, hence returning", serializer.errors
