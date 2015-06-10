@@ -46,8 +46,13 @@ jQuery(function(){
   </div>
   <div class="form-group">
     {{ form.contact_detail.errors }}
-    <label for="contact">Comments:</label>
+    <label for="contact">Contact Details:</label>
      {{ form.contact_detail }}
+  </div>
+  <div class="form-group">
+    {{ form.short_description.errors }}
+    <label for="contact">Description/Requirement:</label>
+     {{ form.short_description }}
   </div>
   <div class="form-group">
     {{ form.status.errors }}

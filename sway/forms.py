@@ -181,6 +181,7 @@ class LeadForm(forms.ModelForm):
     email = forms.EmailField()
     mobile = forms.CharField(max_length=128)
     inquiryFor = forms.CharField(max_length=255)
+    short_description = forms.CharField(max_length=100)
     status = forms.ChoiceField(choices=[(3,'Cold'),(4,'Warm'),(5,'Hot'),(2,'Converted'),(1,'Closed')],initial=3)    
     def __init__(self, *args, **kwargs):
         super(LeadForm, self).__init__(*args, **kwargs)
@@ -199,6 +200,7 @@ class LeadForm(forms.ModelForm):
         email =cleaned_data.get("email")
         mobile=cleaned_data.get("mobile")
         inquiryFor=cleaned_data.get("inquiryFor")
+        short_description=cleaned_data.get("short_description")
         msg_invalid_name=u"Invalid name."
        
         if validate_name_field(name):
