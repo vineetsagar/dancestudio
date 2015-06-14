@@ -275,6 +275,26 @@ def savemembers(request):
     return HttpResponseRedirect(reverse("members")) 
 
 @login_required
+def lead_to_member(request,lead=None):
+    lead=get_object_or_404(Lead,pk=lead)
+    lead.status = 2
+    lead.save();
+    #return savemembers(request)
+    data = Members()
+    data.first_name = request.POST.get("first_name")
+    data.last_name = request.POST.get("last_name")
+    data.email = request.POST.get("email")
+    data.area = request.POST.get("area")
+    data.gender = request.POST.get("gender")
+    studio_data=request.user.studiouser.studio_id
+    data.studio =studio_data
+    Members.save(data)
+    #category_list = Members.objects.filter(Q(studio = request.user.studiouser.studio_id)).order_by('-id')[:10]
+    #context_dict = {'membersList': category_list}
+    #return render(request, 'sway/members.html', context_dict)
+    return HttpResponseRedirect(reverse("members")) 
+
+@login_required
 def saveevents(request):
     if request.method == "POST":
         form = EventsForm(request, request.POST)
@@ -584,7 +604,7 @@ def get_events_json(request):
 
 @login_required
 def view_enquiries(request):
-    leads = Lead.objects.filter(Q(studio = request.user.studiouser.studio_id)).exclude(status=1).order_by('-nextFollowUpDate','-status')
+    leads = Lead.objects.filter(Q(studio = request.user.studiouser.studio_id)).exclude(status__in=[1,2]).order_by('-nextFollowUpDate','-status')
     paginator = Paginator(leads, 10,0,True) # Show 10 leads per page
     page = request.GET.get('page')
     try:
@@ -802,3 +822,12 @@ def change_password(request):
     tgt_user.save()
     send_mail('Password Modified','Youhave modified your password to '+password+', use this password to login.','balwinder.mca@gmail.com',[tgt_user.email]) 
     return HttpResponseRedirect("/sway/login")
+
+def convert_lead(request,id=None):
+    if id:
+        lead=get_object_or_404(Lead,pk=id)
+        member = Members()
+        member.first_name=lead.name
+        member.email = lead.email
+        form=MemberForm(instance=member)
+    return render(request, 'sway/add_members.html', {'form': form,'lead':id}, context_instance=RequestContext(request))

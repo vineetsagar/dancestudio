@@ -13,6 +13,8 @@
 <div id="form">
 {% if id %}
 <form action="{% url 'member_edit' id=id %}" class="form-horizontal"  method="POST" role="form">
+{% elif lead %}
+<form action="{% url 'lead_to_member' lead=lead %}" class="form-horizontal" method="POST" role="form">
 {% else %}
 <form action="{% url 'member_add' %}" class="form-horizontal" method="POST" role="form">
 {% endif %}			
