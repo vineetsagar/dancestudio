@@ -664,7 +664,8 @@ def save_enquiry(request):
     phone = request.POST.get('mobile')
     contact = request.POST.get('contact_detail') 
     inquiryFor = request.POST.get('inquiryFor') 
-    lead = Lead(name=name,mobile=phone,email=email,contact_detail=contact,inquiryFor=inquiryFor,studio=request.user.studiouser.studio_id)
+    short_description = request.POST.get('short_description')
+    lead = Lead(name=name,mobile=phone,email=email,contact_detail=contact,inquiryFor=inquiryFor,studio=request.user.studiouser.studio_id, short_description = short_description)
     lead.save();
     return HttpResponseRedirect("/sway/enquiries")
 
