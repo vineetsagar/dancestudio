@@ -173,10 +173,11 @@ def registration(request):
         # need to retrun a reponse that user already exist here
         print "User already exist hence returning the json response", id
         return JSONResponse("User " + id + " already exist " , status=422)
-
     if request.method == 'POST':
+        print "inside registration"
         serializer = UserSerializer(data=data)
         if serializer.is_valid():
+            print "inside valid user data"
             createdUser = serializer.save()
             studioName = data["first_name"] + " " +data["last_name"]
             studioData = {}
@@ -186,6 +187,7 @@ def registration(request):
             studioData["email_port"] = 0
             studioSerializer = StudioSerializer(data=studioData)
             if studioSerializer.is_valid():
+                print "inside valid studio data"
                 createdStudio = studioSerializer.save();
                 ## now create mapping of studio and user
                 studioUserData = {}
