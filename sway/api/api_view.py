@@ -115,12 +115,61 @@ def api_single_lead(request):
 @authentication_classes((TokenAuthenticator,))
 def api_lead_list(request):
     print "in request for getting lead data search value", request.GET.get('search')
+    print "_hot ", request.GET.get('hot')
+    print "_warm ", request.GET.get('warm')
+    print "_cold ", request.GET.get('cold')
+    print "_dFilter ", request.GET.get('dFilter')
     if request.method == 'GET':
         searchStr = request.GET.get('search')
-        if searchStr is None or searchStr == 'null' or searchStr =='':
-            leads = Lead.objects.filter(Q(studio = request.user.studiouser.studio_id)).order_by('nextFollowUpDate')
-            serializer = LeadSerializer(leads, many=True)
-            return JSONResponse(serializer.data)
+        hot = request.GET.get('hot')
+        warm = request.GET.get('warm')
+        cold = request.GET.get('cold')
+        dFilter = request.GET.get('dFilter')
+
+        if searchStr is None or searchStr == 'null' or searchStr =='':      
+            leadList = []
+            if hot is not None  and hot =='true': 
+                # 3 cold, 4 warm ,5 hot
+                leadList.append(5)
+            if warm is not None and warm == 'true': 
+                # 3 cold, 4 warm ,5 hot
+                leadList.append(4)
+            if cold is not None and cold =='true':
+                # 3 cold, 4 warm ,5 hot
+                leadList.append(3)
+            end_date = ""
+            if dFilter is not None and dFilter !='':
+                 from datetime import timedelta
+                 start_date=datetime.date.today();
+                 if dFilter == '2':
+                    print "dfiler 2 get called"
+                    end_date = start_date - datetime.timedelta(days=7)
+                    print "after setting the value"
+                 if dFilter == '3':
+                    end_date = start_date - datetime.timedelta(days=14)
+            if end_date !="":
+                if len(leadList) > 0:
+                    print "going to get the data now"
+                    leads = Lead.objects.filter(Q(studio = request.user.studiouser.studio_id) & Q(status__in=leadList) & Q(nextFollowUpDate__gte=end_date)).order_by('nextFollowUpDate')
+                    print "after to get the data now"
+                    serializer = LeadSerializer(leads, many=True)
+                    return JSONResponse(serializer.data)    
+                else:
+                    print "before getting data"
+                    leads = Lead.objects.filter(Q(studio = request.user.studiouser.studio_id) & Q(nextFollowUpDate__gte=end_date)).order_by('nextFollowUpDate')
+                    print "after getting data"
+                    serializer = LeadSerializer(leads, many=True)
+                    return JSONResponse(serializer.data)
+            else:
+                 if len(leadList) > 0:
+                    leads = Lead.objects.filter(Q(studio = request.user.studiouser.studio_id) & Q(status__in=leadList)).order_by('nextFollowUpDate')
+                    serializer = LeadSerializer(leads, many=True)
+                    return JSONResponse(serializer.data)    
+                 else:
+                    leads = Lead.objects.filter(Q(studio = request.user.studiouser.studio_id)).order_by('nextFollowUpDate')
+                    serializer = LeadSerializer(leads, many=True)
+                    return JSONResponse(serializer.data)
+           
         else:
             leads = Lead.objects.filter((Q(name__icontains=searchStr)|Q(contact_detail__icontains=searchStr)|Q(email__icontains=searchStr)|Q(mobile__icontains=searchStr)|Q(inquiryFor__icontains=searchStr)) &Q(studio = request.user.studiouser.studio_id)).order_by('nextFollowUpDate')
             serializer = LeadSerializer(leads, many=True)
