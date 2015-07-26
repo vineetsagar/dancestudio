@@ -182,7 +182,7 @@ class LeadForm(forms.ModelForm):
     mobile = forms.CharField(max_length=128)
     inquiryFor = forms.CharField(max_length=255)
     short_description = forms.CharField(max_length=100)
-    status = forms.ChoiceField(choices=[(3,'Cold'),(4,'Warm'),(5,'Hot'),(2,'Converted'),(1,'Closed')],initial=3)    
+    status = forms.ChoiceField(choices=[(3,'Cold'),(4,'Warm'),(5,'Hot'),(1,'Closed')],initial=3)    
     def __init__(self, *args, **kwargs):
         super(LeadForm, self).__init__(*args, **kwargs)
         for field_name, field in self.fields.items():

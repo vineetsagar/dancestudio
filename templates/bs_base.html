@@ -9,13 +9,40 @@
     <meta name="author" content="">
 
     <title>{% block title %} TanzFiesta{% endblock %}</title>
-    <!-- Bootstrap Core CSS -->
-    <link href="{% static 'css/colors.css' %}" rel="stylesheet">
-    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet"/>
-    <link href="{% static 'jquery/jquery-ui.css' %}" rel="stylesheet"/>
+
+    <link href="{% static 'bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- MetisMenu CSS -->
+    <link href="{% static 'metisMenu/dist/metisMenu.min.css' %}" rel="stylesheet">
+
+    <!-- Timeline CSS -->
+    <link href="{% static 'sb-admin-2/dist/css/timeline.css' %}" rel="stylesheet">
+
     <!-- Custom CSS -->
-    <link href="{% static 'bootstrap/css/logo-nav.css' %}" rel="stylesheet"/>
-    
+    <link href="{% static 'sb-admin-2/dist/css/sb-admin-2.css' %}" rel="stylesheet">
+
+    <!-- Morris Charts CSS -->
+    <link href="{% static 'morrisjs/morris.css' %}" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="{% static 'font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
+
+     <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="{% static 'bootstrap/dist/js/bootstrap.min.js' %}"></script>
+
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="{% static 'metisMenu/dist/metisMenu.min.js' %}"></script>
+
+    <!-- Morris Charts JavaScript -->
+    <script src="{% static 'raphael/raphael-min.js' %}"></script>
+    <script src="{% static 'morrisjs/morris.min.js' %}"></script>
+    <script src="{% static 'morrisjs/morris.js' %}"></script>
+    <!-- script src="{% static 'morrisjs/js/morris-data.js' %}"></script -->
+
+    <!-- Custom Theme JavaScript -->
+    <script src="{% static 'sb-admin-2/dist/js/sb-admin-2.js' %}"></script>
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -26,9 +53,9 @@
   ga('send', 'pageview');
 </script>
 
-    <script src="{% static 'jquery/jquery-1.9.1.js' %}"></script>
+    <!-- script src="{% static 'jquery/jquery-1.9.1.js' %}"></script>
     <script src="{% static 'jquery/jquery-ui.js' %}"></script>
-    <script src="{% static 'bootstrap/js/bootstrap.js' %}"></script>
+    <script src="{% static 'bootstrap/js/bootstrap.js' %}"></script -->
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -36,7 +63,7 @@
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-    <style type="text/css">
+    <!-- style type="text/css">
     body 
     {
         padding-top: 50px;
@@ -70,7 +97,7 @@
         min-width: 151px;
     }
 
-	</style>
+	</style -->
 {% block head %}
 
 {% endblock %}
@@ -82,44 +109,43 @@
     <!-- Navigation -->
     
         
-        	<div class="modal fade" id="confirmDelete" role="dialog" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
-  				<div class="modal-dialog">
-    				<div class="modal-content">
-      					<div class="modal-header">
-        					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        					<h4 class="modal-title">Delete Parmanently</h4>
-      					</div>
-      					<div class="modal-body">
-        					<p>Are you sure about this ?</p>
-      					</div>
-      					<div class="modal-footer">
-        					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-        					<a href="#" id="deletehref">
-		      					<button type="button" class="btn btn-danger" id="confirm">Delete</button>
-		 					</a>
-      					</div>
+        <div class="modal fade" id="confirmDelete" role="dialog" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+			<div class="modal-dialog">
+    			<div class="modal-content">
+    				<div class="modal-header">
+    					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    					<h4 class="modal-title">Delete Parmanently</h4>
     				</div>
-  			    </div>
-		   </div>
+    				<div class="modal-body">
+    					<p>Are you sure about this ?</p>
+    				</div>
+    				<div class="modal-footer">
+    					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+    					<a href="#" id="deletehref">
+          					<button type="button" class="btn btn-danger" id="confirm">Delete</button>
+     					</a>
+			        </div>
+			    </div>
+		    </div>
+		</div>
 		
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-        <div class="container-fluid">
+        <div id="wrapper">    <!-- Brand and toggle get grouped for better mobile display -->
+        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+        <!-- div class="container-fluid" -->
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main_nav">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                     <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
                 <a class="navbar-brand" href="#">
-                <!-- <img src="http://placehold.it/150x50&text=Logo" alt=""> -->
+                    <img src="http://placehold.it/150x50&text=Logo" alt="">
                 </a>
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="main_nav">
-                <ul class="nav navbar-nav">
+                <!-- ul class="nav navbar-nav">
                    {% block navigation %}
                    <li>
                       <a href="/sway/dashboard">Dashboard</a>
@@ -138,52 +164,122 @@
                      <li>
                         <a href="/sway/enquiries">Leads</a>
                     </li>
-                    </ul>
+                </ul -->
 
-<ul class="nav navbar-nav navbar-right">
-{% block user_page %}
-              {% if user.is_anonymous %}
-             <li><a href="{% url 'django.contrib.auth.views.login' %}" title="Login" >Login</a></li>
-              {% else %}
-                    
-                    <li><a href="/sway/alerts"><span class="glyphicon glyphicon-bell" aria-hidden="true"/><sup>{{ request.session.alertsCount }}</sup></a></li>
-                    <li><a href="/sway/settings">Settings</a></li>
-                    
+                <ul class="nav navbar-top-links navbar-right">
                     <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="user profile options" aria-expanded="false"><i class="fa fa-star text-yellow"></i> {{user.username}} <b class="caret"></b></a>
-                    <ul class="dropdown-menu">
-                      <li>
-                            <a href="#">My Account</a>
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-bell fa-fw"></i>  <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-alerts">
+                        <li>
+                            <a href="/sway/alerts">
+                                <div>
+                                    <i class="fa fa-comment fa-fw"></i> Follow Ups Lead
+                                    <span class="pull-right text-muted small">{{ request.session.alertsCount }}</span>
+                                </div>
+                            </a>
+                        </li>
+                     </ul>   
+                    </li>
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-user">
+                            {% if user.is_anonymous %}
+                                <li><a href="{% url 'django.contrib.auth.views.login' %}" title="Login" >Login</a></li>
+                            {% else %}
+                            <!-- li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a-->
+                            </li>
+                            <li><a href="/sway/settings"><i class="fa fa-gear fa-fw"></i> Settings</a>
+                            </li>
+                            <li class="divider"></li>
+                            <li><a href="/sway/logout"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                            </li>
+                        </ul>
+                        {% endif %}
+                        <!-- /.dropdown-user -->
+                    </li>
+                </ul>
+                <div class="navbar-default sidebar" role="navigation">
+                <div class="sidebar-nav navbar-collapse">
+                    <ul class="nav" id="side-menu">
+                        <!-- li class="sidebar-search">
+                            <div class="input-group custom-search-form">
+                                <input type="text" class="form-control" placeholder="Search...">
+                                <span class="input-group-btn">
+                                <button class="btn btn-default" type="button">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </span>
+                            </div>
+                            <!-- /input-group >
+                        </li -->
+                        <li>
+                            <a href="/sway/dashboard"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
                         </li>
                         <li>
-                            <a href="{% url 'django.contrib.auth.views.logout' %}" title="Logout">Logout</a>
+                            <a href="/sway/members"><i class="fa fa-user fa-fw"></i> Members</a>
                         </li>
+                        <li>
+                            <a href="/sway/events"><i class="fa fa-calendar-o fa-fw"></i> Events</a>
+                        </li>
+                        <li>
+                            <a href="/sway/instructors"><i class="fa fa-edit fa-fw"></i> Instructors</a>
+                        </li>
+                        <li>
+                            <a href="/sway/enquiries"><i class="fa fa-child fa-fw"></i> Leads</a>
+                        </li>
+                        
                     </ul>
-                    </li>
-
-              {% endif %}
-           
-    {% endblock %}
-                    
-                   {% endblock%}
-                </ul>
+                </div>
+                <!-- /.sidebar-collapse -->
             </div>
+            <!-- /.navbar-static-side -->
+        
+                <!-- ul class="nav navbar-nav navbar-right">
+                    {% block user_page %}
+                    {% if user.is_anonymous %}
+                        <li><a href="{% url 'django.contrib.auth.views.login' %}" title="Login" >Login</a></li>
+                    {% else %}
+                        <li><a href="/sway/alerts"><span class="glyphicon glyphicon-bell" aria-hidden="true"/><sup>{{ request.session.alertsCount }}</sup></a></li>
+                        <li><a href="/sway/settings">Settings</a></li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="user profile options" aria-expanded="false">{{user.username}} <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                  <li>
+                                        <a href="#">My Account</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'django.contrib.auth.views.logout' %}" title="Logout">Logout</a>
+                                    </li>
+                                </ul>
+                        </li>
+                    {% endif %}
+           
+                {% endblock %}
+                {% endblock%}
+            </ul -->
             <!-- /.navbar-collapse -->
-        </div>
+        <!-- /div -->
         <!-- /.container -->
+        
     </nav>
     
 
     <!-- Page Content -->
     
-    <div class="container" style="width:100%">
+    <div id="page-wrapper">
+        
     
        {% block container %}
        
        {% endblock %}
     
     <!-- /.container -->
-    </div>
+    
+    </div> 
     
     <!-- jQuery -->
  
@@ -191,5 +287,9 @@
 {% block script %}
 
 {% endblock %}
+  </div>
+  <!-- jQuery -->
+   
 </body>
+
 </html>

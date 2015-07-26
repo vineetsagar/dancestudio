@@ -1,184 +1,241 @@
+
 {% extends "bs_base.html" %}
 {% load staticfiles %}
 {% block head%}
-  
-  	<!--FullCalendar Dependencies-->
-	<link href="{% static 'fullcalendar_2_2_3/fullcalendar.css' %}" rel="stylesheet">
-	<link href="{% static 'fullcalendar_2_2_3/fullcalendar.print.css' %}" rel="stylesheet"  media='print'>
-	<script src="{% static 'fullcalendar_2_2_3/lib/moment.min.js' %}"></script>
-	<script src="{% static 'fullcalendar_2_2_3/fullcalendar.min.js' %}"></script>
-	<script type="text/javascript">
-	jQuery(function(){
-    	 $('.nav a:contains("Dashboard")').parent().addClass('active');
-	});
-	</script>
-	
-	<script type="text/javascript">
-		
-		/*
-			jQuery document ready
-		*/
-		
-		$(document).ready(function()
-		{
-			/*
-				date store today date.
-				d store today date.
-				m store current month.
-				y store current year.
-			*/
-			console.log("inside ready function")
-			var date = new Date();
-			var d = date.getDate();
-			var m = date.getMonth();
-			var y = date.getFullYear();
-			
-			/*
-				Initialize fullCalendar and store into variable.
-				Why in variable?
-				Because doing so we can use it inside other function.
-				In order to modify its option later.
-			*/
-			
-			var calendar = $('#calendar').fullCalendar(
-			{
-				/*
-					header option will define our calendar header.
-					left define what will be at left position in calendar
-					center define what will be at center position in calendar
-					right define what will be at right position in calendar
-				*/
-				header:
-				{
-					left: 'prev,next today',
-					center: 'title',
-					right: 'month,agendaWeek,agendaDay'
-				},
-				/*
-					defaultView option used to define which view to show by default,
-					for example we have used agendaWeek.
-				*/
-				defaultView: 'agendaWeek',
-				/*
-					selectable:true will enable user to select datetime slot
-					selectHelper will add helpers for selectable.
-				*/
-				selectable: true,
-				selectHelper: true,
-				/*
-					when user select timeslot this option code will execute.
-					It has three arguments. Start,end and allDay.
-					Start means starting time of event.
-					End means ending time of event.
-					allDay means if events is for entire day or not.
-				*/
-				select: function(start, end, allDay)
-				{
-					/*
-						after selection user will be promted for enter title for event.
-					*/
-					var title = prompt('Event Title:');
-					/*
-						if title is enterd calendar will add title and event into fullCalendar.
-					*/
-					if (title)
-					{
-						calendar.fullCalendar('renderEvent',
-							{
-								title: title,
-								start: start,
-								end: end,
-								allDay: allDay
-							},
-							true // make the event "stick"
-						);
-					}
-					calendar.fullCalendar('unselect');
-				},
-				/*
-					editable: true allow user to edit events.
-				*/
-				editable: true,
-				
-				events: '/sway/events_json',
-
-				/*
-					events is the main option for calendar.
-					for demo we have added predefined events in json object.
-				*/
-				/*
-				events: [
-					{
-						title: 'All Day Event',
-						start: new Date(y, m, 1)
-					},
-					{
-						title: 'Long Event',
-						start: new Date(y, m, d-5),
-						end: new Date(y, m, d-2)
-					},
-					{
-						id: 999,
-						title: 'Repeating Event',
-						start: new Date(y, m, d-3, 16, 0),
-						allDay: false
-					},
-					{
-						id: 999,
-						title: 'Repeating Event',
-						start: new Date(y, m, d+4, 16, 0),
-						allDay: false
-					},
-					{
-						title: 'Meeting',
-						start: new Date(y, m, d, 10, 30),
-						allDay: false
-					},
-					{
-						title: 'Lunch',
-						start: new Date(y, m, d, 12, 0),
-						end: new Date(y, m, d, 14, 0),
-						allDay: false
-					},
-					{
-						title: 'Birthday Party',
-						start: new Date(y, m, d+1, 19, 0),
-						end: new Date(y, m, d+1, 22, 30),
-						allDay: false
-					},
-					{
-						title: 'Click for Google',
-						start: new Date(y, m, 28),
-						end: new Date(y, m, 29),
-						url: 'http://google.com/'
-					}
-				]
-				*/
-			});
-			
-		});
-
-	</script>
-	<style type="text/css">
-		body
-		{
-			margin-top: 40px;
-			text-align: center;
-			font-size: 14px;
-			font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
-		}
-		#calendar
-		{
-			width: 900px;
-			margin: 0 auto;
-		}
-	</style>
 
 {% endblock%}
 
 {% block container %}
- <div id='calendar' class='well well-lg' style="width:95%;margin:10px"></div>
-  
+
+ <div class="col-lg-12">
+    <h1 class="page-header">Dashboard</h1>
+ </div>
+ <div class="row">
+                <div class="col-lg-3 col-md-6">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-child fa-5x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="huge">{{ new_leads }}</div>
+                                    <div>New Leads</div>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="/sway/newleads">
+                            <div class="panel-footer">
+                                <span class="pull-left">View Details</span>
+                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                                <div class="clearfix"></div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="panel panel-red">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-clock-o fa-5x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="huge">{{ request.session.alertsCount }}</div>
+                                    <div>Weekly Follow Ups</div>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="/sway/alerts">
+                            <div class="panel-footer">
+                                <span class="pull-left">View Details</span>
+                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                                <div class="clearfix"></div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="panel panel-yellow">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-user fa-5x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="huge">{{ new_members }}</div>
+                                    <div>New Members</div>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="/sway/newmembers">
+                            <div class="panel-footer">
+                                <span class="pull-left">View Details</span>
+                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                                <div class="clearfix"></div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-md-6">
+                    <div class="panel panel-green">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-calendar fa-5x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="huge">{{ new_events }}</div>
+                                    <div>Events this Week</div>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="/sway/newevents">
+                            <div class="panel-footer">
+                                <span class="pull-left">View Details</span>
+                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                                <div class="clearfix"></div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+ </div>
+ <div class="row">
+                <div class="col-lg-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <i class="fa fa-bar-chart-o fa-fw"></i> Leads Generated Per Month
+                            <div class="pull-right">
+                                <!-- div class="btn-group">
+                                    <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                                        Actions
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu pull-right" role="menu">
+                                        <li><a href="#">Action</a>
+                                        </li>
+                                        <li><a href="#">Another action</a>
+                                        </li>
+                                        <li><a href="#">Something else here</a>
+                                        </li>
+                                        <li class="divider"></li>
+                                        <li><a href="#">Separated link</a>
+                                        </li>
+                                    </ul>
+                                </div -->
+                            </div>
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-lg-8">
+                                    <div id="morris-bar-chart"></div>
+                                </div>
+                                <!-- /.col-lg-4 (nested) -->
+                                <script>
+                                    var data = [];
+                                    var month= ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+                                    var i = 0;
+                                    var requestData = {{ leads|safe }} ;
+                                    for(var key in requestData){
+                                    if (requestData.hasOwnProperty(key)) {
+                                        data[i]={'status':month[key], 'leads':requestData[key]};
+                                        i++;
+                                    }
+
+                                }
+
+                                    Morris.Bar({
+                                      element: 'morris-bar-chart',
+                                      data: data,
+                                      xkey: 'status',
+                                      ykeys: ['leads'],
+                                      labels: ['Leads','Status'],
+                                      xLabelMargin: 1
+                                    });
+                                </script>
+                                
+                                <!-- /.col-lg-8 (nested) -->
+                            </div>
+                            <!-- /.row -->
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                    <!-- /.panel -->
+                 
+                    <!-- /.panel -->
+                </div>
+                <div class="row">
+                <div class="col-lg-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <i class="fa fa-bar-chart-o fa-fw"></i> Lead Vs Status
+                            <div class="pull-right">
+                                <!-- div class="btn-group">
+                                    <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                                        Actions
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu pull-right" role="menu">
+                                        <li><a href="#">Action</a>
+                                        </li>
+                                        <li><a href="#">Another action</a>
+                                        </li>
+                                        <li><a href="#">Something else here</a>
+                                        </li>
+                                        <li class="divider"></li>
+                                        <li><a href="#">Separated link</a>
+                                        </li>
+                                    </ul>
+                                </div -->
+                            </div>
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-lg-8">
+                                    <div id="morris-pie-chart"></div>
+                                </div>
+                                <!-- /.col-lg-4 (nested) -->
+                                <script>
+                                var data = []; 
+                                var requestData = {{ status_leads|safe }} ;
+                                for(var key in requestData){
+                                    if (requestData.hasOwnProperty(key)) {
+                                        if(requestData[key].status == 3){
+                                            data[key]={'label':'Cold', 'value':requestData[key].leads};
+                                        }else if(requestData[key].status == 2){
+                                            data[key]={'label':'Converted', 'value':requestData[key].leads};
+                                        }else if(requestData[key].status == 1){
+                                            data[key]={'label':'Closed', 'value':requestData[key].leads};
+                                        }else if(requestData[key].status == 4){
+                                            data[key]={'label':'Hot', 'value':requestData[key].leads};
+                                        }else if(requestData[key].status == 5){
+                                            data[key]={'label':'Warm', 'value':requestData[key].leads};
+                                        }
+                                        
+                                    }
+
+                                }
+                                    Morris.Donut({
+  element: 'morris-pie-chart',
+  data:data ,
+});
+                                </script>
+                                
+                                <!-- /.col-lg-8 (nested) -->
+                            </div>
+                            <!-- /.row -->
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                    <!-- /.panel -->
+                 
+                    <!-- /.panel -->
+                </div>
+                <!-- /.col-lg-8 -->
+                
+                <!-- /.col-lg-4 -->
+            </div> 
 {% endblock %}
-
-

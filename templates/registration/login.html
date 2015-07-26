@@ -1,9 +1,31 @@
 <!DOCTYPE HTML>
 {% load staticfiles %}
 <HTML>
+  <head>
 	<Title>Sway</Title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+      <link href="{% static 'bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- MetisMenu CSS -->
+    <link href="{% static 'metisMenu/dist/metisMenu.min.css' %}" rel="stylesheet">
+
+    <!-- Timeline CSS -->
+    <link href="{% static 'sb-admin-2/dist/css/timeline.css' %}" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="{% static 'sb-admin-2/dist/css/sb-admin-2.css' %}" rel="stylesheet">
+
+    <!-- Morris Charts CSS -->
+    <link href="{% static 'morrisjs/morris.css' %}" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="{% static 'font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
+
+     <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="{% static 'bootstrap/dist/js/bootstrap.min.js' %}"></script>
 <style>
 	body {
   padding-top: 40px;
@@ -51,6 +73,7 @@ input {
 	width:330px;
 }
 </style>
+</head>
 	<body>
 	
 		<div class="container-fluid" id="login" ng-app="loginForm">
@@ -59,8 +82,8 @@ input {
 				<h2 class="form-signin-heading">Sign in to Sway</h2>
 				<input type="username"  name="username" class="form-control" placeholder="Username">
         <input type="password" name="password" class="form-control" placeholder="Password">
-        <button class="btn btn-lg btn-primary" type="submit">Sign in</button>
-				<button class="btn btn-lg btn-secondary" ><a href="/sway">Cancel</a></button>
+        <button class="btn btn-md btn-primary" type="submit">Sign in</button>
+				<button class="btn btn-md btn-secondary" ><a href="/sway">Cancel</a></button>
 				<input type="hidden" name="next" value="{{ next }}" />
         <div >		{% if form.errors %}
 <p>Your username and password didn't match. Please try again.</p>

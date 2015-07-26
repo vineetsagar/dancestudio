@@ -21,6 +21,7 @@ from sway.forms import MemberForm, InstructorForm, LeadForm, FollowupForm
 from sway.models import Members, Events, EventType, EventCategory, Instructors, Lead, LeadFollowUp, \
     EventMembers, MembersView, EventOccurence, ProductContacts, EventLocations
 from sway.storeevents import storeevents, updateEvents
+from django.db.models import Count
 
 
 @login_required
@@ -435,7 +436,28 @@ def show_dashboard(request):
     'get the event based on the current user'
     'convert it into json fromat required to full calender'
     'render the page now'
-    return render(request, 'sway/dashboard.html', None)
+    'Get leads for chart'
+    status_leads = Lead.objects.filter(studio = request.user.studiouser.studio_id).values('status').annotate(leads=Count('status'))
+    start_date=datetime.date.today();
+    end_date = start_date + datetime.timedelta(days=5)
+    new_leads = Lead.objects.filter(studio = request.user.studiouser.studio_id, created_date__gte=start_date,created_date__lte=end_date).count()
+    new_members = Members.objects.filter(studio = request.user.studiouser.studio_id, created_date__gte=start_date,created_date__lte=end_date).count()
+    new_events = Events.objects.filter(studio = request.user.studiouser.studio_id, created_date__gte=start_date,created_date__lte=end_date).count()
+    start_date=datetime.date.today();
+    leads = Lead.objects.filter(studio = request.user.studiouser.studio_id, created_date__year=start_date.year).extra({'month' : "to_char(created_date, 'FMMonth')"}).values_list('month').annotate(monthly_lead=Count('id'))
+    leads = dict(leads)
+    #for key in leads:
+    #    print leads[key]
+    month_wise_leads = []
+    months = ('January','February','March','April','May','June','July','August','September','October','November','December')
+    for k in months:
+        t = k,leads.get(k, "0")   
+        month_wise_leads.append(t)
+    print month_wise_leads
+    leads = month_wise_leads
+    print leads
+    return render(request, 'sway/dashboard.html', {'status_leads': status_leads,'new_leads':new_leads,'new_members':new_members,'new_events':new_events,'leads':leads}, context_instance=RequestContext(request))
+    #return render(request, 'sway/dashboard.html', None)
     
     
 @login_required
@@ -786,6 +808,65 @@ def alerts(request):
         leads = paginator.page(paginator.num_pages)
 
     return render_to_response('sway/view_enquiries.html', {"enquiryList": leads}, context_instance=RequestContext(request))
+@login_required
+def new_members(request):
+    from datetime import timedelta
+    start_date=datetime.date.today();
+    end_date = start_date + datetime.timedelta(days=5)
+    members = Members.objects.filter(studio = request.user.studiouser.studio_id, created_date__gte=start_date,created_date__lte=end_date).order_by('created_date')
+    paginator = Paginator(members, 10,0,True) # Show 10 leads per page
+    page = request.GET.get('page')
+    try:
+        members = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        members = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        members = paginator.page(paginator.num_pages)
+
+    context_dict = {'membersList': members}
+    return render_to_response('sway/members.html', context_dict, context_instance=RequestContext(request))
+
+@login_required
+def new_leads(request):
+    from datetime import timedelta
+    start_date=datetime.date.today();
+    end_date = start_date + datetime.timedelta(days=5)
+    leads = Lead.objects.filter(studio = request.user.studiouser.studio_id, created_date__gte=start_date,created_date__lte=end_date).order_by('created_date')
+    paginator = Paginator(leads, 10,0,True) # Show 10 leads per page
+    page = request.GET.get('page')
+    try:
+        leads = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        leads = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        leads = paginator.page(paginator.num_pages)
+
+    return render_to_response('sway/view_enquiries.html', {"enquiryList": leads}, context_instance=RequestContext(request))
+
+@login_required
+def new_events(request):
+    from datetime import timedelta
+    start_date=datetime.date.today();
+    end_date = start_date + datetime.timedelta(days=5)
+    events = Events.objects.filter(studio = request.user.studiouser.studio_id, created_date__gte=start_date,created_date__lte=end_date).order_by('created_date')
+    event_type = EventType.objects.order_by('-id')
+    category_type = EventCategory.objects.order_by('-id')
+    paginator = Paginator(events, 5,0,True) # Show 10 leads per page
+    page = request.GET.get('page')
+    try:
+        events = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        events = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        events = paginator.page(paginator.num_pages)
+    context_dict = {'eventsList': events, 'eventList':event_type, 'categoryList':category_type}
+    return render_to_response('sway/events.html', context_dict, context_instance=RequestContext(request))
 
 def forgotpassword(request):   
     return render(request, 'registration/forgotpassword.html', None)

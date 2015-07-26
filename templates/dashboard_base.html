@@ -13,6 +13,9 @@
 
     <!-- Bootstrap Core CSS -->
     <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <!-- Bootstrap Core CSS -->
+    <link href="{% static 'startbootstrap-sb-admin-2/dist/css/sb-admin-2.css' %}" rel="stylesheet">
+    <link href="{% static 'font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
 
     <!-- Custom CSS -->
     <link href="{% static 'bootstrap/css/logo-nav.css' %}" rel="stylesheet">
@@ -46,7 +49,7 @@
 
 {% endblock %}
 
-<style>
+<!-- style>
    body 
     {
         padding-top: 50px;
@@ -79,93 +82,96 @@
     ul.dropdown-menu{
         min-width: 151px;
     }
-</style>
+</style -->
 </head>
 
 <body>
 
-    <!-- Navigation -->
-    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-        <div class="container-fluid">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main_nav">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="#">
-                <!-- <img src="http://placehold.it/150x50&text=Logo" alt=""> -->
-                </a>
-            </div>
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="main_nav">
-                <ul class="nav navbar-nav">
-                   {% block navigation %}
-                   <li>
-                      <a href="/sway/dashboard">Dashboard</a>
-                    </li>
-                   
-                   <li>
-                      <a href="/sway/members">Members</a>
-                    </li>
-                     <li>
-                        <a href="/sway/events">Events</a>
-                    </li>
-                    
-                      <li>
-                        <a href="/sway/instructors">Instructors</a>
-                    </li>
-                     <li>
-                        <a href="/sway/enquiries">Leads</a>
-                    </li>
-                    </ul>
+    <div id="wrapper">
+        <!-- Navigation -->
+        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+            <!-- div class="container-fluid" -->
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">
+                    <!-- <img src="http://placehold.it/150x50&text=Logo" alt=""> -->
+                    </a>
+                </div>
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="main_nav">
+                    <ul class="nav navbar-nav">
+                       {% block navigation %}
+                       <li>
+                          <a href="/sway/dashboard">Dashboard</a>
+                        </li>
+                       
+                       <li>
+                          <a href="/sway/members">Members</a>
+                        </li>
+                         <li>
+                            <a href="/sway/events">Events</a>
+                        </li>
+                        
+                          <li>
+                            <a href="/sway/instructors">Instructors</a>
+                        </li>
+                         <li>
+                            <a href="/sway/enquiries">Leads</a>
+                        </li>
+                        </ul>
 
-<ul class="nav navbar-nav navbar-right">
-{% block user_page %}
-		      {% if user.is_anonymous %}
-		     <li><a href="{% url 'django.contrib.auth.views.login' %}" title="Login" >Login</a></li>
-		      {% else %}
-		      		
-		      		<li><a href="/sway/alerts"><span class="glyphicon glyphicon-bell" aria-hidden="true"/><sup>{{ request.session.alertsCount }}</sup></a></li>
-		  			
-		  			<li class="dropdown">
-		  			<a href="#" class="dropdown-toggle" data-toggle="dropdown" title="user profile options" aria-expanded="false"><i class="fa fa-star text-yellow"></i> {{user.username}} <b class="caret"></b></a>
-		  			<ul class="dropdown-menu">
-		  			  <li>
-                            <a href="#">My Account</a>
-                        </li>
-                        <li>
-                            <a href="{% url 'django.contrib.auth.views.logout' %}" title="Logout">Logout</a>
-                        </li>
+    <ul class="nav navbar-nav navbar-right">
+    {% block user_page %}
+    		      {% if user.is_anonymous %}
+    		     <li><a href="{% url 'django.contrib.auth.views.login' %}" title="Login" >Login</a></li>
+    		      {% else %}
+    		      		
+    		      		<li><a href="/sway/alerts"><span class="glyphicon glyphicon-bell" aria-hidden="true"/><sup>{{ request.session.alertsCount }}</sup></a></li>
+    		  			
+    		  			<li class="dropdown">
+    		  			<a href="#" class="dropdown-toggle" data-toggle="dropdown" title="user profile options" aria-expanded="false"><i class="fa fa-star text-yellow"></i> {{user.username}} <b class="caret"></b></a>
+    		  			<ul class="dropdown-menu">
+    		  			  <li>
+                                <a href="#">My Account</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'django.contrib.auth.views.logout' %}" title="Logout">Logout</a>
+                            </li>
+                        </ul>
+    		  			</li>
+    		      {% endif %}
+    		   
+        {% endblock %}
+                        
+                       {% endblock%}
                     </ul>
-		  			</li>
-		      {% endif %}
-		   
-    {% endblock %}
-                    
-                   {% endblock%}
-                </ul>
-            </div>
-            <!-- /.navbar-collapse -->
-        </div>
+                </div>
+                <!-- /.navbar-collapse -->
+            <!-- /div ->
+            <!-- /.container -->
+            
+        </nav>
+
+        <!-- Page Content -->
+        
+        <!-- div class="container" style="width:100%" >
+           {# % block container %}
+           
+           {% endblock %}
+        </div -->
         <!-- /.container -->
-    </nav>
 
-    <!-- Page Content -->
-    
-    <div class="container" style="width:100%">
-       {% block container %}
-       
-       {% endblock %}
+    	
+        
+
+    {% block script %}
+    {% endblock %}
     </div>
-    <!-- /.container -->
-
-	
-    
-
-{% block script %}
-{% endblock %}
 </body>
 </html>
