@@ -111,16 +111,16 @@ CORS_ALLOW_CREDENTIALS = True
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'sway',
-        'USER': 'sway',
-        'PASSWORD': 'sway',
-        'HOST': '127.0.0.1',   # Or an IP Address that your DB is hosted on
-        'PORT': '5432',
-    }
+     'default': {
+         'ENGINE': 'django.db.backends.postgresql_psycopg2', 
+         'NAME': 'daod3b1jd4s735',
+         'USER': 'vxluorpfyrippk',
+         'PASSWORD': 'REuIKg21og15EcmaWm_AMcXujo',
+         'HOST': 'ec2-54-83-204-244.compute-1.amazonaws.com',   # Or an IP Address that your DB is hosted on
+         'PORT': '5432',
+     }
+ }
 
-}
 # default port is 3306
 # Parse database configuration from $DATABASE_URL
 #DATABASES['default'] =  dj_database_url.config()
