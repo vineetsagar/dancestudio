@@ -1,0 +1,15 @@
+dj-database-url==0.3.0
+Django==1.7.3
+django-cors-headers==1.0.0
+django-evolution==0.6.9
+django-postgrespool==0.3.0
+django-static-sitemaps==2.1.7
+djangorestframework==3.1.1
+phonenumbers==7.0.2
+psycopg2==2.5.4
+python-dateutil==2.4.0
+six==1.9.0
+South==1.0.2
+SQLAlchemy==0.9.8
+waitress==0.8.9
+whitenoise==1.0.6
