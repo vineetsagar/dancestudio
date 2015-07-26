@@ -10,7 +10,7 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
-import dj_database_url
+# import dj_database_url
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
@@ -19,7 +19,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 SECRET_KEY = '3!jvl^a_$ms^d-v!)$yd%48xv!=1vj_j)ao8zr2ua3d0wn&siu'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+# STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 DEBUG = True
 
 TEMPLATE_DEBUG = True
@@ -43,7 +43,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media') # Absolute path to the media direct
 
 INSTALLED_APPS = (
     'django.contrib.admin',
-    'django.contrib.sitemaps',
     'sway',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -98,6 +97,9 @@ CORS_ALLOW_HEADERS = (
         #'x-csrftoken',
 )
 
+
+CORS_ALLOW_CREDENTIALS = True
+
 '''CORS_ORIGIN_WHITELIST = (
         'http://localhost:8080',
         'http://192.168.0.1:8000',                
@@ -106,19 +108,17 @@ CORS_ALLOW_HEADERS = (
 )
 '''
 
-
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-		'NAME': 'sway',
-        'USER': 'postgres',
-        'PASSWORD': 'admin',
-        'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
+        'NAME': 'sway',
+        'USER': 'sway',
+        'PASSWORD': 'sway',
+        'HOST': '127.0.0.1',   # Or an IP Address that your DB is hosted on
         'PORT': '5432',
-   }
+    }
 
 }
 # default port is 3306
@@ -127,7 +127,6 @@ DATABASES = {
 
 # Enable Connection Pooling (if desired)
 #DATABASES['default']['ENGINE'] = 'django_postgrespool'
-
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
 
@@ -154,9 +153,10 @@ STATICFILES_DIRS = (
 os.path.join(BASE_DIR, 'static'),
 )
 
-LOGIN_URL='/sway/login'
-
+LOGIN_URL='/sway/members/login'
+'''
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.request',
     'django.contrib.auth.context_processors.auth',
 )
+'''

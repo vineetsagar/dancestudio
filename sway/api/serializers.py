@@ -20,7 +20,7 @@ class LeadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lead
         fields=('id','name','contact_detail','email','mobile' ,'nextFollowUpDate' ,'inquiryFor','studio','status', 'followups')
-        read_only_fields = ('id', 'status',)
+        read_only_fields = ('id',)
         #fields=('id','name','contact_detail','email','mobile' ,'nextFollowUpDate' ,'inquiryFor','followups')
         
     def create(self, validated_data):

@@ -3,7 +3,6 @@ import datetime
 from dateutil.relativedelta import relativedelta
 import json
 import math
-
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -103,7 +102,10 @@ def viewmembers(request):
 
 def getAlerts(request):
     from datetime import timedelta
+    from django.db.models import Count
     start_date=datetime.date.today();
+    lead = Lead.objects.filter(studio = request.user.studiouser.studio_id, created_date__year=start_date.year).extra({'month' : "DATE_PART('month',created_date)"}).values_list('month').annotate(monthly_lead=Count('id'))
+    print lead
     end_date = start_date + datetime.timedelta(days=5)
     leads = Lead.objects.filter(studio = request.user.studiouser.studio_id, nextFollowUpDate__gte=start_date,nextFollowUpDate__lte=end_date).count()
     print leads
