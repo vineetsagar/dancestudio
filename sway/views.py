@@ -97,7 +97,6 @@ def viewmembers(request):
         # If page is out of range (e.g. 9999), deliver last page of results.
         members = paginator.page(paginator.num_pages)
     context_dict = {'membersList': members}
-    getAlerts(request)
     return render_to_response('sway/members.html', context_dict, context_instance=RequestContext(request))
 
 def getAlerts(request):
@@ -457,8 +456,9 @@ def show_dashboard(request):
         month_wise_leads.append(t)
     print month_wise_leads
     leads = month_wise_leads
-    print leads
-    return render(request, 'sway/dashboard.html', {'status_leads': status_leads,'new_leads':new_leads,'new_members':new_members,'new_events':new_events,'leads':leads}, context_instance=RequestContext(request))
+    follow_up_lead_count = Lead.objects.filter(studio = request.user.studiouser.studio_id, nextFollowUpDate__gte=start_date,nextFollowUpDate__lte=end_date).count()
+    print follow_up_lead_count,' Follow up leads'
+    return render(request, 'sway/dashboard.html', {'followup_leads':follow_up_lead_count,'status_leads': status_leads,'new_leads':new_leads,'new_members':new_members,'new_events':new_events,'leads':leads}, context_instance=RequestContext(request))
     #return render(request, 'sway/dashboard.html', None)
     
     
