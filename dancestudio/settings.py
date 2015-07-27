@@ -113,10 +113,10 @@ CORS_ALLOW_CREDENTIALS = True
 DATABASES = {
 'default': {
 'ENGINE': 'django.db.backends.postgresql_psycopg2', 
-'NAME': 'daod3b1jd4s735',
-'USER': 'vxluorpfyrippk',
-'PASSWORD': 'REuIKg21og15EcmaWm_AMcXujo',
-'HOST': 'ec2-54-83-204-244.compute-1.amazonaws.com',   # Or an IP Address that your DB is hosted on
+'NAME': 'tanzfiestadb',
+'USER': 'sway',
+'PASSWORD': 'dbV1n33t!',
+'HOST': 'tanzfiesta-db.cjeyqo71dm0x.us-west-2.rds.amazonaws.com',   # Or an IP Address that your DB is hosted on
 'PORT': '5432',
 }
 }
