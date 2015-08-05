@@ -36,7 +36,7 @@ from sway.forms import MemberForm, InstructorForm, LeadForm, FollowupForm
 from sway.models import Members, Events, EventType, EventCategory, Instructors, Lead, LeadFollowUp, \
     EventMembers, MembersView, EventOccurence, ProductContacts, EventLocations
 from sway.storeevents import storeevents, updateEvents
-
+from push_notifications.models import GCMDevice
 
 
 #REST API for mobile app
@@ -292,3 +292,31 @@ def api_add_followup(request):
     else:
         print "data is not valid, hence returning", serializer.errors
     return JSONResponse(serializer.errors, status=400)
+
+@api_view(['POST',])
+@authentication_classes((TokenAuthenticator,))
+def api_register_device_gcm(request):
+    #it will register and save the device for push notification using google cloud messaging
+    if request.method == 'POST':
+        msg=request.body;
+        string_msg=msg.decode("utf-8")
+        json_data=json.loads(string_msg);
+        print "json_data=",json_data
+        data=byteify(json_data)
+        device_name = data["device_name"]
+        device_id = data["device_id"]
+        reg_id = data["registration_id"]
+        user=request.user
+        print "user=",user
+        #check if device is already registered If yes just update the entry else create a new entry
+        device,created=GCMDevice.objects.get_or_create(name=device_name, user=user, registration_id=reg_id)
+        print "device object=",device
+        print "device created(true => new device)=",created
+        device.save()
+        #devices = GCMDevice.objects.filter(user=user)
+        #devices.send_message("Device registered successfully for push notification ;) :)")
+        response = http.HttpResponse("OK")
+        return response;
+   
+    response = http.HttpResponse("ERROR")
+    return response;

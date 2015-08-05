@@ -74,5 +74,6 @@ urlpatterns=patterns('',
          url(r'^api_add_lead/$', api_view.api_add_lead, name='api_add_lead'),
          url(r'^api_add_followup/$', api_view.api_add_followup, name='api_add_followup'),
          url(r'^registration/$', api_view.registration, name='registration'),
-
+		 url(r'^api_register_device_gcm/$', api_view.api_register_device_gcm, name='api_register_device_gcm'),
+		 
 		)
