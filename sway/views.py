@@ -707,7 +707,8 @@ def save_followup(request):
     followup = LeadFollowUp(notes=notes,followed_by=request.user,lead=lead)
     followup.save()
     from datetime import datetime
-    lead.nextFollowUpDate = datetime.strptime(request.POST.get('nextFollowupDate'),'%m/%d/%Y %H:%M %p')
+    print request.POST.get('nextFollowupDate')
+    lead.nextFollowUpDate = datetime.strptime(request.POST.get('nextFollowupDate'),'%m/%d/%Y %I:%M %p')
     lead.save()
     getAlerts(request);
     redirectString = '/sway/followups?lead='+request.POST.get('lead')
