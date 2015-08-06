@@ -265,6 +265,23 @@ def api_add_lead(request):
 		return JSONResponse(serializer.data, status=200)
 	return JSONResponse(serializer.errors, status=400)
 
+@api_view(['POST',])
+@authentication_classes((TokenAuthenticator,))
+def api_edit_lead(request):
+    data = JSONParser().parse(request)
+    data['studio']=request.user.studiouser.studio_id.id
+    id = data['id']
+    print "id value is ", id , data['status']
+    leadObject = Lead.objects.get(pk=id)
+    print "lead object value is ", leadObject
+    if leadObject is not None:
+        serializer = LeadSerializer(leadObject, data=data)
+        if serializer.is_valid():
+            serializer.save()
+            print serializer
+            return JSONResponse(serializer.data, status=200)
+    return JSONResponse(serializer.errors, status=400)
+
 @api_view(['GET',])
 @authentication_classes((TokenAuthenticator,))
 def api_lead_delete(request, id):
