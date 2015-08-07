@@ -6,7 +6,7 @@ from django.utils import dateformat
 def followup_notification_job():
     print "Cronjob followup_notification_job starts"
     obj_curr_time=datetime.datetime.now()
-    obj_curr_time = the_time.replace(second=0, microsecond=0)
+    obj_curr_time = obj_curr_time.replace(second=0, microsecond=0)
     leads = Lead.objects.filter(nextFollowUpDate = obj_curr_time)
     print "Lead count with current time =",leads.count()
     for lead in leads:
