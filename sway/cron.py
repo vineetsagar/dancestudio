@@ -2,6 +2,7 @@ from sway.models import Lead,StudioUser
 import datetime
 from push_notifications.models import GCMDevice
 from django.utils import dateformat
+from datetime import timedelta
 
 def followup_notification_job():
     print "Cronjob followup_notification_job started"
