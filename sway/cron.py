@@ -20,6 +20,7 @@ def followup_notification_job():
         print "id value is ", id
         #studioUser=StudioUser.objects.filter(studio_id=id)
         studio_user=StudioUser.objects.get(studio_id=id)
+        print "studio_user" , studio_user
         #print "studio user ", studio_user
         for curr_studio_user in studio_user:
             curr_user=curr_studio_user.user
