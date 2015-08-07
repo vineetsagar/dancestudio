@@ -10,15 +10,20 @@ def followup_notification_job():
     leads = Lead.objects.filter(nextFollowUpDate = obj_curr_time)
     print "Lead count with current time =",leads.count()
     for lead in leads:
+        print "lead value is " , lead
         print "lead date time=",lead.nextFollowUpDate.strftime('%m/%d/%Y %H:%M:%S')
         studio=lead.studio
+        print "studio" , studio
         id=studio.id
+        print "id value is ", id
         #studioUser=StudioUser.objects.filter(studio_id=id)
         studio_user=StudioUser.objects.get(studio_id=id)
+        print "studio user ", studio_user
         curr_user=studio_user.user
-                  
+        print "curr_user " , curr_user
         #now find all the device registered for this user
         devices=GCMDevice.objects.filter(user=curr_user)
+        print "devices ", devices
         if devices is not None and devices.count()>0:
             print "Sending followup reminder for ",lead.name
             #print "devices=",devices
