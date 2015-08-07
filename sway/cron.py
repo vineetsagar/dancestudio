@@ -21,17 +21,15 @@ def followup_notification_job():
         #studioUser=StudioUser.objects.filter(studio_id=id)
         studio_user=StudioUser.objects.get(studio_id=id)
         print "studio_user" , studio_user
-        #print "studio user ", studio_user
-        for curr_studio_user in studio_user:
-            curr_user=curr_studio_user.user
-            print "curr_user " , curr_user
-            #now find all the device registered for this user
-            devices=GCMDevice.objects.filter(user=curr_user)
-            print "devices ", devices
-            if devices is not None and devices.count()>0:
-                print "Sending followup reminder for ",lead.name
-                #print "devices=",devices
-                devices.send_message("Followup reminder for "+lead.name)
-            else:
-                print "Device not found for push notification. Possibly a website user only. User=",curr_user
+        curr_user=studio_user.user
+        print "curr_user " , curr_user
+        #now find all the device registered for this user
+        devices=GCMDevice.objects.filter(user=curr_user)
+        print "devices ", devices
+        if devices is not None and devices.count()>0:
+            print "Sending followup reminder for ",lead.name
+            #print "devices=",devices
+            devices.send_message("Followup reminder for "+lead.name)
+        else:
+            print "Device not found for push notification. Possibly a website user only. User=",curr_user
             
