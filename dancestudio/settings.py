@@ -126,7 +126,7 @@ DATABASES = {
 'NAME': 'ebdb2',
 'USER': 'sway',
 'PASSWORD': 'dbV1n33t!',
-'HOST': 'ebdb2.cjeyqo71dm0x.us-west-2.rds.amazonaws.com:5432',   # Or an IP Address that your DB is hosted on
+'HOST': 'ebdb2.cjeyqo71dm0x.us-west-2.rds.amazonaws.com',   # Or an IP Address that your DB is hosted on
 'PORT': '5432',
 }
 }
