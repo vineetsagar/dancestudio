@@ -121,7 +121,7 @@ CORS_ALLOW_CREDENTIALS = True
 DATABASES = {
 'default': {
 'ENGINE': 'django.db.backends.postgresql_psycopg2', 
-'NAME': 'aacf3beub4rz58',
+'NAME': 'ebdb',
 'USER': 'sway',
 'PASSWORD': 'dbV1n33t!',
 'HOST': 'aacf3beub4rz58.cjeyqo71dm0x.us-west-2.rds.amazonaws.com',   # Or an IP Address that your DB is hosted on
