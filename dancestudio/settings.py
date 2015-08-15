@@ -160,7 +160,7 @@ STATICFILES_DIRS = (
 os.path.join(BASE_DIR, 'static'),
 )
 
-LOGIN_URL='/sway/members/login'
+LOGIN_URL='/sway/login'
 '''
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.request',
