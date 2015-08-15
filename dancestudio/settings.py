@@ -1,9 +1,7 @@
 """
 Django settings for dancestudio project.
-
 For more information on this file, see
 https://docs.djangoproject.com/en/1.7/topics/settings/
-
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.7/ref/settings/
 """
@@ -26,7 +24,7 @@ TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-LOGIN_REDIRECT_URL = '/sway/members'
+LOGIN_REDIRECT_URL = '/sway/dashboard'
 
 TEMPLATE_PATH = os.path.join(BASE_DIR, 'templates')
 TEMPLATE_DIRS = [
@@ -52,8 +50,18 @@ INSTALLED_APPS = (
     'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
+    'push_notifications',
+    'django_crontab',
 )
 
+CRONJOBS = [
+    ('*/1 * * * *', 'sway.cron.followup_notification_job')
+]
+
+PUSH_NOTIFICATIONS_SETTINGS = {
+        "GCM_API_KEY": 'AIzaSyAQDwBHbz-VyiTnizycexakz3OGvrcQoEQ',
+         # Use it for iOS device push notification "APNS_CERTIFICATE": "/path/to/your/certificate.pem",
+}
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
@@ -116,7 +124,7 @@ DATABASES = {
 'NAME': 'ebdb',
 'USER': 'sway',
 'PASSWORD': 'dbV1n33t!',
-'HOST': 'aa1o3ryiohkl06q.cjeyqo71dm0x.us-west-2.rds.amazonaws.com',   # Or an IP Address that your DB is hosted on
+'HOST': 'swaydb.cjeyqo71dm0x.us-west-2.rds.amazonaws.com',   # Or an IP Address that your DB is hosted on
 'PORT': '5432',
 }
 }
