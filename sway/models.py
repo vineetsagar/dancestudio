@@ -56,6 +56,19 @@ class Members(BaseModel):
         def __unicode__(self):
             return self.email
 
+class EventCategory(BaseModel):
+        event_category_name = models.CharField(max_length = 128)
+        studio = models.ForeignKey(Studio)
+        def __unicode__(self):
+            return self.event_category_name
+
+class MemberCategory(BaseModel):
+        studio = models.ForeignKey(Studio)
+        member = models.ForeignKey(Members)
+        category = models.ForeignKey(EventCategory)
+        def __unicode__(self):
+            return self.email
+
 class MembersView(BaseModel):
         selected = models.BooleanField(default = False)
         member = models.OneToOneField(Members)
@@ -72,12 +85,6 @@ class EventLocations(BaseModel):
         studio = models.ForeignKey(Studio)
         def __unicode__(self):
             return self.event_location_name
-        
-class EventCategory(BaseModel):
-        event_category_name = models.CharField(max_length = 128)
-        studio = models.ForeignKey(Studio)
-        def __unicode__(self):
-            return self.event_category_name
         
 class UserActionLogs(BaseModel):
         description = models.CharField(max_length = 200)
@@ -176,6 +183,14 @@ class LeadFollowUp(BaseModel):
     notes = models.CharField(max_length = 255)
     followed_by = models.ForeignKey(User)
     followed_date = models.DateField(auto_now_add=True) 
+    def __unicode__(self):
+            return str(self.pk)
+
+class Comments(BaseModel):    
+    studio = models.ForeignKey(Studio) 
+    comment_notes = models.CharField(max_length = 255)
+    comments_type = models.CharField(max_length = 255)
+    comment_for = models.CharField(max_length = 255)
     def __unicode__(self):
             return str(self.pk)         
 

@@ -1,0 +1,42 @@
+{% extends "bs_base.html" %}
+{% load staticfiles %}
+<!-- this for including anything in head tag -->
+{% block head%}
+<link href="{% static 'bootstrap/css/bootstrap-datetimepicker.min.css' %}" rel="stylesheet">
+<link href="{% static 'sway/css/forms.css' %}" rel="stylesheet">
+<script src="{% static 'bootstrap/js/jquery.js' %}"></script>   
+<script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script> 
+<script src="{% static 'bootstrap/js/moment.js' %}"></script> 	 	
+<script src="{% static 'bootstrap/js/bootstrap-datetimepicker.js' %}"></script>
+{% endblock%}
+
+<!-- all the content that will go into body tag -->
+{% block container %}
+<script type="text/javascript">
+  jQuery(function(){
+       $('.nav a:contains("Leads")').parent().addClass('active');
+});
+</script>
+
+<div id="form">
+ <ol class="breadcrumb">
+  <li><a href="/sway/member/comment">{{memberObj.first_name}}</a></li>
+  <li> Comments</li>
+</ol>
+<form action="{% url 'save_member_comment'  %}" method="POST" role="form">
+<input type="hidden" name="member" value="{{member}}"/>	
+{% csrf_token %}
+  <div class="form-group">
+  	<div>
+      {{ form.notes.errors }}
+    <label for="notes">Comments:</label>
+      {{ form.notes }}
+    </div>
+    
+    <div class="span7 text-center">
+      <button type="submit" class="btn btn-primary">Save</button>
+    </div>
+  </div>  
+</form>
+</div>
+{% endblock %}

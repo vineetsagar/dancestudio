@@ -10,7 +10,7 @@ from django.forms.models import ModelForm
 
 from sway.form_validators import validate_name_field, validate_address, validate_phone_number 
 from sway.models import Events, EventType, EventCategory, Studio, EventLocations
-from sway.models import Members, EventCategory, Instructors, Lead, LeadFollowUp
+from sway.models import Members, EventCategory, Instructors, Lead, LeadFollowUp, Comments
 
 class EventsForm(ModelForm):
     all_day = forms.BooleanField(initial=False, required=False)
@@ -284,5 +284,21 @@ class FollowupForm(forms.ModelForm):
         notes = cleaned_data.get("notes")
         nextFollowupDate = cleaned_data.get("nextFollowupDate")
         
+
+class CommentsForm(forms.ModelForm):
+    notes = forms.CharField(max_length=255,required=True)
+        
+    def __init__(self, *args, **kwargs):
+        super(CommentsForm, self).__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'
+            
+    
+    class Meta:
+        model = Comments
+        exclude = ('studio','created_date', 'modified_date', 'created_by', 'modified_by')
+    def clean(self):
+        cleaned_data=super(CommentsForm, self).clean()
+        notes = cleaned_data.get("notes")
                
         

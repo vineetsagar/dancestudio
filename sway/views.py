@@ -16,9 +16,9 @@ from django.template.context import RequestContext
 
 from sway.events.event_forms_helper import getForm, getEventForm, setFormDefaultCssAndPlaceHolder
 from sway.forms import EventsForm, EventCategoryForm, EventLocationForm
-from sway.forms import MemberForm, InstructorForm, LeadForm, FollowupForm
+from sway.forms import MemberForm, InstructorForm, LeadForm, FollowupForm, CommentsForm
 from sway.models import Members, Events, EventType, EventCategory, Instructors, Lead, LeadFollowUp, \
-    EventMembers, MembersView, EventOccurence, ProductContacts, EventLocations
+    EventMembers, MembersView, EventOccurence, ProductContacts, EventLocations,Comments
 from sway.storeevents import storeevents, updateEvents
 from django.db.models import Count
 
@@ -871,31 +871,6 @@ def new_events(request):
     context_dict = {'eventsList': events, 'eventList':event_type, 'categoryList':category_type}
     return render_to_response('sway/events.html', context_dict, context_instance=RequestContext(request))
 
-def forgotpassword(request):   
-    return render(request, 'registration/forgotpassword.html', None)
-
-def resetpassword(request):
-    from django.core.mail import send_mail
-    from django.contrib.auth.models import User
-    from django.contrib.auth.hashers import make_password
-    user_name = request.POST.get('username')
-    print user_name
-    tgt_user = User.objects.get(username=user_name)
-    if tgt_user is None:
-        pass # return error message that user does not exist with username
-    if not tgt_user.email:
-        pass # return error message that email is not configured for user
-    import uuid
-    random = str(uuid.uuid4()) # Convert UUID format to a Python string.
-    random = random.upper() # Make all characters uppercase.
-    random = random.replace("-","") # Remove the UUID '-'.
-    raw_password = random[0:10]
-    password = make_password(random[0:10]) # Return the random string.
-    tgt_user.password = password
-    tgt_user.save()
-    send_mail('Password Reset','Your password is reset to '+raw_password+', use this password to login. Please modify password of your choice.','balwinder.mca@gmail.com',[tgt_user.email]) 
-    return HttpResponseRedirect("/sway/login")
-
 def change_password(request):
     from django.core.mail import send_mail
     from django.contrib.auth.models import User
@@ -916,3 +891,35 @@ def convert_lead(request,id=None):
         member.email = lead.email
         form=MemberForm(instance=member)
     return render(request, 'sway/add_members.html', {'form': form,'lead':id}, context_instance=RequestContext(request))
+
+@login_required
+def member_comment(request,Id=None):
+    memberObj = Members.objects.get(id=Id);
+    comment_list = Comments.objects.filter(comment_for=str(Id),studio=memberObj.studio_id,comments_type='Member')
+    print comment_list
+    paginator = Paginator(comment_list, 10,0,True) # Show 10 leads per page
+    page = request.GET.get('page')
+    try:
+        comment_list = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        comment_list = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        comment_list = paginator.page(paginator.num_pages)
+    return render_to_response('sway/member_comment.html', {'comment_list': comment_list,'member': Id,'memberObj':memberObj}, context_instance=RequestContext(request))
+    
+@login_required
+def add_member_comment(request,Id=None):
+    memberObj = Members.objects.get(id=Id);
+    form = CommentsForm()
+    return render_to_response('sway/add_member_comment.html', {'member': Id,'memberObj':memberObj, 'form':form}, context_instance=RequestContext(request))
+
+@login_required
+def save_member_comment(request):
+    notes = request.POST.get('notes')
+    memberObj = Members.objects.get(id=request.POST.get('member'));
+    comment = Comments(comment_notes=notes,comment_for=str(request.POST.get('member')),comments_type="Member",studio=memberObj.studio)
+    comment.save()
+    redirectString = '/sway/member/comments/'+request.POST.get('member')
+    return HttpResponseRedirect(redirectString) 
