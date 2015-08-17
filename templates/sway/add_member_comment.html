@@ -20,7 +20,7 @@
 
 <div id="form">
  <ol class="breadcrumb">
-  <li><a href="/sway/member/comment">{{memberObj.first_name}}</a></li>
+  <li><a href="/sway/member/comments/{{member}}">{{memberObj.first_name}}</a></li>
   <li> Comments</li>
 </ol>
 <form action="{% url 'save_member_comment'  %}" method="POST" role="form">
