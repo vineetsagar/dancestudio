@@ -47,7 +47,7 @@ class Members(BaseModel):
         last_name = models.CharField(max_length=128)
         email = models.EmailField()
         area = models.TextField()
-        birth_date = models.DateField(null=True)
+        birth_date = models.DateField(null=True,blank=True)
         studio = models.ForeignKey(Studio)
         GENDER_CHOICES = (
         ('M', 'Male'),

@@ -100,7 +100,7 @@ class MemberForm(forms.ModelForm):
     
     class Meta:
         model = Members
-        exclude = ('studio','created_date', 'modified_date', 'created_by', 'modified_by')
+        exclude = ('studio','created_date', 'modified_date', 'created_by', 'modified_by','birth_date')
         
         
     def clean(self):
