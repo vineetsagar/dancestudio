@@ -896,7 +896,6 @@ def convert_lead(request,id=None):
 def member_comment(request,Id=None):
     memberObj = Members.objects.get(id=Id);
     comment_list = Comments.objects.filter(comment_for=str(Id),studio=memberObj.studio_id,comments_type='Member')
-    print comment_list
     paginator = Paginator(comment_list, 10,0,True) # Show 10 leads per page
     page = request.GET.get('page')
     try:
