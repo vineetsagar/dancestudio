@@ -91,44 +91,47 @@ class MemberForm(forms.ModelForm):
     last_name = forms.CharField(max_length=128)
     email = forms.EmailField()
     area = forms.CharField(max_length=128)
+    categories = forms.ModelMultipleChoiceField(queryset=EventCategory.objects.filter(studio_id=1), widget=forms.SelectMultiple)
         
-    def __init__(self, *args, **kwargs):
+    def __init__(self,studio=None, *args, **kwargs):
         super(MemberForm, self).__init__(*args, **kwargs)
+        if isinstance(studio,int):
+            self.fields['categories'].queryset = EventCategory.objects.filter(studio_id=studio)
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
             field.widget.attrs['required'] = "True"
+
     
     class Meta:
         model = Members
         exclude = ('studio','created_date', 'modified_date', 'created_by', 'modified_by','birth_date')
         
-        
     def clean(self):
         cleaned_data=super(MemberForm, self).clean()
-        print cleaned_data
         first_name = cleaned_data.get("first_name")
         last_name = cleaned_data.get("last_name")
         email =cleaned_data.get("email")
         addr=cleaned_data.get("area")
-        
+        categories = cleaned_data.get("categories")
+        print categories, "categories"
         msg_invalid_name=u"Invalid name."
        
         if validate_name_field(first_name):
-            print "Correct name",first_name;
+            print "Correct name",first_name
         else:
-            print "Invalid chars in first_name",first_name;
+            print "Invalid chars in first_name",first_name
             self.add_error('first_name',msg_invalid_name)
         
         if validate_name_field(last_name):
             print "Correct name",last_name;
         else:
-            print "Invalid chars in last_name",last_name;
+            print "Invalid chars in last_name",last_name
             self.add_error('last_name',msg_invalid_name)
                
         if validate_address(addr):
-            print "Valid addr",addr;
+            print "Valid addr",addr
         else:
-            print "Invalid address=",addr;
+            print "Invalid address=",addr
             self.add_error('area',u"Invalid address.")    
     
 class InstructorForm(forms.ModelForm):

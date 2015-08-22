@@ -729,8 +729,8 @@ def member_edit(request, id=None):
         member=Members()
     if request.POST:
         form=MemberForm(request.POST,instance=member)
-        print form.is_valid(), form.errors, type(form.errors)
-        if form.is_valid():
+        print form.errors.as_data()
+        if  form.is_valid():
             print "MemberForm is valid"
             post = form.save(commit=False)
             post.studio = request.user.studiouser.studio_id
@@ -746,8 +746,9 @@ def member_edit(request, id=None):
             print "MemberForm is invalid"
     else:
         print "member_edit GET request"
-        form=MemberForm(instance=member)
-                        
+        #form=MemberForm({"instance":member,"studio":request.user.studiouser.studio_id})
+        form=MemberForm(request.user.studiouser.studio_id,instance=member)
+        #form.studio = request.user.studiouser.studio_id                        
     return render(request, 'sway/add_members.html', {'form': form, 'id':member.id}, context_instance=RequestContext(request))
 
 @login_required

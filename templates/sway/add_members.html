@@ -122,37 +122,29 @@
     </div>
  </div>
  {% endif %}
- {% if not form.birth_date.errors %}
-   <div class="form-group">	
-	<!-- label for="{{ form.birth_date.id_for_label }}" class="col-sm-2 control-label">Birth Date:</label -->
+ 
+ {% if not form.categories.errors %}
+   <div class="form-group"> 
+  <label for="{{ form.categories.id_for_label }}" class="col-sm-2 control-label">Category:</label>
     <div class='col-sm-10' >
-			{{ form.birth_date }}
+      {{ form.categories }}
                 </div>
-                <script type="text/javascript">
-            $(function () {
-                $('#id_birth_date').datetimepicker({viewMode:'years',pickTime: false});
-            });
-        </script>	
+                 
   </div>
  {% else %}
  <div class="row">
- 	<p class="col-sm-2"></p>
- 	<p class="col-sm-10 text-danger">{{ form.birth_date.errors.as_text }}</p>
- </div>	
-  <div>	
-	<label for="{{ form.birth_date.id_for_label }}" class="col-sm-2 control-label">Birth Date:</label>
+  <p class="col-sm-2"></p>
+  <p class="col-sm-10 text-danger">{{ form.categories.errors.as_text }}</p>
+ </div> 
+  <div> 
+  <label for="{{ form.categories.id_for_label }}" class="col-sm-2 control-label">Category:</label>
     <div class='col-sm-10' >
-			{{ form.birth_date }}
-                </div>
-                <script type="text/javascript">
-            $(function () {
-	 		$('#id_birth_date').datepicker({viewMode:'years', pickTime: false});
-            });
-        </script>	
+      {{ form.categories }}
+    </div>
+                 
   </div>
  
  {% endif %}
- 
 
 <div class="span7 text-center">
 	<button type="submit" class="btn btn-primary" >Submit</button>

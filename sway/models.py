@@ -42,6 +42,12 @@ class Studio(BaseModel):
     def __unicode__(self):
             return self.name
 
+class EventCategory(BaseModel):
+        event_category_name = models.CharField(max_length = 128)
+        studio = models.ForeignKey(Studio)
+        def __unicode__(self):
+            return self.event_category_name
+
 class Members(BaseModel):
         first_name = models.CharField(max_length=128)
         last_name = models.CharField(max_length=128)
@@ -49,23 +55,11 @@ class Members(BaseModel):
         area = models.TextField()
         birth_date = models.DateField(null=True,blank=True)
         studio = models.ForeignKey(Studio)
+        categories = models.ManyToManyField(EventCategory,blank=True,null=True,related_name="members")
         GENDER_CHOICES = (
         ('M', 'Male'),
         ('F', 'Female'))
         gender = models.CharField(max_length=1, choices=GENDER_CHOICES, default='M')
-        def __unicode__(self):
-            return self.email
-
-class EventCategory(BaseModel):
-        event_category_name = models.CharField(max_length = 128)
-        studio = models.ForeignKey(Studio)
-        def __unicode__(self):
-            return self.event_category_name
-
-class MemberCategory(BaseModel):
-        studio = models.ForeignKey(Studio)
-        member = models.ForeignKey(Members)
-        category = models.ForeignKey(EventCategory)
         def __unicode__(self):
             return self.email
 
