@@ -728,14 +728,14 @@ def member_edit(request, id=None):
     else:
         member=Members()
     if request.POST:
-        form=MemberForm(request.POST,instance=member)
-        print form.errors.as_data()
+        form=MemberForm(request, request.POST,instance=member)
         if  form.is_valid():
             print "MemberForm is valid"
             post = form.save(commit=False)
             post.studio = request.user.studiouser.studio_id
             post.created_by = request.user
             post.modified_by = request.user
+            post.categories = form.cleaned_data['categories']
             if id:
                 post.modified_date = datetime.datetime.now()   
             else:
@@ -743,11 +743,11 @@ def member_edit(request, id=None):
             post.save()
             return HttpResponseRedirect("/sway/members")
         else:
-            print "MemberForm is invalid"
+            print "MemberForm is invalid", form.errors, form.non_field_errors
     else:
         print "member_edit GET request"
         #form=MemberForm({"instance":member,"studio":request.user.studiouser.studio_id})
-        form=MemberForm(request.user.studiouser.studio_id,instance=member)
+        form=MemberForm(request, instance=member)
         #form.studio = request.user.studiouser.studio_id                        
     return render(request, 'sway/add_members.html', {'form': form, 'id':member.id}, context_instance=RequestContext(request))
 

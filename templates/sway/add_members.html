@@ -122,6 +122,8 @@
     </div>
  </div>
  {% endif %}
+
+ 
  
  {% if not form.categories.errors %}
    <div class="form-group"> 
@@ -139,12 +141,21 @@
   <div> 
   <label for="{{ form.categories.id_for_label }}" class="col-sm-2 control-label">Category:</label>
     <div class='col-sm-10' >
-      {{ form.categories }}
+      {{ form.categories }} 
     </div>
                  
   </div>
  
  {% endif %}
+
+{{ form.non_field_errors}}
+{% if form.non_field_errors %}
+  <div class="non-field-errors">
+    {% for err in form.non_field_errors %}
+      <p class="form-error">{{ err }}</p>
+    {% endfor %}
+  </div>
+{% endif %}
 
 <div class="span7 text-center">
 	<button type="submit" class="btn btn-primary" >Submit</button>

@@ -90,30 +90,27 @@ class MemberForm(forms.ModelForm):
     first_name = forms.CharField(max_length=128)
     last_name = forms.CharField(max_length=128)
     email = forms.EmailField()
-    area = forms.CharField(max_length=128)
-    categories = forms.ModelMultipleChoiceField(queryset=EventCategory.objects.filter(studio_id=1), widget=forms.SelectMultiple)
-        
-    def __init__(self,studio=None, *args, **kwargs):
+    area = forms.CharField(max_length=128)    
+    categories = forms.ModelMultipleChoiceField(queryset=EventCategory.objects.none(), widget=forms.SelectMultiple)
+    def __init__(self, request, *args, **kwargs):
         super(MemberForm, self).__init__(*args, **kwargs)
-        if isinstance(studio,int):
-            self.fields['categories'].queryset = EventCategory.objects.filter(studio_id=studio)
+        self.fields['categories'].queryset = EventCategory.objects.filter(Q(studio = request.user.studiouser.studio_id))
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
             field.widget.attrs['required'] = "True"
-
     
     class Meta:
         model = Members
-        exclude = ('studio','created_date', 'modified_date', 'created_by', 'modified_by','birth_date')
-        
+        exclude = ('studio','created_date', 'modified_date', 'created_by', 'modified_by')
+   
     def clean(self):
         cleaned_data=super(MemberForm, self).clean()
+        categories = cleaned_data.get("categories")
+        print "categories", categories
         first_name = cleaned_data.get("first_name")
         last_name = cleaned_data.get("last_name")
         email =cleaned_data.get("email")
         addr=cleaned_data.get("area")
-        categories = cleaned_data.get("categories")
-        print categories, "categories"
         msg_invalid_name=u"Invalid name."
        
         if validate_name_field(first_name):
@@ -133,6 +130,7 @@ class MemberForm(forms.ModelForm):
         else:
             print "Invalid address=",addr
             self.add_error('area',u"Invalid address.")    
+        return cleaned_data
     
 class InstructorForm(forms.ModelForm):
     first_name = forms.CharField(max_length=128)

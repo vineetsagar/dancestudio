@@ -53,7 +53,7 @@ class Members(BaseModel):
         last_name = models.CharField(max_length=128)
         email = models.EmailField()
         area = models.TextField()
-        birth_date = models.DateField(null=True,blank=True)
+        #birth_date = models.DateField(null=True,blank=True)
         studio = models.ForeignKey(Studio)
         categories = models.ManyToManyField(EventCategory,blank=True,null=True,related_name="members")
         GENDER_CHOICES = (
