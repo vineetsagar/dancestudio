@@ -31,7 +31,7 @@ class BaseModel(models.Model):
 class Studio(BaseModel):
     name = models.CharField(max_length = 128)
     area = models.CharField(max_length = 512,null=True,blank=True)
-    email = models.EmailField()
+    email = models.EmailField(null=True,blank=True)
     phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: '+91'. Up to 10 digits allowed.")
     mobile = models.CharField(validators=[phone_regex], blank=True, max_length=15)
     email_host = models.CharField(max_length=100,null=True,blank=True)
@@ -51,9 +51,11 @@ class EventCategory(BaseModel):
 class Members(BaseModel):
         first_name = models.CharField(max_length=128)
         last_name = models.CharField(max_length=128)
-        email = models.EmailField()
+        email = models.EmailField(null=True,blank=True)
         area = models.TextField()
-        #birth_date = models.DateField(null=True,blank=True)
+        joining_date = models.DateField(null=True,blank=True)
+        phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: '+91'. Up to 10 digits allowed.")
+        mobile = models.CharField(validators=[phone_regex], blank=True, max_length=15)
         studio = models.ForeignKey(Studio)
         categories = models.ManyToManyField(EventCategory,blank=True,null=True,related_name="members")
         GENDER_CHOICES = (

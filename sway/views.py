@@ -735,11 +735,12 @@ def member_edit(request, id=None):
             post.studio = request.user.studiouser.studio_id
             post.created_by = request.user
             post.modified_by = request.user
-            post.categories = form.cleaned_data['categories']
             if id:
                 post.modified_date = datetime.datetime.now()   
             else:
                 post.created_date = datetime.datetime.now()
+            post.save()
+            post.categories = form.cleaned_data['categories']
             post.save()
             return HttpResponseRedirect("/sway/members")
         else:

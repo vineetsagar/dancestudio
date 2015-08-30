@@ -89,7 +89,6 @@ class EventsForm(ModelForm):
 class MemberForm(forms.ModelForm):
     first_name = forms.CharField(max_length=128)
     last_name = forms.CharField(max_length=128)
-    email = forms.EmailField()
     area = forms.CharField(max_length=128)    
     categories = forms.ModelMultipleChoiceField(queryset=EventCategory.objects.none(), widget=forms.SelectMultiple)
     def __init__(self, request, *args, **kwargs):
@@ -97,7 +96,9 @@ class MemberForm(forms.ModelForm):
         self.fields['categories'].queryset = EventCategory.objects.filter(Q(studio = request.user.studiouser.studio_id))
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
-            field.widget.attrs['required'] = "True"
+            print field.required, field_name
+            if field.required:
+                field.widget.attrs['required'] = "True"
     
     class Meta:
         model = Members

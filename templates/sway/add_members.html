@@ -124,6 +124,56 @@
  {% endif %}
 
  
+
+
+ {% if not form.mobile.errors %}
+   <div class="form-group"> 
+  <label for="{{ form.categories.id_for_label }}" class="col-sm-2 control-label">Mobile:</label>
+    <div class='col-sm-10' >
+      {{ form.mobile }}
+                </div>
+                 
+  </div>
+ {% else %}
+ <div class="row">
+  <p class="col-sm-2"></p>
+  <p class="col-sm-10 text-danger">{{ form.mobile.errors.as_text }}</p>
+ </div> 
+  <div> 
+  <label for="{{ form.categories.id_for_label }}" class="col-sm-2 control-label">Mobile:</label>
+    <div class='col-sm-10' >
+      {{ form.mobile }} 
+    </div>
+                 
+  </div>
+ 
+ {% endif %}
+
+
+
+ {% if not form.joining_date.errors %}
+   <div class="form-group"> 
+  <label for="{{ form.categories.id_for_label }}" class="col-sm-2 control-label">Joining Date:</label>
+    <div class='col-sm-10' >
+      {{ form.joining_date }}
+                </div>
+                 
+  </div>
+ {% else %}
+ <div class="row">
+  <p class="col-sm-2"></p>
+  <p class="col-sm-10 text-danger">{{ form.joining_date.errors.as_text }}</p>
+ </div> 
+  <div> 
+  <label for="{{ form.categories.id_for_label }}" class="col-sm-2 control-label">Joining Date:</label>
+    <div class='col-sm-10' >
+      {{ form.joining_date }} 
+    </div>
+                 
+  </div>
+ 
+ {% endif %}
+
  
  {% if not form.categories.errors %}
    <div class="form-group"> 
@@ -148,19 +198,19 @@
  
  {% endif %}
 
-{{ form.non_field_errors}}
-{% if form.non_field_errors %}
-  <div class="non-field-errors">
-    {% for err in form.non_field_errors %}
-      <p class="form-error">{{ err }}</p>
-    {% endfor %}
-  </div>
-{% endif %}
+
 
 <div class="span7 text-center">
 	<button type="submit" class="btn btn-primary" >Submit</button>
 </div>
-  
+  <script type="text/javascript">
+            $(function () {
+                $('#id_joining_date').datetimepicker({
+              
+             pickTime: false
+        });
+            });
+        </script> 
 </form>
 </div>
 {% endblock %}
