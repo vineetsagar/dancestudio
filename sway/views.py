@@ -707,8 +707,10 @@ def save_followup(request):
     followup = LeadFollowUp(notes=notes,followed_by=request.user,lead=lead)
     followup.save()
     from datetime import datetime
+    from pytz import timezone
     print request.POST.get('nextFollowupDate')
     lead.nextFollowUpDate = datetime.strptime(request.POST.get('nextFollowupDate'),'%m/%d/%Y %I:%M %p')
+    lead.nextFollowUpDate = lead.nextFollowUpDate.replace(tzinfo=timezone(request.user.studiouser.studio_id.timezone)) 
     lead.save()
     getAlerts(request);
     redirectString = '/sway/followups?lead='+request.POST.get('lead')
@@ -736,9 +738,9 @@ def member_edit(request, id=None):
             post.created_by = request.user
             post.modified_by = request.user
             if id:
-                post.modified_date = datetime.datetime.now()   
+                post.modified_date = django.utils.timezone.now()   
             else:
-                post.created_date = datetime.datetime.now()
+                post.created_date = django.utils.timezone.now()
             post.save()
             post.categories = form.cleaned_data['categories']
             post.save()

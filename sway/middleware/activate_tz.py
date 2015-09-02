@@ -5,8 +5,9 @@ from django.utils import timezone
 class ActivateTimeZone(object):
 
     def process_request(self, request):
-        #tzname = request.session.get('django_timezone')
-        tzname = 'Asia/Calcutta'
+        tzname = request.session.get('django_timezone')
+        if hasattr(request,'user'):
+            tzname = request.user.studiouser.studio_id.timezone
         if tzname:
             timezone.activate(pytz.timezone(tzname))
         else:

@@ -12,14 +12,14 @@ from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 from django.core import serializers
 import json
-
+from django.utils import timezone 
 
 # A base model that alll other model shall extend
 # THis model is abstract since this can't be instantiated an is a mean to keep all the common fields in one class
 class BaseModel(models.Model):
-    created_date = models.DateTimeField(default=datetime.now(),blank=True)
+    created_date = models.DateTimeField(default=timezone.now(),blank=True)
     created_by =  models.ForeignKey(User,related_name='%(class)s_created_by',null=True,blank=True)
-    modified_date = models.DateTimeField(null=True,default=datetime.now(),auto_now=True)
+    modified_date = models.DateTimeField(null=True,default=timezone.now(),auto_now=True)
     modified_by =   models.ForeignKey(User,related_name='%(class)s_modified_by',null=True,blank=True)
     class Meta:
         abstract = True
@@ -34,6 +34,7 @@ class Studio(BaseModel):
     email = models.EmailField(null=True,blank=True)
     phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: '+91'. Up to 10 digits allowed.")
     mobile = models.CharField(validators=[phone_regex], blank=True, max_length=15)
+    timezone = models.CharField(blank=True,max_length=40,null=True)
     email_host = models.CharField(max_length=100,null=True,blank=True)
     email_port = models.PositiveIntegerField()
     email_user_name = models.CharField(max_length=512,null=True,blank=True)
