@@ -17,9 +17,9 @@ from django.utils import timezone
 # A base model that alll other model shall extend
 # THis model is abstract since this can't be instantiated an is a mean to keep all the common fields in one class
 class BaseModel(models.Model):
-    created_date = models.DateTimeField(default=timezone.now(),blank=True)
+    created_date = models.DateTimeField(default=timezone.now,blank=True)
     created_by =  models.ForeignKey(User,related_name='%(class)s_created_by',null=True,blank=True)
-    modified_date = models.DateTimeField(null=True,default=timezone.now(),auto_now=True)
+    modified_date = models.DateTimeField(null=True,default=timezone.now,auto_now=True)
     modified_by =   models.ForeignKey(User,related_name='%(class)s_modified_by',null=True,blank=True)
     class Meta:
         abstract = True
