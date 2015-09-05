@@ -140,7 +140,7 @@ def api_lead_list(request):
             end_date = ""
             if dFilter is not None and dFilter !='':
                  from datetime import timedelta
-                 start_date=datetime.date.today();
+                 start_date=django.utils.timezone.now()
                  if dFilter == '2':
                     print "dfiler 2 get called"
                     end_date = start_date - datetime.timedelta(days=7)
@@ -303,7 +303,9 @@ def api_add_followup(request):
         # not we need to update the followeup_date for lead object
         lead = Lead.objects.filter(id=data["lead"])[0]
         from datetime import datetime
+        from pytz import timezone
         lead.nextFollowUpDate = datetime.strptime(data["followed_date"],'%m/%d/%Y %I:%M %p')
+        lead.nextFollowUpDate = lead.nextFollowUpDate.replace(tzinfo=timezone(request.user.studiouser.studio_id.timezone))
         lead.save()
         return JSONResponse(serializer.data, status=200)
     else:
