@@ -33,16 +33,16 @@
     </div>
     <div>	
       <label for="notes">Next Followup On:</label>
-    <div class='input-group date' id='nextFollowupDate'>
-                  {{ form.nextFollowupDate.errors }}
+    <div class='input-group date' id='nextfollowupdate'>
+                  {{ form.nextfollowupdate.errors }}
                   
-                    <input name="nextFollowupDate" type='text' class="form-control"/>
+                    <input name="nextfollowupdate" type='text' class="form-control"/>
                     <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
                     </span>
                 </div>
                 <script type="text/javascript">
             $(function () {
-                $('#nextFollowupDate').datetimepicker();
+                $('#nextfollowupdate').datetimepicker();
             });
         </script>	
   </div>

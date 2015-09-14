@@ -106,7 +106,7 @@ def getAlerts(request):
     lead = Lead.objects.filter(studio = request.user.studiouser.studio_id, created_date__year=start_date.year).extra({'month' : "DATE_PART('month',created_date)"}).values_list('month').annotate(monthly_lead=Count('id'))
     print lead
     end_date = start_date + datetime.timedelta(days=5)
-    leads = Lead.objects.filter(studio = request.user.studiouser.studio_id, nextFollowUpDate__gte=start_date,nextFollowUpDate__lte=end_date).count()
+    leads = Lead.objects.filter(studio = request.user.studiouser.studio_id, nextfollowupdate__gte=start_date,nextfollowupdate__lte=end_date).count()
     print leads
     request.session['alertsCount'] = leads;
 
@@ -456,7 +456,7 @@ def show_dashboard(request):
         month_wise_leads.append(t)
     print month_wise_leads
     leads = month_wise_leads
-    follow_up_lead_count = Lead.objects.filter(studio = request.user.studiouser.studio_id, nextFollowUpDate__gte=start_date,nextFollowUpDate__lte=end_date).count()
+    follow_up_lead_count = Lead.objects.filter(studio = request.user.studiouser.studio_id, nextfollowupdate__gte=start_date,nextfollowupdate__lte=end_date).count()
     print follow_up_lead_count,' Follow up leads'
     return render(request, 'sway/dashboard.html', {'followup_leads':follow_up_lead_count,'status_leads': status_leads,'new_leads':new_leads,'new_members':new_members,'new_events':new_events,'leads':leads}, context_instance=RequestContext(request))
     #return render(request, 'sway/dashboard.html', None)
@@ -628,8 +628,16 @@ def get_events_json(request):
 
 @login_required
 def view_enquiries(request):
-    leads = Lead.objects.filter(Q(studio = request.user.studiouser.studio_id)).exclude(status__in=[1,2]).order_by('-nextFollowUpDate','-status')
+    #query = 'Select * from sway_lead where status not in (1,2) order by nextfollowupdate desc NULLS LAST, status desc' %request.user.studiouser.studio_id
+    #leads = Lead.objects.raw(query) 
+    leads = Lead.objects.filter(Q(studio = request.user.studiouser.studio_id)).exclude(status__in=[1,2])
+    q = leads.extra(select={'date_due_null': 'CASE WHEN nextfollowupdate is null THEN 0 ELSE 1 END'})
+    q = q.extra(order_by=['-date_due_null','-nextfollowupdate','-status'])
+    print q.query
+    leads = q
+    ##leads = leads.reverse()
     paginator = Paginator(leads, 10,0,True) # Show 10 leads per page
+    paginator._count = len(list(leads))
     page = request.GET.get('page')
     try:
         leads = paginator.page(page)
@@ -708,9 +716,9 @@ def save_followup(request):
     followup.save()
     from datetime import datetime
     from pytz import timezone
-    print request.POST.get('nextFollowupDate')
-    lead.nextFollowUpDate = datetime.strptime(request.POST.get('nextFollowupDate'),'%m/%d/%Y %I:%M %p')
-    lead.nextFollowUpDate = lead.nextFollowUpDate.replace(tzinfo=timezone(request.user.studiouser.studio_id.timezone)) 
+    print request.POST.get('nextfollowupdate')
+    lead.nextfollowupdate = datetime.strptime(request.POST.get('nextfollowupdate'),'%m/%d/%Y %I:%M %p')
+    lead.nextfollowupdate = lead.nextfollowupdate.replace(tzinfo=timezone(request.user.studiouser.studio_id.timezone)) 
     lead.save()
     getAlerts(request);
     redirectString = '/sway/followups?lead='+request.POST.get('lead')
@@ -802,7 +810,7 @@ def alerts(request):
     from datetime import timedelta
     start_date=datetime.date.today();
     end_date = start_date + datetime.timedelta(days=5)
-    leads = Lead.objects.filter(studio = request.user.studiouser.studio_id, nextFollowUpDate__gte=start_date,nextFollowUpDate__lte=end_date).order_by('nextFollowUpDate')
+    leads = Lead.objects.filter(studio = request.user.studiouser.studio_id, nextfollowupdate__gte=start_date,nextfollowupdate__lte=end_date).order_by('nextfollowupdate')
     paginator = Paginator(leads, 10,0,True) # Show 10 leads per page
     page = request.GET.get('page')
     try:

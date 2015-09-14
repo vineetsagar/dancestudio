@@ -150,28 +150,28 @@ def api_lead_list(request):
             if end_date !="":
                 if len(leadList) > 0:
                     print "going to get the data now"
-                    leads = Lead.objects.filter(Q(studio = request.user.studiouser.studio_id) & Q(status__in=leadList) & Q(nextFollowUpDate__gte=end_date)).order_by('nextFollowUpDate')
+                    leads = Lead.objects.filter(Q(studio = request.user.studiouser.studio_id) & Q(status__in=leadList) & Q(nextfollowupdate__gte=end_date)).order_by('nextfollowupdate')
                     print "after to get the data now"
                     serializer = LeadSerializer(leads, many=True)
                     return JSONResponse(serializer.data)    
                 else:
                     print "before getting data"
-                    leads = Lead.objects.filter(Q(studio = request.user.studiouser.studio_id) & Q(nextFollowUpDate__gte=end_date)).order_by('nextFollowUpDate')
+                    leads = Lead.objects.filter(Q(studio = request.user.studiouser.studio_id) & Q(nextfollowupdate__gte=end_date)).order_by('nextfollowupdate')
                     print "after getting data"
                     serializer = LeadSerializer(leads, many=True)
                     return JSONResponse(serializer.data)
             else:
                  if len(leadList) > 0:
-                    leads = Lead.objects.filter(Q(studio = request.user.studiouser.studio_id) & Q(status__in=leadList)).order_by('nextFollowUpDate')
+                    leads = Lead.objects.filter(Q(studio = request.user.studiouser.studio_id) & Q(status__in=leadList)).order_by('nextfollowupdate')
                     serializer = LeadSerializer(leads, many=True)
                     return JSONResponse(serializer.data)    
                  else:
-                    leads = Lead.objects.filter(Q(studio = request.user.studiouser.studio_id)).order_by('nextFollowUpDate')
+                    leads = Lead.objects.filter(Q(studio = request.user.studiouser.studio_id)).order_by('nextfollowupdate')
                     serializer = LeadSerializer(leads, many=True)
                     return JSONResponse(serializer.data)
            
         else:
-            leads = Lead.objects.filter((Q(name__icontains=searchStr)|Q(contact_detail__icontains=searchStr)|Q(email__icontains=searchStr)|Q(mobile__icontains=searchStr)|Q(inquiryFor__icontains=searchStr)) &Q(studio = request.user.studiouser.studio_id)).order_by('nextFollowUpDate')
+            leads = Lead.objects.filter((Q(name__icontains=searchStr)|Q(contact_detail__icontains=searchStr)|Q(email__icontains=searchStr)|Q(mobile__icontains=searchStr)|Q(inquiryFor__icontains=searchStr)) &Q(studio = request.user.studiouser.studio_id)).order_by('nextfollowupdate')
             serializer = LeadSerializer(leads, many=True)
             return JSONResponse(serializer.data)
 
@@ -183,7 +183,7 @@ def api_lead_list_temp(request):
     if request.method == 'GET':
     	searchStr = request.GET.get('search')
     	if searchStr is None or searchStr == 'null' or searchStr =='':
-            leads = Lead.objects.filter(Q(studio = request.user.studiouser.studio_id)).order_by('nextFollowUpDate')
+            leads = Lead.objects.filter(Q(studio = request.user.studiouser.studio_id)).order_by('nextfollowupdate')
             paginator = Paginator(leads, 10,0,True) # Show 10 leads per page
             page = request.GET.get('page')
             try:
@@ -197,7 +197,7 @@ def api_lead_list_temp(request):
             serializer = LeadSerializer(leads, many=True)
             return JSONResponse(serializer.data)
     	else:
-            leads = Lead.objects.filter((Q(name__icontains=searchStr)|Q(contact_detail__icontains=searchStr)|Q(email__icontains=searchStr)|Q(mobile__icontains=searchStr)|Q(inquiryFor__icontains=searchStr)) &Q(studio = request.user.studiouser.studio_id)).order_by('nextFollowUpDate')
+            leads = Lead.objects.filter((Q(name__icontains=searchStr)|Q(contact_detail__icontains=searchStr)|Q(email__icontains=searchStr)|Q(mobile__icontains=searchStr)|Q(inquiryFor__icontains=searchStr)) &Q(studio = request.user.studiouser.studio_id)).order_by('nextfollowupdate')
             paginator = Paginator(leads, 10,0,True) # Show 10 leads per page
             page = request.GET.get('page')
             try:
@@ -304,8 +304,8 @@ def api_add_followup(request):
         lead = Lead.objects.filter(id=data["lead"])[0]
         from datetime import datetime
         from pytz import timezone
-        lead.nextFollowUpDate = datetime.strptime(data["followed_date"],'%m/%d/%Y %I:%M %p')
-        lead.nextFollowUpDate = lead.nextFollowUpDate.replace(tzinfo=timezone(request.user.studiouser.studio_id.timezone))
+        lead.nextfollowupdate = datetime.strptime(data["followed_date"],'%m/%d/%Y %I:%M %p')
+        lead.nextfollowupdate = lead.nextfollowupdate.replace(tzinfo=timezone(request.user.studiouser.studio_id.timezone))
         lead.save()
         return JSONResponse(serializer.data, status=200)
     else:

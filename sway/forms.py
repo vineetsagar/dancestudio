@@ -270,7 +270,7 @@ class EventCategoryForm(forms.ModelForm):
         
 class FollowupForm(forms.ModelForm):
     notes = forms.CharField(max_length=128,required=True)
-    nextFollowupDate = forms.DateTimeField(required=False)
+    nextfollowupdate = forms.DateTimeField(required=False)
         
     def __init__(self, *args, **kwargs):
         super(FollowupForm, self).__init__(*args, **kwargs)
@@ -284,7 +284,7 @@ class FollowupForm(forms.ModelForm):
     def clean(self):
         cleaned_data=super(FollowupForm, self).clean()
         notes = cleaned_data.get("notes")
-        nextFollowupDate = cleaned_data.get("nextFollowupDate")
+        nextfollowupdate = cleaned_data.get("nextfollowupdate")
         
 
 class CommentsForm(forms.ModelForm):

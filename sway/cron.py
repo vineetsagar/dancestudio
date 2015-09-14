@@ -9,11 +9,11 @@ def followup_notification_job():
     obj_curr_time=datetime.datetime.now()+timedelta(hours=5,minutes=30)
     obj_curr_time = obj_curr_time.replace(second=0, microsecond=0)
     print "Current Time after adding 5:30=",obj_curr_time.strftime('%m/%d/%Y %H:%M:%S')
-    leads = Lead.objects.filter(nextFollowUpDate = obj_curr_time)
+    leads = Lead.objects.filter(nextfollowupdate = obj_curr_time)
     print "Lead count with current time =",leads.count()
     for lead in leads:
         print "lead value is " , lead
-        print "lead date time=",lead.nextFollowUpDate.strftime('%m/%d/%Y %H:%M:%S')
+        print "lead date time=",lead.nextfollowupdate.strftime('%m/%d/%Y %H:%M:%S')
         studio=lead.studio
         print "studio" , studio
         id=studio.id
