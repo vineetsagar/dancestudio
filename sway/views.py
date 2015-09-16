@@ -659,7 +659,6 @@ def add_lead(request):
 
 @login_required
 def edit_lead(request,id=None):
-    print 'In print lead '
     if id:
         lead=get_object_or_404(Lead,pk=id)
         print lead.name
@@ -671,7 +670,7 @@ def edit_lead(request,id=None):
         if form.is_valid():
             post = form.save(commit=False)
             post.studio = request.user.studiouser.studio_id
-            post.created_date=lead.created_date 
+            post.created_date=lead.created_date
             post.save()
             return HttpResponseRedirect("/sway/enquiries")
         else:
@@ -716,9 +715,9 @@ def save_followup(request):
     followup.save()
     from datetime import datetime
     from pytz import timezone
-    print request.POST.get('nextfollowupdate')
-    lead.nextfollowupdate = datetime.strptime(request.POST.get('nextfollowupdate'),'%m/%d/%Y %I:%M %p')
-    lead.nextfollowupdate = lead.nextfollowupdate.replace(tzinfo=timezone(request.user.studiouser.studio_id.timezone)) 
+    tz=timezone(request.user.studiouser.studio_id.timezone)
+    followupdate = datetime.strptime(request.POST.get('nextfollowupdate'),'%m/%d/%Y %I:%M %p')
+    lead.nextfollowupdate = tz.localize(followupdate)
     lead.save()
     getAlerts(request);
     redirectString = '/sway/followups?lead='+request.POST.get('lead')

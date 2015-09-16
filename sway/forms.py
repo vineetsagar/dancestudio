@@ -193,7 +193,7 @@ class LeadForm(forms.ModelForm):
     
     class Meta:
         model = Lead
-        exclude = ('studio','created_date', 'modified_date', 'created_by', 'modified_by')
+        exclude = ('studio','created_date', 'modified_date', 'created_by', 'modified_by','nextfollowupdate')
         
     def clean(self):
         cleaned_data=super(LeadForm, self).clean()
@@ -277,7 +277,6 @@ class FollowupForm(forms.ModelForm):
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
             
-    
     class Meta:
         model = LeadFollowUp
         exclude = ('studio','created_date', 'modified_date', 'created_by', 'modified_by')
