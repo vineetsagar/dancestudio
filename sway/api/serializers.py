@@ -19,9 +19,9 @@ class LeadSerializer(serializers.ModelSerializer):
     followups = FollowUpSerializer(many=True,required=False)
     class Meta:
         model = Lead
-        fields=('id','name','contact_detail','email','mobile' ,'nextfollowupdate' ,'inquiryFor','studio','status', 'followups')
+        fields=('id','name','contact_detail','email','mobile' ,'nextfollowupdate' ,'inquiryfor','studio','status', 'followups')
         read_only_fields = ('id',)
-        #fields=('id','name','contact_detail','email','mobile' ,'nextfollowupdate' ,'inquiryFor','followups')
+        #fields=('id','name','contact_detail','email','mobile' ,'nextfollowupdate' ,'inquiryfor','followups')
         
     def create(self, validated_data):
         """

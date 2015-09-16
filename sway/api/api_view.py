@@ -94,7 +94,7 @@ def api_lead_count_view(request, format=None):
     if searchStr is None or searchStr == 'null':
 		lead_count = Lead.objects.filter(Q(studio = request.user.studiouser.studio_id)).count()
     else:
-    	lead_count = Lead.objects.filter((Q(name__icontains=searchStr)|Q(contact_detail__icontains=searchStr)|Q(email__icontains=searchStr)|Q(mobile__icontains=searchStr)|Q(inquiryFor__icontains=searchStr)) &Q(studio = request.user.studiouser.studio_id)).count()
+    	lead_count = Lead.objects.filter((Q(name__icontains=searchStr)|Q(contact_detail__icontains=searchStr)|Q(email__icontains=searchStr)|Q(mobile__icontains=searchStr)|Q(inquiryfor__icontains=searchStr)) &Q(studio = request.user.studiouser.studio_id)).count()
     content = {'lead_count': lead_count}
     return Response(content)
     
@@ -171,7 +171,7 @@ def api_lead_list(request):
                     return JSONResponse(serializer.data)
            
         else:
-            leads = Lead.objects.filter((Q(name__icontains=searchStr)|Q(contact_detail__icontains=searchStr)|Q(email__icontains=searchStr)|Q(mobile__icontains=searchStr)|Q(inquiryFor__icontains=searchStr)) &Q(studio = request.user.studiouser.studio_id)).order_by('nextfollowupdate')
+            leads = Lead.objects.filter((Q(name__icontains=searchStr)|Q(contact_detail__icontains=searchStr)|Q(email__icontains=searchStr)|Q(mobile__icontains=searchStr)|Q(inquiryfor__icontains=searchStr)) &Q(studio = request.user.studiouser.studio_id)).order_by('nextfollowupdate')
             serializer = LeadSerializer(leads, many=True)
             return JSONResponse(serializer.data)
 
@@ -197,7 +197,7 @@ def api_lead_list_temp(request):
             serializer = LeadSerializer(leads, many=True)
             return JSONResponse(serializer.data)
     	else:
-            leads = Lead.objects.filter((Q(name__icontains=searchStr)|Q(contact_detail__icontains=searchStr)|Q(email__icontains=searchStr)|Q(mobile__icontains=searchStr)|Q(inquiryFor__icontains=searchStr)) &Q(studio = request.user.studiouser.studio_id)).order_by('nextfollowupdate')
+            leads = Lead.objects.filter((Q(name__icontains=searchStr)|Q(contact_detail__icontains=searchStr)|Q(email__icontains=searchStr)|Q(mobile__icontains=searchStr)|Q(inquiryfor__icontains=searchStr)) &Q(studio = request.user.studiouser.studio_id)).order_by('nextfollowupdate')
             paginator = Paginator(leads, 10,0,True) # Show 10 leads per page
             page = request.GET.get('page')
             try:
