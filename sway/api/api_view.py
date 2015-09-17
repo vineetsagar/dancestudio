@@ -304,8 +304,11 @@ def api_add_followup(request):
         lead = Lead.objects.filter(id=data["lead"])[0]
         from datetime import datetime
         from pytz import timezone
-        lead.nextfollowupdate = datetime.strptime(data["followed_date"],'%m/%d/%Y %I:%M %p')
-        lead.nextfollowupdate = lead.nextfollowupdate.replace(tzinfo=timezone(request.user.studiouser.studio_id.timezone))
+        tz=timezone(request.user.studiouser.studio_id.timezone)
+        followupdate = datetime.strptime(data["followed_date"],'%m/%d/%Y %I:%M %p')
+        lead.nextfollowupdate = tz.localize(followupdate)
+        #lead.nextfollowupdate = datetime.strptime(data["followed_date"],'%m/%d/%Y %I:%M %p')
+        #lead.nextfollowupdate = lead.nextfollowupdate.replace(tzinfo=timezone(request.user.studiouser.studio_id.timezone))
         lead.save()
         return JSONResponse(serializer.data, status=200)
     else:
