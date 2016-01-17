@@ -11,6 +11,8 @@ from django.forms.models import ModelForm
 from sway.form_validators import validate_name_field, validate_address, validate_phone_number 
 from sway.models import Events, EventType, EventCategory, Studio, EventLocations
 from sway.models import Members, EventCategory, Instructors, Lead, LeadFollowUp, Comments
+from geoposition.forms import GeopositionField
+
 
 class EventsForm(ModelForm):
     all_day = forms.BooleanField(initial=False, required=False)
@@ -226,14 +228,16 @@ class LeadForm(forms.ModelForm):
 
 class EventLocationForm(forms.ModelForm):
     event_location_name = forms.CharField(max_length=128)
+    geo_position_field = GeopositionField()
     class Meta:
         model = EventLocations
-        exclude = ('studio','created_date', 'modified_date', 'created_by', 'modified_by')
+        exclude = ('studio','created_date', 'modified_date', 'created_by', 'modified_by', 'longitude', 'latitude')
     def __init__(self,  *args, **kwargs):
         super(EventLocationForm, self).__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
-            field.widget.attrs['class'] = 'form-control'
-            field.widget.attrs['required'] = True    
+            if field_name !='geo_position_field':
+                field.widget.attrs['class'] = 'form-control'
+                field.widget.attrs['required'] = True    
     def clean(self):
         print "*******inside self method*********"
         cleaned_data=super(EventLocationForm, self).clean()

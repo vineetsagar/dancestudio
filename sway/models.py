@@ -12,6 +12,7 @@ from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 from django.core import serializers
 import json
+from geoposition.fields import GeopositionField
 from django.utils import timezone 
 
 # A base model that alll other model shall extend
@@ -43,6 +44,27 @@ class Studio(BaseModel):
     def __unicode__(self):
             return self.name
 
+class TestLocation(BaseModel):
+        positions = GeopositionField();
+        def __unicode__(self):
+            return str(self.id)
+
+class StudioData(BaseModel):
+    name = models.CharField(max_length = 128)
+    description = models.CharField(max_length = 1024,null=True,blank=True)
+    email = models.EmailField(null=True,blank=True)
+    phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: '+91'. Up to 10 digits allowed.")
+    mobile = models.CharField(validators=[phone_regex], blank=True, max_length=15)
+    def __unicode__(self):
+            return self.name
+
+class StudioDataMarker(BaseModel):
+        longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True,blank=True)
+        latitude = models.DecimalField(max_digits=9, decimal_places=6,null=True,blank=True)
+        studiodata = models.ForeignKey(StudioData)
+        def __unicode__(self):
+            return str(self.id)
+
 class EventCategory(BaseModel):
         event_category_name = models.CharField(max_length = 128)
         studio = models.ForeignKey(Studio)
@@ -59,10 +81,6 @@ class Members(BaseModel):
         mobile = models.CharField(validators=[phone_regex], blank=True, max_length=15)
         studio = models.ForeignKey(Studio)
         categories = models.ManyToManyField(EventCategory,blank=True,null=True,related_name="members")
-        GENDER_CHOICES = (
-        ('M', 'Male'),
-        ('F', 'Female'))
-        gender = models.CharField(max_length=1, choices=GENDER_CHOICES, default='M')
         def __unicode__(self):
             return self.email
 
@@ -79,9 +97,11 @@ class EventType(BaseModel):
         
 class EventLocations(BaseModel):
         event_location_name = models.CharField(max_length = 128)
-        studio = models.ForeignKey(Studio)
+        studio = models.ForeignKey(Studio, related_name="eventlocations")
+        longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True,blank=True)
+        latitude = models.DecimalField(max_digits=9, decimal_places=6,null=True,blank=True)
         def __unicode__(self):
-            return self.event_location_name
+            return str(self.id)
         
 class UserActionLogs(BaseModel):
         description = models.CharField(max_length = 200)

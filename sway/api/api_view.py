@@ -2,6 +2,7 @@ import datetime
 from dateutil.relativedelta import relativedelta
 import json
 import math
+import collections
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
@@ -27,17 +28,26 @@ from sway.api.api_helper import get_token,byteify
 from sway.api.api_helper import TokenAuthenticator
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
-from sway.api.serializers import LeadSerializer,FollowUpSerializer,UserSerializer,StudioSerializer,StudioUserSerializer
+from sway.api.serializers import LeadSerializer,FollowUpSerializer,UserSerializer,StudioSerializer,StudioUserSerializer,EventLocationsSearilizer
 from django.db.transaction import commit
 from sway.api.api_helper import JSONResponse
 from sway.events.event_forms_helper import getForm, getEventForm, setFormDefaultCssAndPlaceHolder
 from sway.forms import EventsForm, EventCategoryForm, EventLocationForm
 from sway.forms import MemberForm, InstructorForm, LeadForm, FollowupForm
 from sway.models import Members, Events, EventType, EventCategory, Instructors, Lead, LeadFollowUp, \
-    EventMembers, MembersView, EventOccurence, ProductContacts, EventLocations
+    EventMembers, MembersView, EventOccurence, ProductContacts, EventLocations, Studio
 from sway.storeevents import storeevents, updateEvents
 from push_notifications.models import GCMDevice
 
+
+def search_data(request):
+    print "search data request get called" , request.method
+    if(request.method =='GET'):
+       latitutde = request.GET.get('lal')
+       longitude = request.GET.get('lon')
+
+       # if both the paremeter are missing then return exception
+       # Will implement the filter later
 
 #REST API for mobile app
 def api_app_login(request):
@@ -81,6 +91,82 @@ def api_validate_token(request):
     print "validateToken is called. Token is valid"
     response = http.HttpResponse("OK")
     return response;
+
+@api_view(['GET'])
+def get_models_within_25 (request):
+    from django.db import connection, transaction
+    distance_unit = 6371
+
+    request_latitude = request.GET.get('latitude')
+    request_longitude = request.GET.get('longitude')
+
+    ## validate the values, if null then return null response
+
+    if request_latitude is None :
+        print "returning null request_latitude"
+        return JSONResponse({'error':' latitude not provided'})
+
+    if request_longitude is None :
+        print "returning null request_longitude"
+        return JSONResponse({'error':' longitude not provided'})
+
+    #latitude  = 28.53552
+    #longitude = 77.39103
+    import ast
+    latitude =ast.literal_eval(request_latitude)
+    longitude =ast.literal_eval(request_longitude)
+    print latitude ,  " " , longitude
+    #latitude  = 18.53621
+    #longitude = 73.89397
+    radius = 25
+    
+    cursor = connection.cursor()
+    sql = """SELECT id, latitude, longitude FROM sway_eventlocations WHERE (%f * acos( cos( radians(%f) ) * cos( radians( latitude ) ) *
+            cos( radians( longitude ) - radians(%f) ) + sin( radians(%f) ) * sin( radians( latitude ) ) ) ) < %d
+            """ % (distance_unit, latitude, longitude, latitude, int(radius))
+    cursor.execute(sql)
+
+    ids = [row[0] for row in cursor.fetchall()]
+
+    print "total number of ids ", len(ids)
+    
+    if len(ids) <= 0:
+        print "lenth"
+        d = collections.OrderedDict()
+        d['count'] = 0    
+        # returning data with count  0
+        return HttpResponse(json.dumps(d), content_type='application/json')
+    
+    sql_studios = """SELECT ss.id, se.latitude, se.longitude , ss.name, ss.email, ss.mobile from sway_studio ss, sway_eventlocations se where ss.id = se.studio_id and se.id in  (%s) """  
+    # Copied from the following link
+    # http://stackoverflow.com/questions/4574609/executing-select-where-in-using-mysqldb
+    # seems there is no direct way of passing array in "IN Query"
+    in_p=', '.join(list(map(lambda x: '%s', ids)))
+    sql_studios = sql_studios % in_p
+    cursor.execute(sql_studios, ids)
+    studios_ids =  cursor.fetchall()
+    rowarray_list = []
+    for row in studios_ids:
+        d = collections.OrderedDict()
+        d['id'] = row[0]
+        d['latitude'] =str(row[1])
+        d['longitude'] = str(row[2])
+        d['name'] = row[3]
+        d['email'] = row[4]
+        d['mobile'] = row[5]
+        rowarray_list.append(d)
+
+    d = collections.OrderedDict()
+    d['data'] = rowarray_list
+    d['count'] = len(ids)
+
+    return HttpResponse(json.dumps(d), content_type='application/json')
+    #print  "studio ids" ,studios_ids
+    #locations = EventLocations.objects.filter(id__in=ids) 
+    #serializer = EventLocationsSearilizer(locations,many=True)
+    #print serializer 
+    #return JSONResponse(serializer.data)
+
    
 @api_view(['GET'])
 @authentication_classes((TokenAuthenticator,))

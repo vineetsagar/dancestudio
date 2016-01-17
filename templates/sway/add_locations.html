@@ -1,13 +1,11 @@
 {% extends "bs_base.html" %} {% load staticfiles %}
 <!-- this for including anything in head tag -->
 {% block head%}
-<link href="{% static 'jquery/jquery.timepicker.css' %}"
-	rel="stylesheet">
-<link href="{% static 'jquery/jquery.datetimepicker.css' %}"
-	rel="stylesheet">
 <link href="{% static 'sway/css/forms.css' %}" rel="stylesheet">
-<script src="{% static 'jquery/jquery.timepicker.js' %}"></script>
-<script src="{% static 'jquery/jquery.datetimepicker.js' %}"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+<link href="/static/geoposition/geoposition.css" type="text/css" media="all" rel="stylesheet"/>
+                      <script type="text/javascript" src="//maps.google.com/maps/api/js?sensor=false"></script>
+                                <script type="text/javascript" src="/static/geoposition/geoposition.js"></script>
 {% endblock%}
 
 <!-- all the content that will go into body tag -->
@@ -20,26 +18,8 @@
 {% endif %}	
 
 	{% csrf_token %}
-	
-{% if not form.event_location_name.errors %}
- <div class="form-group">
- 	<label for="{{ form.event_location_name.id_for_label }}" class="col-sm-2 control-label">Location Name:</label>
- 	<div class="col-sm-10">
-    {{ form.event_location_name }}
-    </div>
-  </div>
- {% else %}
- <div class="row">
- 	<p class="col-sm-2"></p>
- 	<p class="col-sm-10 text-danger">{{ form.event_location_name.errors.as_text }}</p>
- </div>	
- <div class="form-group has-error">
-   	<label for="{{ form.event_location_name.id_for_label }}" class="col-sm-2 control-label">Location Name:</label>
- 	<div class="col-sm-10">
- 	   {{ form.event_location_name }}
-    </div>
- </div>
- {% endif %}
+
+    {{ form.as_p }}
  
 <div class="span7 text-center">
 	<button type="submit" class="btn btn-primary" >Submit</button>

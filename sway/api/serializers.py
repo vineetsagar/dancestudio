@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from sway.models import Lead, LeadFollowUp,StudioUser,Studio
+from sway.models import Lead, LeadFollowUp,StudioUser,Studio,EventLocations
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
     
@@ -14,6 +14,28 @@ class FollowUpSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         leadData =  LeadFollowUp.objects.create(**validated_data) 
         return leadData
+
+
+class EventLocationsSearilizer(serializers.ModelSerializer):
+    class Meta: 
+        model = EventLocations
+        fields=('id', 'studio' ,'latitude', 'longitude' , 'event_location_name')
+
+    def create(self, validated_data):
+        """
+        Create and return a new `Snippet` instance, given the validated data.
+        """
+        return EventLocations.objects.create(**validated_data) 
+
+
+class StudioSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Studio
+        fields = ('name', 'mobile', 'email', 'email_port', 'id')
+    def create(self, validated_data):
+        studio = Studio.objects.create(**validated_data)
+        studio.save()
+        return studio        
 
 class LeadSerializer(serializers.ModelSerializer):
     followups = FollowUpSerializer(many=True,required=False)
@@ -40,15 +62,6 @@ class UserSerializer(serializers.ModelSerializer):
         user.save()
         return user
 
-
-class StudioSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Studio
-        fields = ('name', 'mobile', 'email', 'email_port', 'id')
-    def create(self, validated_data):
-        studio = Studio.objects.create(**validated_data)
-        studio.save()
-        return studio
 
 class StudioUserSerializer(serializers.ModelSerializer):
     class Meta:

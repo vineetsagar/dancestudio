@@ -11,8 +11,10 @@ admin.autodiscover()
 
 urlpatterns=patterns('',
 		 url(r'^$', views.index, name='index'),
-		 url(r'^locations/$', views.view_locations, name='view_locations'),
-		 url(r'^locations/new/$', views.add_edit_locations, name='location_add'),
+		 url(r'^locations/search$', api_view.get_models_within_25, name='get_models_within_25'),
+               url(r'^locations/$', views.view_locations, name='view_locations'),
+		 url(r'^locations/delete/(?P<id>\d+)/$', views.locaton_delete, name='locaton_delete',),
+               url(r'^locations/new/$', views.add_edit_locations, name='location_add'),
 		 url(r'^locations/edit/(?P<id>\d+)/$', views.add_edit_locations, name='location_edit'),
 		 url(r'^categories/$', views.view_categories, name='view_categories'),
 		 url(r'^categories/new/$', views.add_edit_categories, name='category_add'),

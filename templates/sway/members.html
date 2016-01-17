@@ -45,10 +45,13 @@ $(function() {
   <!-- Default panel contents -->
   					<nav>
 					  <ul class="pagination" style="float:right">
+
 					    {% if membersList.has_previous %}
 					    <li>
+
 					      <a aria-label="Previous" href="?page={{ membersList.previous_page_number }}">
 					        <span aria-hidden="true">&laquo;</span>
+
 					      </a>
 					    </li>
 					    {% endif %}
@@ -69,6 +72,7 @@ $(function() {
 					  </ul>
 					</nav>
 					<div class="well well-sm" style="clear:both">
+						
   					<form action="{% url 'search_member'  %}" method="POST" role="form">
 						{% csrf_token %}
 						<div class="row">
@@ -80,14 +84,23 @@ $(function() {
 						      </span>
 						    </div><!-- /input-group -->
 						  </div><!-- /.col-lg-6 -->
+						  <div class="col-lg-3">
+						      
+						      
+						      <div  class='input-group'>
+						       <h5>Total number of members : {{ count }} </h5>
+						      </div>
+						
+						</div><!-- /.col-lg-3--> 
 						</div><!-- /.row -->
 					</form>
+
 					  	<table class="table table-striped table-hover" id="myTable" >
 					  <thead >
 					   <tr>
 					      <th data-priority="2" >First Name</th>
 					      <th data-priority="3" >Last Name</th>
-					      <th data-priority="4" >Gender</th>
+					      <th data-priority="4" >Joing Date</th>
 					      <th data-priority="4" >Email</th>
 					      <th data-priority="5" >Mobile</th>
 					      <th data-priority="6" >Address</th>
@@ -101,7 +114,7 @@ $(function() {
 					                   <tr>
 					      <td>{{ members.first_name }}</td>
 					      <td>{{ members.last_name }}</td>
-					      <td>{{ members.gender }}</td>
+					      <td>{{ members.joining_date }}</td>
 					      <td>{{ members.email }}</td>
 					      <td>{{ members.mobile }}</td>
 					      <td>{{ members.area }}</td>

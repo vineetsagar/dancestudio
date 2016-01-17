@@ -21,7 +21,10 @@ from sway.models import Members, Events, EventType, EventCategory, Instructors, 
     EventMembers, MembersView, EventOccurence, ProductContacts, EventLocations,Comments
 from sway.storeevents import storeevents, updateEvents
 from django.db.models import Count
-
+from geoposition.forms import GeopositionField
+from django import forms
+from django.shortcuts import render_to_response
+from geoposition import Geoposition
 
 @login_required
 def delete_events(request, id):
@@ -86,6 +89,7 @@ def loginAuth(request):
 @login_required
 def viewmembers(request):
     members = Members.objects.filter(Q(studio = request.user.studiouser.studio_id)).order_by('-id')[:10]
+    count = members.count
     paginator = Paginator(members, 10,0,True) # Show 10 leads per page
     page = request.GET.get('page')
     try:
@@ -96,7 +100,7 @@ def viewmembers(request):
     except EmptyPage:
         # If page is out of range (e.g. 9999), deliver last page of results.
         members = paginator.page(paginator.num_pages)
-    context_dict = {'membersList': members}
+    context_dict = {'membersList': members, 'count' : count}
     return render_to_response('sway/members.html', context_dict, context_instance=RequestContext(request))
 
 def getAlerts(request):
@@ -104,16 +108,20 @@ def getAlerts(request):
     from django.db.models import Count
     start_date=datetime.date.today();
     lead = Lead.objects.filter(studio = request.user.studiouser.studio_id, created_date__year=start_date.year).extra({'month' : "DATE_PART('month',created_date)"}).values_list('month').annotate(monthly_lead=Count('id'))
-    print lead
     end_date = start_date + datetime.timedelta(days=5)
     leads = Lead.objects.filter(studio = request.user.studiouser.studio_id, nextfollowupdate__gte=start_date,nextfollowupdate__lte=end_date).count()
-    print leads
     request.session['alertsCount'] = leads;
 
 @login_required
 def search_member(request):
     searchStr = request.POST.get('searchStr')
-    members = Members.objects.filter((Q(first_name__icontains=searchStr)|Q(last_name__icontains=searchStr)|Q(email__icontains=searchStr)|Q(area__icontains=searchStr)) &Q(studio = request.user.studiouser.studio_id) )
+    members = []
+    if searchStr is None:
+        members = Members.objects.order_by('-id')
+    else:
+        members = Members.objects.filter((Q(first_name__icontains=searchStr)|Q(last_name__icontains=searchStr)|Q(email__icontains=searchStr)|Q(area__icontains=searchStr)) &Q(studio = request.user.studiouser.studio_id) )
+    
+    count = members.count
     paginator = Paginator(members, 10,0,True) # Show 10 leads per page
     page = request.GET.get('page')
     try:
@@ -124,7 +132,7 @@ def search_member(request):
     except EmptyPage:
         # If page is out of range (e.g. 9999), deliver last page of results.
         members = paginator.page(paginator.num_pages)
-    context_dict = {'membersList': members}
+    context_dict = {'membersList': members, 'count': count}
     return render(request, 'sway/members.html', context_dict, context_instance=RequestContext(request))
 
 @login_required
@@ -287,7 +295,6 @@ def lead_to_member(request,lead=None):
     data.last_name = request.POST.get("last_name")
     data.email = request.POST.get("email")
     data.area = request.POST.get("area")
-    data.gender = request.POST.get("gender")
     studio_data=request.user.studiouser.studio_id
     data.studio =studio_data
     Members.save(data)
@@ -379,6 +386,7 @@ def search_events(request):
 def add_instructor(request):
     return render(request, 'sway/add_instructor.html')
 
+
 @login_required
 def add_edit_locations(request, id=None):
     if id:
@@ -391,12 +399,20 @@ def add_edit_locations(request, id=None):
         if form.is_valid():
             post = form.save(commit=False)
             post.studio = request.user.studiouser.studio_id
+            post.latitude = request.POST.get("geo_position_field_0")
+            post.longitude = request.POST.get("geo_position_field_1")
             post.save()
             return HttpResponseRedirect("/sway/locations")
         else:
             print "Location form is invalid"
     else:
         form=EventLocationForm( instance=event_location)
+        if event_location != None:
+            print "event location value is ",event_location            
+            position = GeopositionField()
+            position.latitude = event_location.latitude
+            position.longitude = event_location.longitude
+            form.fields["geo_position_field"].initial = position
     return render(request, 'sway/add_locations.html', {'form': form, 'id':event_location.id}, context_instance=RequestContext(request))
 
 
@@ -766,6 +782,13 @@ def member_delete(request, id):
     member_to_delete=get_object_or_404(Members,pk=id)
     member_to_delete.delete()
     return HttpResponseRedirect("/sway/members")
+
+
+@login_required
+def locaton_delete(request, id):
+    member_to_delete=get_object_or_404(EventLocations,pk=id)
+    member_to_delete.delete()
+    return HttpResponseRedirect("/sway/locations")
 
 @login_required
 def category_delete(request, id):
