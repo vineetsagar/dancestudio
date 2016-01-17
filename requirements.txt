@@ -15,3 +15,4 @@ django-crontab==0.6.0
 django-uuidfield==0.5.0
 whitenoise==1.0.6
 pytz=2015.4
+django-geoposition==0.2.2
