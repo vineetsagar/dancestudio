@@ -11,6 +11,7 @@ admin.autodiscover()
 
 urlpatterns=patterns('',
 		 url(r'^$', views.index, name='index'),
+               url(r'^dancehub$', views.danceHub, name='hub'),
 		 url(r'^locations/search$', api_view.get_models_within_25, name='get_models_within_25'),
                url(r'^locations/$', views.view_locations, name='view_locations'),
 		 url(r'^locations/delete/(?P<id>\d+)/$', views.locaton_delete, name='locaton_delete',),
