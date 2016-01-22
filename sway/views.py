@@ -258,6 +258,9 @@ def viewevents(request):
     context_dict = {'eventsList': events, 'eventList':event_type, 'categoryList':category_type}
     return render_to_response('sway/events.html', context_dict, context_instance=RequestContext(request))
 
+def danceHub(request):
+    return render(request, 'sway/HomePage.html')
+
 def home(request):
     return render(request, 'sway/index.html')
 
