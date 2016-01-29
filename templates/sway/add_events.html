@@ -23,9 +23,15 @@
 		</div>
 
 		<div>
-			{{ form.event_category.errors }} <label
-				for="{{ form.event_category.id_for_label }}">Event Category:</label>
-			{{ form.event_category }}
+			{{ form.entity_category.errors }} <label
+				for="{{ form.entity_category.id_for_label }}">Event Category:</label>
+			{{ form.entity_category }}
+
+			 {% for form in entity_category %}
+        {% for field in form %}
+            {{ field.label_tag }} {{ field }}
+        {% endfor %}
+    {% endfor %}
 		</div>
 		<div>
 			{{ form.event_location.errors }} <label

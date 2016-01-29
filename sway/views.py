@@ -65,7 +65,7 @@ def editevents(request, id=None):
     event.end_time =event.end_time.strftime('%H:%M')
     
     event_type = EventType.objects.order_by('-id')
-    category_type = EventCategory.objects.filter(Q(studio = request.user.studiouser.studio_id)).order_by('-id')
+    category_type = EntityCategories.objects.filter(Q(studio = request.user.studiouser.studio_id)).order_by('-id')
     if category_type is None:
         context_dict = {'error': 'Looks no category you have not defined any category, please go to settings and create few categories.'}
         return render(request, 'sway/error.html', context_dict)

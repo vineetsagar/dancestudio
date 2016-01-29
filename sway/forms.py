@@ -10,9 +10,18 @@ from django.forms.models import ModelForm
 
 from sway.form_validators import validate_name_field, validate_address, validate_phone_number 
 from sway.models import Events, EventType, EventCategory, Studio, EventLocations
-from sway.models import Members, EventCategory, Instructors, Lead, LeadFollowUp, Comments
+from sway.models import Members, EventCategory, Instructors, Lead, LeadFollowUp, Comments,EntityCategories
 from geoposition.forms import GeopositionField
+from django.forms import ModelChoiceField
 
+class MyModelChoiceField(ModelChoiceField):
+    def label_from_instance(self, obj):
+        return obj.category.name
+
+
+class LocationChoiceField(ModelChoiceField):
+    def label_from_instance(self, obj):
+        return obj.event_location_name
 
 class EventsForm(ModelForm):
     all_day = forms.BooleanField(initial=False, required=False)
@@ -23,17 +32,19 @@ class EventsForm(ModelForm):
     weeklyRepeat = forms.MultipleChoiceField(choices=WEEKDAY_CHOICES, widget=forms.CheckboxSelectMultiple,  initial="1", required = False)
     after = forms.IntegerField(required = False)
     on = forms.CharField(required = False)
+    entity_category = MyModelChoiceField(queryset=None)
+    event_location = LocationChoiceField(queryset=None)
     
     def __init__(self, request, *args, **kwargs):
         super(EventsForm, self).__init__(*args, **kwargs)
         # this will filter the event type value, i.e we do not want to render 'once' value on the UI, hence this will filter it
         self.fields['event_type'].queryset = EventType.objects.filter(~Q(id = 1))
         self.fields['event_type'].empty_label = None
-        self.fields['event_category'].queryset = EventCategory.objects.filter(Q(studio = request.user.studiouser.studio_id))
+        self.fields['entity_category'].queryset = EntityCategories.objects.filter(Q(studio = request.user.studiouser.studio_id))
         self.fields['event_location'].queryset = EventLocations.objects.filter(Q(studio = request.user.studiouser.studio_id))
     class Meta:
         model = Events
-        fields = ['event_name', 'event_category','start_date','start_time', 'end_date','end_time', 'all_day', 'repeat', 'event_type', 'event_location']
+        fields = ['event_name', 'entity_category','start_date','start_time', 'end_date','end_time', 'all_day', 'repeat', 'event_type', 'event_location']
         exclude = ('studio','created_date', 'modified_date', 'created_by', 'modified_by')
     def clean_start_time(self):
         return self.cleaned_data.get("start_time")

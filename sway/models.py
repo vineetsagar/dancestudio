@@ -127,7 +127,7 @@ class UserActionLogs(BaseModel):
 class Events(BaseModel):
         event_name = models.CharField(max_length=128)
         all_day= models.BooleanField(default=False)
-        event_category = models.ForeignKey(EventCategory)
+        entity_category = models.ForeignKey(EntityCategories)
         event_location = models.ForeignKey(EventLocations, null=True)
         event_type = models.ForeignKey(EventType)
         
