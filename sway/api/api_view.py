@@ -137,7 +137,7 @@ def get_models_within_25 (request):
         # returning data with count  0
         return HttpResponse(json.dumps(d), content_type='application/json')
     
-    sql_studios = """SELECT ss.id, se.latitude, se.longitude , ss.name, ss.email, ss.mobile from sway_studio ss, sway_eventlocations se where ss.id = se.studio_id and se.id in  (%s) """  
+    sql_studios = """SELECT ss.id, se.latitude, se.longitude , ss.name, ss.email, ss.mobile from sway_studio ss, sway_eventlocations se where ss.id = se.studio_id and se.id in  (%s)  and ss.searchable=true"""  
     # Copied from the following link
     # http://stackoverflow.com/questions/4574609/executing-select-where-in-using-mysqldb
     # seems there is no direct way of passing array in "IN Query"
