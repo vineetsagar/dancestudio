@@ -1,7 +1,7 @@
 import datetime
 from dateutil.relativedelta import relativedelta
 
-from sway.models import Events, EventType, EventCategory, EventOccurence, EventLocations
+from sway.models import Events, EventType, EventCategory, EventOccurence, EventLocations,EntityCategories
 
 
 def calculateMonthBitValue(request):
@@ -109,12 +109,14 @@ def updateEvents(request):
     db_event_obj.event_name = request.POST.get("event_name")
 
     # event category salsa or bachata as of now
-    event_category_name = request.POST.get("event_category")
+    event_category_name = request.POST.get("entity_category")
     event_location_name = request.POST.get("event_location")
-    eventCategory = EventCategory.objects.get(pk=event_category_name)
+
+    print "event_category_name", event_category_name
+    eventCategory = EntityCategories.objects.get(pk=event_category_name)
     eventLocation = EventLocations.objects.get(pk=event_location_name)
 
-    db_event_obj.event_category = eventCategory
+    db_event_obj.entity_category = eventCategory
     db_event_obj.event_location = eventLocation
     
     event_type = request.POST.get("event_type")
@@ -169,12 +171,14 @@ def storeevents(request):
     data.event_name = request.POST.get("event_name")
 
     # event category salsa or bachata as of now
-    event_category_name = request.POST.get("event_category")
+    event_category_name = request.POST.get("entity_category")
     event_location_name = request.POST.get("event_location")
-    eventCategory = EventCategory.objects.get(pk=event_category_name)
+    print "event_category_name" , event_category_name
+    eventCategory = EntityCategories.objects.get(pk=event_category_name)
+
     eventLocation = EventLocations.objects.get(pk=event_location_name)
 
-    data.event_category = eventCategory
+    data.entity_category = eventCategory
     data.event_location = eventLocation
     
     event_type = request.POST.get("event_type")

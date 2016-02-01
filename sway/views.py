@@ -1,4 +1,3 @@
-
 import datetime
 from dateutil.relativedelta import relativedelta
 import json
@@ -14,11 +13,13 @@ from django.shortcuts import get_object_or_404
 from django.shortcuts import render, render_to_response
 from django.template.context import RequestContext
 
+
 from sway.events.event_forms_helper import getForm, getEventForm, setFormDefaultCssAndPlaceHolder
 from sway.forms import EventsForm, EventCategoryForm, EventLocationForm
 from sway.forms import MemberForm, InstructorForm, LeadForm, FollowupForm, CommentsForm
 from sway.models import Members, Events, EventType, EventCategory, Instructors, Lead, LeadFollowUp, \
-    EventMembers, MembersView, EventOccurence, ProductContacts, EventLocations,Comments
+    EventMembers, MembersView, EventOccurence, ProductContacts, EventLocations,Comments, Studio, GlobalCategories, GlobalCategoriesView
+from sway.models import EntityCategories
 from sway.storeevents import storeevents, updateEvents
 from django.db.models import Count
 from geoposition.forms import GeopositionField
@@ -64,7 +65,7 @@ def editevents(request, id=None):
     event.end_time =event.end_time.strftime('%H:%M')
     
     event_type = EventType.objects.order_by('-id')
-    category_type = EventCategory.objects.filter(Q(studio = request.user.studiouser.studio_id)).order_by('-id')
+    category_type = EntityCategories.objects.filter(Q(studio = request.user.studiouser.studio_id)).order_by('-id')
     if category_type is None:
         context_dict = {'error': 'Looks no category you have not defined any category, please go to settings and create few categories.'}
         return render(request, 'sway/error.html', context_dict)
@@ -135,6 +136,34 @@ def search_member(request):
     context_dict = {'membersList': members, 'count': count}
     return render(request, 'sway/members.html', context_dict, context_instance=RequestContext(request))
 
+
+@login_required
+def view_categories(request, id = None):
+    print "view_globalcategories is called" 
+    studio_id = request.user.studiouser.studio_id
+    allCategories = GlobalCategories.objects.all()
+    selected_members = EntityCategories.objects.filter(Q(studio = request.user.studiouser.studio_id))
+    membersList = []
+    for em in selected_members:
+        membersList.append(em.category)
+        
+    toReturn  = []    
+    for members in allCategories:
+        if members in membersList:
+            toSend = GlobalCategoriesView(categories = members, selected = True)
+            toReturn.append(toSend)
+        else:
+            toSend = GlobalCategoriesView(categories = members, selected = False)
+            toReturn.append(toSend)
+        
+    if allCategories.count() <=0:
+        print "exception"
+
+    studio = Studio.objects.get(pk=studio_id.id)
+    context_dict = {'allMembers': toReturn, 'event_id':studio_id , 'description':studio.description , 'sdescription':studio.short_description, 'searchable':studio.searchable }
+    return render_to_response('sway/view_categories.html', context_dict, context_instance=RequestContext(request))
+
+
 @login_required
 def view_eventmembers(request, id = None):
     print "view_eventmembers is called"
@@ -163,6 +192,40 @@ def view_eventmembers(request, id = None):
         print "exception"
     context_dict = {'allMembers': toReturn, 'event_id':eventObj.id}
     return render(request, 'sway/members_events.html', context_dict)
+
+
+@login_required
+def save_studiocategories(request):
+    selected_global_categories_id_arrays = request.POST.getlist("dual_box_name")
+    short_description = request.POST.get("sdescription")
+    description = request.POST.get("description")
+    searchable = request.POST.get("searchable")
+    print "values from the form ", short_description , description
+    studio_id = request.user.studiouser.studio_id
+    assignedCategories = EntityCategories.objects.filter(Q(studio = studio_id))
+    for category in assignedCategories:
+        category.delete()
+
+    for global_categories_id in selected_global_categories_id_arrays:
+        category = GlobalCategories.objects.get(pk=global_categories_id)
+        eventCategories = EntityCategories(category=category, studio = studio_id)
+        eventCategories.save()
+
+    studio = Studio.objects.get(pk=studio_id.id)
+    
+    if short_description is not None:    
+        studio.short_description = short_description
+    if description is not None:    
+        studio.description = description
+
+    print "searchable", searchable
+    if searchable :   
+        studio.searchable = searchable
+    else:
+        studio.searchable = False
+    studio.save()
+
+    return HttpResponseRedirect(reverse("view_categories"))
 
 @login_required
 def save_eventmembers(request):
@@ -196,7 +259,7 @@ def view_locations(request):
     return render_to_response('sway/view_locations.html', context_dict, context_instance=RequestContext(request))
 
 @login_required
-def view_categories(request):
+def view_categories1(request):
     categories = EventCategory.objects.filter(Q(studio = request.user.studiouser.studio_id)).order_by('-id')[:10]
     paginator = Paginator(categories, 10,0,True) # Show 10 leads per page
     page = request.GET.get('page')
@@ -763,10 +826,11 @@ def member_edit(request, id=None):
             post.studio = request.user.studiouser.studio_id
             post.created_by = request.user
             post.modified_by = request.user
+            from django.utils import timezone
             if id:
-                post.modified_date = django.utils.timezone.now()   
+                post.modified_date = timezone.now()   
             else:
-                post.created_date = django.utils.timezone.now()
+                post.created_date = timezone.now()
             post.save()
             post.categories = form.cleaned_data['categories']
             post.save()

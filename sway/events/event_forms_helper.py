@@ -4,12 +4,12 @@ import math
 from django.db.models.query_utils import Q
 
 from sway.forms import EventsForm
-from sway.models import EventOccurence, EventType, EventCategory
+from sway.models import EventOccurence, EventType, EventCategory, EntityCategories
 
 
 def setFormDefaultCssAndPlaceHolder(form):
     form.fields['event_name'].widget.attrs = {'class':'form-control', 'placeholder':'Enter event name'}
-    form.fields['event_category'].widget.attrs = {'class':'form-control'}
+    form.fields['entity_category'].widget.attrs = {'class':'form-control'}
     form.fields['event_location'].widget.attrs = {'class':'form-control'}
     form.fields['start_date'].widget.attrs = {'class':'date start'}
     form.fields['end_date'].widget.attrs = {'class':'date start'}
@@ -52,7 +52,8 @@ def weekDaysValue(wmdValue):
 def getEventForm(request, event):
     
     eventOccurence = EventOccurence.objects.filter(events = event)
-
+    entity_category=event.entity_category
+    
     repeatflag = False;
     if eventOccurence.count() > 0:
         repeatflag = True;
@@ -78,13 +79,14 @@ def getEventForm(request, event):
     form = EventsForm(request, instance=event, initial={'repeat':repeatflag, 'all_day':event.all_day, 'event_type':eventType, 'weeklyRepeat': list, 'never':never_List})
     #form.fields['weeklyRepeat'].widget.attrs = {'checked':'1,2'}
     form.fields['event_name'].widget.attrs = {'class':'form-control', 'placeholder':'Enter event name'}
-    form.fields['event_category'].widget.attrs = {'class':'form-control'}
+    form.fields['entity_category'].widget.attrs = {'class':'form-control'}
     form.fields['event_location'].widget.attrs = {'class':'form-control'}
     form.fields['start_date'].widget.attrs = {'class':'date start'}
     form.fields['start_time'].widget.attrs = {'class':'time start'}
     form.fields['end_time'].widget.attrs = {'class':'time start'}
     form.fields['event_type'].widget.attrs = {'class':'form-control'}
     form.fields['on'].widget.attrs = {'class':'date start'}
+    
     if repeatflag:
         if eventOccurence[0].e_on:
             form.fields['on'].widget.attrs = {'value':eventOccurence[0].e_on_value.strftime("%m/%d/%Y")}

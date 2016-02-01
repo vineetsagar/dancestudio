@@ -1,7 +1,6 @@
 from django.contrib import admin
-
 from sway.models import Members, EventCategory, EventType, Events, \
-    EventOccurence, LeadFollowUp, Studio, StudioUser
+    EventOccurence, LeadFollowUp, Studio, StudioUser,GlobalCategories
 
 
 class MembersAdmin(admin.ModelAdmin):
@@ -40,4 +39,8 @@ admin.site.register(Events,EventsAdmin)
 admin.site.register(EventOccurence,EventOccurenceAdmin)
 admin.site.register(Studio)
 admin.site.register(StudioUser)
+admin.site.register(GlobalCategories)
+
+
+
 

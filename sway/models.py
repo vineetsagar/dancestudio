@@ -36,11 +36,9 @@ class Studio(BaseModel):
     phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: '+91'. Up to 10 digits allowed.")
     mobile = models.CharField(validators=[phone_regex], blank=True, max_length=15)
     timezone = models.CharField(blank=True,max_length=40,null=True,default='Asia/Calcutta')
-    email_host = models.CharField(max_length=100,null=True,blank=True)
-    email_port = models.PositiveIntegerField()
-    email_user_name = models.CharField(max_length=512,null=True,blank=True)
-    email_password = models.CharField(max_length=512,null=True,blank=True)
-    global_email_from = models.EmailField(null=True,blank=True) 
+    description = models.CharField(max_length = 512,null=True,blank=True)
+    short_description = models.CharField(max_length = 128,null=True,blank=True)
+    searchable = models.BooleanField(default=False)
     def __unicode__(self):
             return self.name
 
@@ -70,6 +68,23 @@ class EventCategory(BaseModel):
         studio = models.ForeignKey(Studio)
         def __unicode__(self):
             return self.event_category_name
+
+class GlobalCategories(BaseModel):
+        name = models.CharField(max_length = 128)
+        def __unicode__(self):
+            return self.name    
+
+class EntityCategories(BaseModel):
+        category =  models.ForeignKey(GlobalCategories)
+        studio = models.ForeignKey(Studio)
+        def __unicode__(self):
+            return str(self.id)
+
+class GlobalCategoriesView(BaseModel):
+        selected = models.BooleanField(default = False)
+        categories = models.OneToOneField(GlobalCategories)
+        class Meta:
+            abstract = True
 
 class Members(BaseModel):
         first_name = models.CharField(max_length=128)
@@ -101,7 +116,7 @@ class EventLocations(BaseModel):
         longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True,blank=True)
         latitude = models.DecimalField(max_digits=9, decimal_places=6,null=True,blank=True)
         def __unicode__(self):
-            return str(self.id)
+            return self.event_location_name
         
 class UserActionLogs(BaseModel):
         description = models.CharField(max_length = 200)
@@ -112,7 +127,7 @@ class UserActionLogs(BaseModel):
 class Events(BaseModel):
         event_name = models.CharField(max_length=128)
         all_day= models.BooleanField(default=False)
-        event_category = models.ForeignKey(EventCategory)
+        entity_category = models.ForeignKey(EntityCategories)
         event_location = models.ForeignKey(EventLocations, null=True)
         event_type = models.ForeignKey(EventType)
         
