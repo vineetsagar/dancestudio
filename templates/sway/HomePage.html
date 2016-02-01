@@ -22,8 +22,8 @@
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
-    filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='.myBackground.jpg', sizingMethod='scale');
-    -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='myBackground.jpg', sizingMethod='scale')";
+    filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='.images/background-girl.jpg', sizingMethod='scale');
+    -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='images/background-girl.jpg', sizingMethod='scale')";
   }
   
   .row {
@@ -85,54 +85,54 @@
           <div class="col-md-3" id="right"></div>
       </div>
       <div class="row">
-          <div class="col-md-1"> </div>
+          <div class="col-md-1" style="width:5px;"> </div>
           <div class="col-md-3" id="searchedResults" style="overflow-y:scroll;height:500px;">
-            <div class="thumbnail" style="background-color:transparent">
+            <div id="1" class="thumbnail" style="background-color:transparent">
               <img src="..." alt="...">
                 <div class="caption">
                 <h3>Studio Image1</h3>
             </div>
           </div>
-          <div class="thumbnail" style="background-color:transparent">
+          <div id="2" class="thumbnail" style="background-color:transparent">
                 <img src="..." alt="...">
                 <div class="caption">
                   <h3>Studio Image 2</h3>
                   </div>
           </div>
-           <div class="thumbnail" style="background-color:transparent">
+           <div id="3" class="thumbnail" style="background-color:transparent">
                 <img src="..." alt="...">
                 <div class="caption">
                   <h3>Studio Image 3</h3>
                   </div>
           </div>
-           <div class="thumbnail" style="background-color:transparent">
+           <div id="4" class="thumbnail" style="background-color:transparent">
                 <img src="..." alt="...">
                 <div class="caption">
                   <h3>Studio Image 4</h3>
                   </div>
           </div>
-           <div class="thumbnail" style="background-color:transparent">
+           <div id="0" class="thumbnail" style="background-color:transparent">
                 <img src="..." alt="...">
                 <div class="caption">
                   <h3>Studio Image 5</h3>
                   </div>
           </div>
 
-           <div class="thumbnail" style="background-color:transparent">
+           <div id="6" class="thumbnail" style="background-color:transparent">
                 <img src="..." alt="...">
                 <div class="caption">
                   <h3>Studio Image 6</h3>
                   </div>
           </div>
-           <div class="thumbnail" style="background-color:transparent">
+           <div id="7" class="thumbnail" style="background-color:transparent">
                 <img src="..." alt="...">
                 <div class="caption">
                   <h3>Studio Image 5</h3>
                   </div>
           </div>
   </div>
-          <div class="col-md-2" id="gap"></div>
-          <div class="col-md-6" id="mapDiv" style="height:500px;">
+          <div class="col-md-1" style="width:5px;" id="gap"></div>
+          <div class="col-md-8" id="mapDiv" style="height:500px;">
           
             
          
@@ -166,13 +166,21 @@
                 var l;
                 for(l in locations){
                     var marker=new google.maps.Marker({
-                        position:{lat:Number(locations[l].latitude),lng:Number(locations[l].longitude)},
+                        position:{lat:Number(locations[l].latitude),lng:Number(locations[l].longitude)},clickable:true,
                       });
+                    
+                      marker.addListener('click',(function(marker,l) {
+                              return function() {
+                                  window.location.href='#'+l;
+                              }
+                      })(marker,l));
 
                       marker.setMap(map);
                       map.setZoom(15);
                       map.panTo(marker.position);
                   }
+                }else{
+                  alert('Oops!!! No studio here, we will check out.');
                 }        
              },
             error: function(){
