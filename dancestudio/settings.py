@@ -18,7 +18,7 @@ SECRET_KEY = '3!jvl^a_$ms^d-v!)$yd%48xv!=1vj_j)ao8zr2ua3d0wn&siu'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
-DEBUG = False
+DEBUG = True
 
 TEMPLATE_DEBUG = True
 
