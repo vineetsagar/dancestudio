@@ -15,11 +15,11 @@ from django.template.context import RequestContext
 
 
 from sway.events.event_forms_helper import getForm, getEventForm, setFormDefaultCssAndPlaceHolder
-from sway.forms import EventsForm, EventCategoryForm, EventLocationForm
+from sway.forms import EventsForm, EventCategoryForm, EventLocationForm,DocumentForm
 from sway.forms import MemberForm, InstructorForm, LeadForm, FollowupForm, CommentsForm
 from sway.models import Members, Events, EventType, EventCategory, Instructors, Lead, LeadFollowUp, \
     EventMembers, MembersView, EventOccurence, ProductContacts, EventLocations,Comments, Studio, GlobalCategories, GlobalCategoriesView
-from sway.models import EntityCategories
+from sway.models import EntityCategories,Document
 from sway.storeevents import storeevents, updateEvents
 from django.db.models import Count
 from geoposition.forms import GeopositionField
@@ -136,6 +136,27 @@ def search_member(request):
     context_dict = {'membersList': members, 'count': count}
     return render(request, 'sway/members.html', context_dict, context_instance=RequestContext(request))
 
+
+@login_required
+def profile_gallery(request):
+    if request.method == 'POST':
+        form = DocumentForm(request.POST, request.FILES)
+        studio_data=request.user.studiouser.studio_id
+        
+        if form.is_valid():
+            newdoc = Document(docfile = request.FILES['docfile'], docname = request.POST.get("docname"))
+            newdoc.studio =studio_data
+            newdoc.save()
+            # Redirect to the document list after POST
+        else:
+           print "form is not valid"
+           form = DocumentForm() # A empty, unbound form
+           documents = Document.objects.filter(Q(studio = request.user.studiouser.studio_id))
+           return render_to_response('sway/gallery.html',{'documents': documents, 'form': form},context_instance=RequestContext(request))
+    else:
+        form = DocumentForm() # A empty, unbound form
+        documents = Document.objects.filter(Q(studio = request.user.studiouser.studio_id))
+        return render_to_response('sway/gallery.html',{'documents': documents, 'form': form},context_instance=RequestContext(request))
 
 @login_required
 def view_categories(request, id = None):

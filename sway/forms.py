@@ -14,6 +14,15 @@ from sway.models import Members, EventCategory, Instructors, Lead, LeadFollowUp,
 from geoposition.forms import GeopositionField
 from django.forms import ModelChoiceField
 
+
+class DocumentForm(forms.Form):
+    docfile = forms.FileField(
+        label='Select a file',
+        help_text='max. 2 megabytes'
+    )
+    docname = forms.CharField(required=True)
+   
+
 class MyModelChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
         return obj.category.name
