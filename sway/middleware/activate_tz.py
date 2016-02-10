@@ -1,4 +1,4 @@
-import pytz
+#import pytz
 
 from django.utils import timezone
 
@@ -9,7 +9,7 @@ class ActivateTimeZone(object):
         if hasattr(request,'user'):
         	if hasattr(request.user, 'studiouser'):
         		tzname = request.user.studiouser.studio_id.timezone
-        if tzname:
-            timezone.activate(pytz.timezone(tzname))
-        else:
-            timezone.deactivate()
+        #if tzname:
+         #   timezone.activate(pytz.timezone(tzname))
+        #else:
+         #   timezone.deactivate()
