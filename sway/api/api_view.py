@@ -198,7 +198,6 @@ def api_single_lead(request):
 
 
 @api_view(['GET',])
-@authentication_classes((TokenAuthenticator,))
 def api_lead_list(request):
     print "in request for getting lead data search value", request.GET.get('search')
     print "_hot ", request.GET.get('hot')
@@ -212,7 +211,8 @@ def api_lead_list(request):
         cold = request.GET.get('cold')
         dFilter = request.GET.get('dFilter')
 
-        if searchStr is None or searchStr == 'null' or searchStr =='':      
+        if searchStr is None or searchStr == 'null' or searchStr =='':  
+
             leadList = []
             if hot is not None  and hot =='true': 
                 # 3 cold, 4 warm ,5 hot
@@ -225,8 +225,11 @@ def api_lead_list(request):
                 leadList.append(3)
             end_date = ""
             if dFilter is not None and dFilter !='':
+                 import datetime 
                  from datetime import timedelta
-                 start_date=django.utils.timezone.now()
+                 from django.utils import timezone
+                 print "ok " ,timezone.now()
+                 start_date=timezone.now()
                  if dFilter == '2':
                     print "dfiler 2 get called"
                     end_date = start_date - datetime.timedelta(days=7)
