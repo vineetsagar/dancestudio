@@ -2,19 +2,46 @@
 {% load staticfiles %}
 
 <!-- Hashey AIzaSyBFq4NGdtFgdVmVp2-JZRSt29omfNeDlZ4 -->
-<html>
+<html ng-app="danceStudioListApp">
   <head>
     <meta charset="utf-8">
     <title>DanceStudio</title>
     <link href="{% static 'bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
  <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
+ <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
+ <script src="{% static 'angular/node_modules/es6-shim/es6-shim.min.js' %}"></script>
+ <script src="{% static 'angular/node_modules/systemjs/dist/system-polyfills.js' %}"></script>
+
+<!-- script src="{% static 'angular/node_modules/angular2/bundles/angular2-polyfills.js' %}"></script>
+<script src="{% static 'angular/node_modules/systemjs/dist/system.src.js' %}"></script>
+<script src="{% static 'angular/node_modules/rxjs/bundles/Rx.umd.js' %}"></script>
+<script src="{% static 'angular/node_modules/angular2/bundles/angular2.dev.js' %}"></script -->
+<script src="{% static 'angular/angular.min.js' %}"></script>
+
+    <!-- 2. Load our 'modules' -->
+    <!-- script src="{% static 'dancehub-angular/dancehub.component.js' %}"></script>
+    <script src="{% static 'dancehub-angular/main.js' %}"></script -->
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
+    <!-- script>
+    System.baseURL = '/static';
+      System.config({
+        packages: {        
+          app: {
+            format: 'register',
+            defaultExtension: 'js'
+          }
+        }
+      });
+      System.import('dancehubAngular/main' )
+            .then(null, console.error.bind(console));
+    </script-->
   <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;libraries=places"></script>
+  <!-- script src="{% static 'dancehubAngular/main.js' %}"></script-->
   <style>
   body {
     background: url("{% static 'images/background-girl.jpg' %}") no-repeat center center fixed; 
@@ -70,6 +97,13 @@
            // "<br>Longitude: " + position.coords.longitude; 
         }
         getLocation();
+        var danceStudioListApp = angular.module('danceStudioListApp', []).config(function($interpolateProvider) {
+            $interpolateProvider.startSymbol('{$');
+            $interpolateProvider.endSymbol('$}');
+        });
+        danceStudioListApp.controller('DanceStudioListCtrl', function ($scope) {
+         $scope.studios = {};
+        });
   </script>
       </div>
       <div class="row">
@@ -84,53 +118,17 @@
           </div></div>
           <div class="col-md-3" id="right"></div>
       </div>
-      <div class="row">
+      <div class="row" ng-controller="DanceStudioListCtrl" id="studios">
           <div class="col-md-1" style="width:5px;"> </div>
           <div class="col-md-3" id="searchedResults" style="overflow-y:scroll;height:500px;">
-            <div id="1" class="thumbnail" style="background-color:transparent">
-              <img src="..." alt="...">
+            <div ng-repeat="studio in studios track by $index" id="{$studio.id$}" class="thumbnail" style="background-color:transparent">
+               
+               <img src="{$studio.image$}" alt="{$studio.name$}">
                 <div class="caption">
-                <h3>Studio Image1</h3>
+                  <h4>{$studio.name$}</h4>
+               </div>
             </div>
           </div>
-          <div id="2" class="thumbnail" style="background-color:transparent">
-                <img src="..." alt="...">
-                <div class="caption">
-                  <h3>Studio Image 2</h3>
-                  </div>
-          </div>
-           <div id="3" class="thumbnail" style="background-color:transparent">
-                <img src="..." alt="...">
-                <div class="caption">
-                  <h3>Studio Image 3</h3>
-                  </div>
-          </div>
-           <div id="4" class="thumbnail" style="background-color:transparent">
-                <img src="..." alt="...">
-                <div class="caption">
-                  <h3>Studio Image 4</h3>
-                  </div>
-          </div>
-           <div id="0" class="thumbnail" style="background-color:transparent">
-                <img src="..." alt="...">
-                <div class="caption">
-                  <h3>Studio Image 5</h3>
-                  </div>
-          </div>
-
-           <div id="6" class="thumbnail" style="background-color:transparent">
-                <img src="..." alt="...">
-                <div class="caption">
-                  <h3>Studio Image 6</h3>
-                  </div>
-          </div>
-           <div id="7" class="thumbnail" style="background-color:transparent">
-                <img src="..." alt="...">
-                <div class="caption">
-                  <h3>Studio Image 5</h3>
-                  </div>
-          </div>
-  </div>
           <div class="col-md-1" style="width:5px;" id="gap"></div>
           <div class="col-md-8" id="mapDiv" style="height:500px;">
           
@@ -140,6 +138,7 @@
       </div>
     </div>
     <script type="text/javascript">
+    
     //Autocomplete variables
     var input = document.getElementById('location');
     //var searchform = document.getElementById('form1');
@@ -149,7 +148,7 @@
     //Google Map variables
     var map;
     var marker;
- 
+    
     //Add listener to detect autocomplete selection
     google.maps.event.addListener(autocomplete, 'place_changed', function () {
         place = autocomplete.getPlace();
@@ -162,19 +161,25 @@
             },
             success: function(result,status,xhr){
               if(result.count > 0){
+                var studioScope = angular.element(document.getElementById('studios')).scope();
+                studioScope.$apply(function() {
+                  studioScope.studios=result.data;
+
+                });
                 var locations = result.data;
                 var l;
+
+                console.log(JSON.stringify(result));
                 for(l in locations){
                     var marker=new google.maps.Marker({
                         position:{lat:Number(locations[l].latitude),lng:Number(locations[l].longitude)},clickable:true,
                       });
-                    
-                      marker.addListener('click',(function(marker,l) {
+                      marker.addListener('click',(function(marker,location) {
+                              console.debug(location.id);
                               return function() {
-                                  window.location.href='#'+l;
+                                  window.location.href='#'+location.id;
                               }
-                      })(marker,l));
-
+                      })(marker,locations[l]));
                       marker.setMap(map);
                       map.setZoom(15);
                       map.panTo(marker.position);
