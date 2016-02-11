@@ -8,7 +8,7 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
-# import dj_database_url
+#import dj_database_url
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
@@ -52,6 +52,7 @@ INSTALLED_APPS = (
     'rest_framework.authtoken',
     'push_notifications',
     'django_crontab',
+    'geoposition',
 )
 
 CRONJOBS = [
@@ -141,7 +142,7 @@ DATABASES = {
 
 LANGUAGE_CODE = 'en-us'
 
-#TIME_ZONE = 'UTC'
+TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
