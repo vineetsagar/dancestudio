@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import patterns, url,include
 from django.contrib import admin
 from rest_framework.authtoken.views import obtain_auth_token
 from sway import views
@@ -10,13 +10,15 @@ admin.autodiscover()
 
 
 urlpatterns=patterns('',
-		 url(r'^$', views.index, name='index'),
-               url(r'^dancehub$', views.danceHub, name='hub'),
-		 url(r'^locations/search$', api_view.get_models_within_25, name='get_models_within_25'),
-                  url(r'^locations/$', views.view_locations, name='view_locations'),
-                  url(r'^gallery/$', views.profile_gallery, name='profile_gallery'),
-		 url(r'^locations/delete/(?P<id>\d+)/$', views.locaton_delete, name='locaton_delete',),
-               url(r'^locations/new/$', views.add_edit_locations, name='location_add'),
+
+		url(r'^$', views.index, name='index'),
+            url(r'^dancehub$', views.danceHub, name='hub'),
+            url(r'^signup$', views.signup, name='signup'),
+		url(r'^locations/search$', api_view.get_models_within_25, name='get_models_within_25'),
+            url(r'^locations/$', views.view_locations, name='view_locations'),
+            url(r'^gallery/$', views.profile_gallery, name='profile_gallery'),
+		url(r'^locations/delete/(?P<id>\d+)/$', views.locaton_delete, name='locaton_delete',),
+            url(r'^locations/new/$', views.add_edit_locations, name='location_add'),
 		 url(r'^locations/edit/(?P<id>\d+)/$', views.add_edit_locations, name='location_edit'),
 		 url(r'^categories/$', views.view_categories, name='view_categories'),
 		 url(r'^categories/new/$', views.add_edit_categories, name='category_add'),
@@ -87,6 +89,8 @@ urlpatterns=patterns('',
        url(r'^member/comment/add/(?P<Id>\d+)/$', views.add_member_comment, name='add_member_comment'),
        url(r'^member/comment/save/$', views.save_member_comment, name='save_member_comment'),
        #url('^', include('django.contrib.auth.urls')),
+       url('', include('social.apps.django_app.urls', namespace='social')),
+       url('', include('django.contrib.auth.urls', namespace='auth')),
 		)
 
 

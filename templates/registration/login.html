@@ -7,11 +7,14 @@
 	<link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
       <link href="{% static 'bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
 
+      <link href="{% static 'css/social-buttons.css' %}" rel="stylesheet">
+
     <!-- MetisMenu CSS -->
     <link href="{% static 'metisMenu/dist/metisMenu.min.css' %}" rel="stylesheet">
 
     <!-- Timeline CSS -->
     <link href="{% static 'sb-admin-2/dist/css/timeline.css' %}" rel="stylesheet">
+
 
     <!-- Custom CSS -->
     <link href="{% static 'sb-admin-2/dist/css/sb-admin-2.css' %}" rel="stylesheet">
@@ -30,7 +33,7 @@
 	body {
   padding-top: 40px;
   padding-bottom: 40px;
-  background-color: #eee;
+  background:#fffe;  
 }
 
 .form-signin {
@@ -75,25 +78,93 @@ input {
 </style>
 </head>
 	<body>
-	
-		<div class="container-fluid" id="login" ng-app="loginForm">
-			<form class="form-signin" method="post" action="{% url 'django.contrib.auth.views.login' %}">
-				{% csrf_token %}
-				<h2 class="form-signin-heading">Sign in to Sway</h2>
-				<input type="username"  name="username" class="form-control" placeholder="Username">
-        <input type="password" name="password" class="form-control" placeholder="Password">
-        <button class="btn btn-md btn-primary" type="submit">Sign in</button>
-				<button class="btn btn-md btn-secondary" ><a href="/sway">Cancel</a></button>
-				<input type="hidden" name="next" value="{{ next }}" />
-        <div >		{% if form.errors %}
+
+    	
+<!-- 
+    <ul>
+     <li>
+       <a href="{% url 'social:begin' 'google-oauth2' %}?next={{ request.path }}">Login with Google</a>
+     </li>   
+    </ul>
+
+  -->
+ 
+
+
+  <div class="container col-md-offset-3">
+    <div class="row ">
+        <div class="col-md-7 ">
+
+            <div class="panel panel-default">
+                <div class="panel-heading"> <strong class="">Login</strong>
+                </div>
+
+
+                    <div class="panel-body" >
+
+
+<div class="row text-center">
+        <div class="col-md-4 col-sm-12">
+            <button class="btn btn-facebook"><i class="fa fa-facebook"></i> | <a href="{% url 'social:begin' 'facebook' %}?next=" ><font color="white">Connect with Facebook</font></a></button>
+        </div>
+        <div></div>
+       
+        <div class="col-md-4 col-sm-12">
+            <button class="btn btn-google-plus"><i class="fa fa-google-plus"></i> | Connect with Google +</button>                        
+        </div>
+    </div>
+
+
+
+                     
+                        
+                      </div>
+
+                <div class="panel-body">
+
+
+                    <form class="form-horizontal" role="form" action="{% url 'django.contrib.auth.views.login' %}" method="POST">
+                      {% csrf_token %}
+
+                        <div class="form-group">
+                            <label for="inputEmail3" class="col-sm-3 control-label">User </label>
+                            <div class="col-sm-9">
+                                <input type="username" name="username" class="form-control" id="inputEmail3" placeholder="User name" required="">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputPassword3" class="col-sm-3 control-label">Password</label>
+                            <div class="col-sm-9">
+                                <input type="password" name="password" class="form-control" id="inputPassword3" placeholder="Password" required="">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-3 col-sm-9">
+                                <div class="checkbox">
+                                    <label class="">
+                                        <input type="checkbox" class="">Remember me</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group last">
+                            <div class="col-sm-offset-3 col-sm-9">
+                                <button type="submit" class="btn btn-success btn-sm">Sign in</button>
+                                <button type="reset" class="btn btn-default btn-sm"><a href="/sway">Cancel</a></button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div >    {% if form.errors %}
 <p>Your username and password didn't match. Please try again.</p>
 {% endif %}</div>
-        <div>
-          <a href="/sway/user/password/reset"> Forgot Password</a>
-         </div> 
-		</div> 
-			</form>
-	
+                <div class="panel-footer"><a href="/sway/user/password/reset"> Forgot Password</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 	
 	</body>
 </HTML>

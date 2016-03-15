@@ -322,7 +322,6 @@ def registration(request):
             studioData['name'] = studioName
             studioData["email"]= data["email"]
             studioData["mobile"] = data["mobile"]
-            studioData["email_port"] = 0
             studioSerializer = StudioSerializer(data=studioData)
             if studioSerializer.is_valid():
                 print "inside valid studio data"

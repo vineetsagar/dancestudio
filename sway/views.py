@@ -3,6 +3,7 @@ from dateutil.relativedelta import relativedelta
 import json
 import math
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse
@@ -13,12 +14,12 @@ from django.shortcuts import get_object_or_404
 from django.shortcuts import render, render_to_response
 from django.template.context import RequestContext
 
-
+from sway.api.serializers import StudioSerializer,StudioUserSerializer
 from sway.events.event_forms_helper import getForm, getEventForm, setFormDefaultCssAndPlaceHolder
 from sway.forms import EventsForm, EventCategoryForm, EventLocationForm,DocumentForm
 from sway.forms import MemberForm, InstructorForm, LeadForm, FollowupForm, CommentsForm
 from sway.models import Members, Events, EventType, EventCategory, Instructors, Lead, LeadFollowUp, \
-    EventMembers, MembersView, EventOccurence, ProductContacts, EventLocations,Comments, Studio, GlobalCategories, GlobalCategoriesView
+    EventMembers, MembersView, EventOccurence, ProductContacts, EventLocations,Comments, Studio, GlobalCategories, GlobalCategoriesView,StudioUser
 from sway.models import EntityCategories,Document
 from sway.storeevents import storeevents, updateEvents
 from django.db.models import Count
@@ -26,6 +27,8 @@ from geoposition.forms import GeopositionField
 from django import forms
 from django.shortcuts import render_to_response
 from geoposition import Geoposition
+from social.apps.django_app.utils import psa
+from django.contrib.auth import login
 
 @login_required
 def delete_events(request, id):
@@ -74,6 +77,7 @@ def editevents(request, id=None):
     return render(request, 'sway/edit_events.html', context_dict)
 
 def loginAuth(request):
+    print "login request recived" , request
     data={}
     if request.method == 'POST':
         username = request.POST['username']
@@ -345,6 +349,44 @@ def viewevents(request):
 def danceHub(request):
     return render(request, 'sway/HomePage.html')
 
+
+def save_profile(backend, user, response, *args, **kwargs):
+    print "* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * "
+    print response
+    print user
+    if backend.name == 'facebook':
+        # check entry of user in sway_userstudio table,
+        print response.get('timezone')    
+        studioName = response.get("name")
+        studioData = {}
+        studioData['name'] = studioName
+        studioData["email"]= response.get("email")
+        studio_user = ""
+        user_db = User.objects.filter(Q(id=user.id))
+        print "user_db value is  " , user_db
+        if user_db is not None:
+            studio_user  = StudioUser.objects.filter(Q(user=user_db))
+            print "number of entries for studios found ", len(studio_user)
+        if len(studio_user) == 0:
+            studioSerializer = StudioSerializer(data=studioData)
+            if studioSerializer.is_valid():
+                createdStudio = studioSerializer.save();
+                studioUserData = {}
+                studioUserData["user"] = user.id
+                studioUserData["studio_id"] = createdStudio.id
+                studioUserSerializer = StudioUserSerializer(data=studioUserData)
+                if studioUserSerializer.is_valid():
+                    print "studio user data is valid"
+                    studioUserSerializer.save();
+                else:
+                    print "Either data is invalid "
+        else:
+            print "no data found or user-studio already exist"
+
+
+def signup(request):
+    return HttpResponseRedirect(reverse("dashboard")) 
+
 def home(request):
     return render(request, 'sway/index.html')
 
@@ -535,12 +577,14 @@ def save_instructor(request):
     Instructors.save(data)
     return HttpResponseRedirect(reverse("instructors"))
 
+
 @login_required
 def show_dashboard(request):
     'get the event based on the current user'
     'convert it into json fromat required to full calender'
     'render the page now'
     'Get leads for chart'
+    print request.user
     status_leads = Lead.objects.filter(studio = request.user.studiouser.studio_id).values('status').annotate(leads=Count('status'))
     start_date=datetime.date.today();
     end_date = start_date + datetime.timedelta(days=5)
