@@ -31,7 +31,7 @@ class EventLocationsSearilizer(serializers.ModelSerializer):
 class StudioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Studio
-        fields = ('name', 'mobile', 'email', 'email_port', 'id')
+        fields = ('name', 'mobile', 'email', 'id')
     def create(self, validated_data):
         studio = Studio.objects.create(**validated_data)
         studio.save()
